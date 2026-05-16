@@ -1,0 +1,161 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/correlations/delete:
+    post:
+      tags:
+      - Correlation Rules
+      summary: Delete Correlation Rules
+      description: |-
+        Delete correlation rules selected by filter.
+
+        You must have **Instance Administrator** permissions to run this endpoint.
+      operationId: post-public_api-v1-correlations-delete
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - request_data
+              properties:
+                request_data:
+                  type: object
+                  properties:
+                    filters:
+                      type: array
+                      description: An array of filter fields.
+                      items:
+                        type: object
+                        properties:
+                          field:
+                            type: string
+                            enum:
+                            - name
+                            - severity
+                            - xql_query
+                            - is_enabled
+                            - description
+                            - alert_name
+                            - alert_category
+                            - alert_description
+                            - alert_fields
+                            - execution_mode
+                            - search_window
+                            - simple_schedule
+                            - timezone
+                            - crontab
+                            - suppression_enabled
+                            - suppression_duration
+                            - suppression_fields
+                            - dataset
+                            - user_defined_severity
+                            - user_defined_category
+                            - mitre_defs
+                            - investigation_query_link
+                            - drilldown_query_timeframe
+                            - mapping_strategy
+                            - alert_domain
+                            description: "Identifies the correlation rule field the filter is matching. Filters are based\
+                              \ on the following keywords:\r\n- `name`: Correlation rule name.\r\n- `severity`: Correlation\
+                              \ rule severity.\r\n- `xql_query`: Correlation rule XQL query.\r\n- `is_enabled`: Whether the\
+                              \ correlation rule is enabled or disabled.\r\n- `description`: Correlation rule description.\r\
+                              \n- `alert_name`: Alert name.\r\n- `alert_category`: Alert category.\r\n- `alert_description`:\
+                              \ Alert description.\r\n- `alert_fields`: Alert fields.\r\n- `execution_mode`: Whether execution\
+                              \ mode is scheduled or real time.\r\n- `search_window`: Amount of time for search window.\r\n\
+                              - `simple_schedule`: Correlation rule schedule.\r\n- `timezone`: Correlation rule timezone.\r\
+                              \n- `crontab`: Linux scheduling for correlation rule.\r\n- `suppression_enabled`: Whether suppression\
+                              \ is enabled for correlation rule.\r\n- `suppression_duration`: Duration of correlation rule\
+                              \ suppression.\r\n- `suppression_fields`: Suppression fields.\r\n- `dataset`: Correlation rule\
+                              \ dataset.\r\n- `user_defined_severity`: User-defined severity.\r\n- `user_defined_category`:\
+                              \ User-defined category.\r\n- `mitre_defs`: MITRE definitions.\r\n- `investigation_query_link`:\
+                              \ Investigation query link.\r\n- `drilldown_query_timeframe`: Whether the drilldown query timeframe\
+                              \ is query or alert.\r\n- `mapping_strategy`: Whether the mapping strategy is auto or custom.\r\
+                              \n- `alert_domain`: Alert domain."
+                          operator:
+                            type: string
+                            enum:
+                            - EQ
+                            - IN
+                            - GTE
+                            - LTE
+                            description: "Identifies the comparison operator you want to use for this filter. Valid keywords\
+                              \ are:\r\n`EQ`\r\n- `name`: String\r\n- `severity`: String\r\n- `xql_query`: String\r\n- `is_enabled`:\
+                              \ Boolean\r\n- `description`: String\r\n- `alert_name`: String\r\n- `alert_category`: String\r\
+                              \n- `alert_description`: String\r\n- `alert_fields`: String or dictionary\r\n- `execution_mode`:\
+                              \ String\r\n- `search_window`: String\r\n- `simple_schedule`: String\r\n- `timezone`: String\r\
+                              \n- `crontab`: String\r\n- `suppression_enabled`: Boolean\r\n- `suppression_duration`: String\r\
+                              \n- `dataset`: String\r\n- `user_defined_severity`: String\r\n- `user_defined_category`: String\r\
+                              \n- `investigation_query_link`: String\r\n- `drilldown_query_timeframe`: String\r\n- `mapping_strategy`:\
+                              \ String\r\n- `alert_domain`: String\r\n`IN`\r\n- `suppression_fields`: List of strings\r\n\
+                              - `mitre_defs`: List of strings"
+                          value:
+                            oneOf:
+                            - type: string
+                            - type: array
+                              items: {}
+                            - type: boolean
+                            - type: integer
+                            description: "Value that this filter must match. The contents of this field will differ depending\
+                              \ on the correlation rule field that you specified for this filter:\r\n- `name`, `xql_query`,\
+                              \ `description`, `alert_name`, `alert_description`, `alert_fields`, `suppression_duration`,\
+                              \ `dataset`, `user_defined_severity`, `user_defined_category`, `investigation_query_link`: String.\r\
+                              \n- `severity`: String, can be one of the following: `SEV_010_INFO`, `SEV_020_LOW`, `SEV_030_MEDIUM`,\
+                              \ `SEV_040_HIGH`\r\n- `is_enabled`: String, can be one of the following: `enabled` or `disabled`.\r\
+                              \n- `alert_category`: String, can be one of the following: `other`, `persistence`, `evasion`,\
+                              \ `tampering`, `file_type_obfuscation`, `privilege_escalation`, `credential_access`, `lateral_movement`,\
+                              \ `execution`, `collection`, `exfiltration`, `infiltration`, `dropper`, `file_privilege_manipulation`,\
+                              \ `reconnaissance`, `discovery`.\r\n- `alert_fields`: Dictionary.\r\n- `execution_mode`: String,\
+                              \ can be one of the following: `scheduled` or `real_time`.\r\n- `search_window`: String, for\
+                              \ example: \"2 hours\".\r\n- `simple_schedule`: String, for example: \"5 minutes\".\r\n- `timezone`:\
+                              \ String, for example: \"Asia/Jerusalem\".\r\n- `crontab`: String, for example: \"*/10 * * *\
+                              \ *\".\r\n- `suppression_enabled`: Boolean: `true` or `false`.\r\n- `suppression_fields`: List\
+                              \ of strings.\r\n- `mitre_defs`: List of strings or dictionary.\r\n- `drilldown_query_timeframe`:\
+                              \ String, can be one of the following: `query` or `alert`.\r\n- `mapping_strategy`: String,\
+                              \ can be one of the following: `auto` or `custom`.\r\n- `alert_domain`: String, can be one of\
+                              \ the following: `domain_security`, `domain_it`, `domain_hunting`."
+        required: false
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  objects_count:
+                    type: integer
+                  objects:
+                    type: array
+                    items:
+                      type: integer
+        '400':
+          description: Bad Request. Got invalid JSON.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '401':
+          description: Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, id,
+            or other invalid authentication parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '402':
+          description: Unauthorized access. User does not have the required license type to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '500':
+          description: Internal server error. A unified status for API communication type errors.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

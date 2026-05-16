@@ -1,0 +1,37 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/assets/schema:
+    get:
+      tags:
+      - Asset inventory
+      summary: Get schema of asset inventory
+      description: |-
+        Get the schema of the asset inventory, including the field names, pretty field names, and field type for every entry in the data model.
+
+        **Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture Management
+      operationId: get-public_api-v1-assets-get-schema
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GetSchemaResponse'
+        '403':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UnauthorizedErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GenericErrorResponse'

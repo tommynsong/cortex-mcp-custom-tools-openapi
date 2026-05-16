@@ -1,0 +1,300 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/audits/management_logs:
+    post:
+      tags:
+      - Audit log
+      summary: Get Audit Management Log
+      description: |-
+        Get audit management logs.
+        - Response is concatenated using AND condition (OR is not supported).
+        - Maximum result set size is 100.
+        - Offset is the zero-based number of cases from the start of the result set.
+
+        **Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture Management
+      operationId: postManagementLogs
+      requestBody:
+        description: To retrieve all of the results, you need to iterate over the `total_count` in increments of 100 using
+          `search_from` and `search_to` fields in the request.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  type: object
+                  description: |-
+                    A dictionary containing the API request fields.
+                    An empty dictionary returns all results.
+                  properties:
+                    filters:
+                      type: array
+                      description: Array of filter fields.
+                      items:
+                        type: object
+                        properties:
+                          field:
+                            type: string
+                            enum:
+                            - email
+                            - type
+                            - sub_type
+                            - result
+                            - timestamp
+                            description: |-
+                              Filter is based on the following keywords:
+                              - `email`: User's email address.
+                              - `type`: Type of audit log.
+                              - `sub_type`: Subtype of audit log.
+                              - `result`: Result type.
+                              - `timestamp`: Log timestamp.
+                          operator:
+                            type: string
+                            enum:
+                            - in
+                            - gte
+                            - lte
+                            description: |
+                              Identifies the comparison operator you want to use for this filter. Valid keywords and values are:
+                              `in`
+                              - `email`, `type`, `sub_type`, `result`: List of strings
+                              `gte` / `lte`
+                              - `timestamp`: Integer in timestamp epoch milliseconds
+                          value:
+                            description: |-
+                              Value that this filter must match.
+                              - `timestamp`: Integer representing the number of milliseconds after the Unix epoch, UTC timezone.
+                              - All other fields require a string value. In the case of `in` operator, the value is an array.
+                            oneOf:
+                            - type: string
+                            - type: array
+                              items:
+                                type: string
+                            - type: integer
+                        required:
+                        - field
+                        - operator
+                        - value
+                    search_from:
+                      type: integer
+                      description: |-
+                        An integer representing the starting offset within the query result set from which you want management logs returned.
+                        Management logs are returned as a zero-based list. Any log indexed less than this value is not returned in the final result set and defaults to zero.
+                    search_to:
+                      type: integer
+                      description: |-
+                        An integer representing the end offset within the result set after which you do not want management logs returned.
+                        Logs in the management log list that are indexed higher than this value are not returned in the final results set. Defaults to 100, which returns all logs to the end of the list.
+                      default: 100
+                    sort:
+                      type: object
+                      description: Identifies the sort order for the result set. By default the sort is defined as creation-time
+                        and desc.
+                      properties:
+                        field:
+                          type: string
+                          enum:
+                          - type
+                          - sub-type
+                          - result
+                          description: The field you want to sort by.
+                        keyword:
+                          type: string
+                          enum:
+                          - asc
+                          - desc
+                          description: Whether to sort in ascending or descending order.
+                          default: desc
+                      required:
+                      - field
+                      - keyword
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    description: JSON object containing the query result.
+                    properties:
+                      total_count:
+                        type: integer
+                        description: Number of total results of this filter without paging.
+                      result_count:
+                        type: integer
+                        description: Number of returned items.
+                      data:
+                        type: array
+                        description: List of audit items.
+                        items:
+                          type: object
+                          properties:
+                            AUDIT_ID:
+                              type: integer
+                            AUDIT_OWNER_NAME:
+                              type: string
+                            AUDIT_OWNER_EMAIL:
+                              type: string
+                            AUDIT_ASSET_JSON:
+                              type: string
+                            AUDIT_ASSET_NAMES:
+                              type: string
+                            AUDIT_HOSTNAME:
+                              type: string
+                            AUDIT_RESULT:
+                              type: string
+                            AUDIT_REASON:
+                              type: string
+                            AUDIT_DESCRIPTION:
+                              type: string
+                            AUDIT_ENTITY:
+                              type: string
+                              enum:
+                              - LIVE_TERMINAL
+                              - RULES
+                              - RULES_EXCEPTIONS
+                              - AUTH
+                              - RESPONSE
+                              - INCIDENT_MANAGEMENT
+                              - ALERT_MANAGEMENT
+                              - INCIDENT_TIMELINE_EVENT
+                              - ENDPOINT_MANAGEMENT
+                              - ENDPOINT_GROUPS
+                              - ALERT_WHITELIST
+                              - PUBLIC_API
+                              - DISTRIBUTIONS
+                              - STARRED_INCIDENTS
+                              - POLICY_PROFILES
+                              - DEVICE_CONTROL_PROFILES
+                              - DEVICE_CONTROL_POLICY
+                              - PROTECTION_PROFILES
+                              - DEVICE_CONTROL_PROFILE
+                              - HOST_FIREWALL_PROFILE
+                              - HOST_DISK_ENCRYPTION_PROFILE
+                              - POLICY_RULES
+                              - PROTECTION_POLICY
+                              - DEVICE_CONTROL_TEMP_EXCEPTIONS
+                              - DEVICE_CONTROL_GLOBAL_EXCEPTIONS
+                              - DEVICE_CONTROL_CUSTOM_DEVICE
+                              - GLOBAL_EXCEPTIONS
+                              - MSSP
+                              - REPORTING
+                              - DASHBOARD
+                              - BROKER_API
+                              - BROKER_VM
+                              - MTH
+                              - MDR
+                              - ALERT_NOTIFICATIONS
+                              - INTEGRATIONS
+                              - QUERY
+                              - SCRIPT_EXECUTION
+                              - ALERT_RULES
+                              - COLLECTION
+                              - API_KEY
+                              - EDL
+                              - VA_RESCAN_ENDPOINT
+                              - HI_RESCAN_ENDPOINT
+                              - REMEDIATION
+                              - INGEST_DATA
+                              - LICENSING
+                              - AGENT_CONFIGURATION
+                              - PERMISSIONS
+                              - SCORING_RULES
+                              - LAYOUT_RULES
+                              - PLAYBOOK_TRIGGERS
+                              - FEATURED_ALERT_FIELDS
+                              - SYSTEM
+                              - TENANT_TAKEOVER
+                              - SCOUTER_POLICY
+                              - SCOUTER_PROFILE
+                              - SCOUTER_GROUPS
+                              - ALLOWED_DOMAINS
+                              - QUERY_LIBRARY
+                              - TENANT_CONFIGURATION
+                              - SCOUTER_CONFIGURATION
+                              - HOST_FIREWALL
+                              - XIF
+                              - XDM
+                              - ACTION_CENTER
+                              - XCLOUD_INTEGRATION
+                              - DATASETS
+                              - XSOAR
+                              - SECURITY_SETTINGS
+                              - ALERT_EXCLUSION
+                              - INDICATOR_RULES
+                              - EVENT_FORWARDING
+                              - ASSET_INVENTORY
+                              - SERVER_SETTINGS
+                              - ASSET_ROLES
+                              - CUSTOM_FIELDS
+                              - AUTOMATION_RULES
+                              - AGENT_EXCEPTION_RULES
+                              - REMEDIATION_PATH_RULES
+                            AUDIT_ENTITY_SUBTYPE:
+                              type: string
+                            AUDIT_SESSION_ID:
+                              type: integer
+                            AUDIT_CASE_ID:
+                              type: integer
+                            AUDIT_INSERT_TIME:
+                              type: integer
+                            AUDIT_SEVERITY:
+                              type: string
+                            AUDIT_LINK:
+                              type: string
+                            AUDIT_SOURCE_IP:
+                              type: string
+                            AUDIT_USER_AGENT:
+                              type: string
+                            AUDIT_USER_ROLES:
+                              type: array
+                              items:
+                                type: string
+                            AUDIT_ADDITIONAL_INFORMATION:
+                              type: object
+                              properties:
+                                endpoint_names:
+                                  type: array
+                                  items:
+                                    type: string
+                                endpoint_count:
+                                  type: integer
+                            AUDIT_OBJECT_ID:
+                              type: string
+        '400':
+          description: Bad Request. Got an invalid JSON.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '401':
+          description: Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, id,
+            or other invalid authentication parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '402':
+          description: Unauthorized access. User does not have the required license type to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '500':
+          description: Internal server error. A unified status for API communication type errors.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+            application/xml:
+              schema:
+                type: object

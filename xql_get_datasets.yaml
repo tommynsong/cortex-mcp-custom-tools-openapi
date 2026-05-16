@@ -1,0 +1,96 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/xql/get_datasets:
+    post:
+      tags:
+      - Dataset Management
+      summary: Get all datasets
+      description: "Retrieve a list of all the datasets and their properties.\r\n\r\n**Required license:** Cortex Cloud Runtime\
+        \ Security or Cortex Cloud Posture Management"
+      operationId: post-public_api-v1-xql-get_datasets
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  type: object
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        dataset_name:
+                          type: string
+                          description: Dataset name.
+                        type:
+                          type: string
+                          description: 'Dataset type. Can be one of the following: `System`, `Lookup`, `Raw`, `User`, `Snapshot`,
+                            `Correlation`, `System Audit`.'
+                        log_update_type:
+                          type: string
+                          description: 'Log update type. Can be one of the following: `Logs` (event logs are updated continuously),
+                            `State` (the current state is updated periodically).'
+                        last_updated:
+                          type: integer
+                          description: Integer in timestamp epoch milliseconds. When the data in the dataset was last updated.
+                        total_days_stored:
+                          type: integer
+                          description: Number of dats the data is stored in the tenant, which is comprised of `hot_range`
+                            + `cold_range`.
+                        hot_range:
+                          type: object
+                          description: The time period of the hot storage from the start date to the end date.
+                          properties:
+                            from:
+                              type: integer
+                              description: '    Integer in timestamp epoch milliseconds.'
+                            to:
+                              type: integer
+                              description: Integer in timestamp epoch milliseconds.
+                        cold_range:
+                          type: object
+                          description: The time period of the cold storage from the start date to the end date.
+                          properties:
+                            from:
+                              type: integer
+                              description: Integer in timestamp epoch milliseconds.
+                            to:
+                              type: integer
+                              description: Integer in timestamp epoch milliseconds.
+                        total_size_stored:
+                          type: integer
+                          description: Actual size of the data (in bytes) that is stored in the tenant. This number is dependent
+                            on the events stored in the hot storage. For the xdr_data dataset, where the first 31 days of
+                            storage are included with your license, the first 31 days are not included in the `total_size_stored`
+                            number.
+                        average_daily_size:
+                          type: integer
+                          description: Average daily amount stored (in bytes) in the tenant. This number is dependent on the
+                            events stored in the hot storage.
+                        total_events:
+                          type: integer
+                          description: Number of total events/logs that are stored in the tenant. This number is dependent
+                            on the events stored in the hot storage.
+                        average_event_size:
+                          type: integer
+                          description: Average size (in bytes) of a single event in the dataset (`total_size_stored` divided
+                            by the `total_events`). This number is dependent on the events stored in the hot storage.
+                        ttl:
+                          type: integer
+                          description: Time to live. Defines when lookup entries expire and are removed automatically from
+                            the lookup dataset.
+                        default_query_target:
+                          type: boolean
+                          description: 'whether the dataset is configured to use as your default query target in XQL Search,
+                            so when you write your queries you do not need to define a dataset. Can be one of the following:
+                            `True`, `False`.'

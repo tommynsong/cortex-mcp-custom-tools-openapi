@@ -1,0 +1,221 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/assets/get_external_services:
+    post:
+      tags:
+      - Attack surface management
+      summary: Get All Services
+      description: |+
+        Get a complete or filtered list of all your external services.
+
+        The maximum result limit is 500.
+
+      operationId: post-public_api-v1-assets-get_external_services
+      parameters:
+      - name: authorization
+        in: header
+        description: api-key
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - request_data
+              properties:
+                request_data:
+                  type: object
+                  properties:
+                    filters:
+                      type: object
+                      description: 'An array of filter fields. '
+                      properties:
+                        field:
+                          type: string
+                          enum:
+                          - active_classifications
+                          - business_units_list
+                          - discovery_type
+                          - domain
+                          - externally_detected_providers
+                          - externally_inferred_cves
+                          - inactive_classifications
+                          - ip_address
+                          - ipv6_address
+                          - is_active
+                          - protocol
+                          - service_name
+                          - service_type
+                          - service_type_list
+                          - tags
+                          description: "String that identifies the service field the filter is matching. Filters are based\
+                            \ on the following case-sensitive keywords:\r\n\r\n- active_classifications\r\n- business_units_list\r\
+                            \n- discovery_type\r\n- domain\r\n- externally_detected_providers\r\n- externally_inferred_cves\r\
+                            \n- inactive_classifications\r\n- ip_address\r\n- ipv6_address\r\n- is_active\r\n- protocol\r\n\
+                            - service_name\r\n- service_type\r\n- service_type_list\r\n- tags"
+                        operator:
+                          type: string
+                          enum:
+                          - contains
+                          - not_contains
+                          - eq
+                          - neq
+                          - in
+                          description: "String that identifies the comparison operator you want to use for this filter. Valid\
+                            \ keywords and values are:\r\n- **contains** / **not_contains**— use with `externally_detected_providers`,\
+                            \ `domain`, `externally_inferred_cves`, `active_classifications`, `inactive_classifications`,\
+                            \ service_name, `service_type`, `protocol`\r\n- **eq** / **neq**—  use with `service_name`, `service_type`,\
+                            \ `protocol`, `ip_address`\r\n- **in** — use with `is_active`, `discovery_type`, `business_units_list`,\
+                            \ `tags` "
+                        value:
+                          description: "Value that this filter must match. The contents of this field will differ depending\
+                            \ on the services field that you specified for this filter:\r\n- active_classifications — String\r\
+                            \n- business_units_list — String or list of strings in the format \"BU name\" or \"BU:BU name\"\
+                            , for example “Acme & Co, Inc.” or “BU:Acme & Co, Inc.”\r\n- discovery_type — String. Values are:\
+                            \ `colocated_on_ip`, `directly_discovered`, `unknown`.\r\n- domain —  String\r\n- externally_detected_providers\
+                            \ — String \r\n- externally_inferred_cves — String\r\n- inactive_classifications — String\r\n\
+                            - ip_address — String\r\n- ipv6_address— String\r\n- is_active — String. Values are:`yes`, `no`\r\
+                            \n- protocol — string \r\n- service_name —  String\r\n- service_type —  String\r\n- service_type_list\
+                            \ —  String\r\n- tags — List of strings indicating the tags to filter on in the format `\"tag-family:tag-name\"\
+                            `, for example `\"AR:registered to you\"`."
+                          oneOf:
+                          - type: string
+                          - type: array
+                            items:
+                              type: string
+                    vulnerability_test_results:
+                      type: boolean
+                      enum:
+                      - true
+                      description: "Use this field with the value `true` to get vulnerability test results for the last 14\
+                        \ days for each service.\r\nUsing this field will slow down the endpoint."
+                    search_from:
+                      type: integer
+                      description: An integer representing the start offset index of results.
+                      default: 0
+                    search_to:
+                      type: integer
+                      description: An integer representing the start offset index of results. Use this field to specify the
+                        number of results on a page when using page token pagination.
+                      default: 5000
+                    sort:
+                      type: object
+                      description: Identifies the sort order for the result set.
+                      properties:
+                        keyword:
+                          type: string
+                          description: Can be either ASC (ascending order) or DESC (descending order). Default is ASC. Values
+                            are case sensitive.
+                        field:
+                          type: string
+                          description: "Values are: \r\n- service_name \r\n- first_observed \r\n- last_observed \r\nBy default,\
+                            \ case-sensitive, sort is defined as service_name.\r\n"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    properties:
+                      total_count:
+                        type: integer
+                      result_count:
+                        type: integer
+                      external_services:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            service_id:
+                              type: string
+                            service_name:
+                              type: string
+                            service_type:
+                              type: string
+                            ip_address:
+                              type: array
+                              items:
+                                type: string
+                            domain:
+                              type: array
+                              items:
+                                type: string
+                            externally_detected_providers:
+                              type: array
+                              items:
+                                type: string
+                            is_active:
+                              type: string
+                            first_observed:
+                              type: integer
+                            last_observed:
+                              type: integer
+                            port:
+                              type: integer
+                            protocol:
+                              type: string
+                            active_classifications:
+                              type: array
+                              items:
+                                type: string
+                            inactive_classifications:
+                              type: array
+                              items:
+                                type: string
+                            discovery_type:
+                              type: string
+                            business_units:
+                              type: array
+                              items:
+                                type: string
+                            externally_inferred_vulnerability_score:
+                              type: string
+                            externally_inferred_cves:
+                              type: array
+                              items:
+                                type: object
+                            tls_versions:
+                              type: array
+                              items:
+                                type: object
+                            inferred_cves_observed:
+                              type: array
+                              items:
+                                type: object
+                            cloud_management_status:
+                              type: string
+        '400':
+          description: Bad Request. Got invalid JSON.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '401':
+          description: Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, id,
+            or other invalid authentication parameters.
+        '402':
+          description: Unauthorized access. User does not have the required license type to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '500':
+          description: Internal server error. A unified status for API communication type errors.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

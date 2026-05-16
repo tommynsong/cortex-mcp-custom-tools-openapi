@@ -1,0 +1,130 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/scripts/get_script_execution_results:
+    post:
+      tags:
+      - Script execution
+      summary: Get Script Execution Results
+      description: |-
+        Retrieve the results of a script execution action.
+
+        **Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture Management
+      operationId: postGetScriptExecutionResults
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  type: object
+                  description: A dictionary containing the API request fields.
+                  properties:
+                    action_id:
+                      type: string
+                      description: Action ID. This can be found in the Cortex XDR console **Response** > **Action Center**
+                        > **Action ID** field.
+                  required:
+                  - action_id
+              required:
+              - request_data
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    description: JSON object containing the query result.
+                    properties:
+                      script_name:
+                        type: string
+                        description: Name of the script executed.
+                      script_description:
+                        type: string
+                        description: Description of the script executed.
+                      script_parameters:
+                        type: array
+                        description: For each input parameter used in this execution, an array of `name` and `value`.
+                        items:
+                          type: object
+                      date_created:
+                        type: string
+                        description: Timestamp in which the action was initiated.
+                      scope:
+                        type: string
+                        description: Number of endpoints included in this action according to the filter used to select them.
+                      error_message:
+                        type: string
+                        description: Error message regarding permissions for running APIs.
+                      results:
+                        type: array
+                        description: For each endpoint Cortex XDR displays any returned value by the script. The number of
+                          the results and their name are dynamic per script.
+                        items:
+                          type: object
+                          properties:
+                            endpoint_name:
+                              type: string
+                              description: Endpoint name.
+                            endpoint_ip_address:
+                              type: array
+                              description: Endpoint IP address.
+                              items:
+                                type: string
+                            endpoint_status:
+                              type: string
+                              description: Endpoint status.
+                            domain:
+                              type: string
+                              description: Domain to which the endpoint belongs.
+                            endpoint_id:
+                              type: string
+                              description: Endpoint ID.
+                            execution_status:
+                              type: string
+                              description: Execution status of this endpoint.
+                            standard_output:
+                              description: The STDOUT + STDERR logged by the script during this execution.
+                            retrieved_files:
+                              type: integer
+                              description: Number of successfully retrieved files.
+                            failed_files:
+                              type: integer
+                              description: Number of files failed to retrieve.
+                            retention_date:
+                              description: Timestamp of when the retrieved files will be deleted from the server.
+        '400':
+          description: Bad Request. Got an invalid JSON.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '401':
+          description: Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, id,
+            or other invalid authentication parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '402':
+          description: Unauthorized access. User does not have the required license type to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '500':
+          description: Internal server error. A unified status for API communication type errors.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

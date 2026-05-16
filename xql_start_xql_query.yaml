@@ -1,0 +1,234 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/xql/start_xql_query:
+    post:
+      tags:
+      - XQL query
+      summary: Start an XQL query
+      description: |-
+        Execute an XQL query.
+
+        For more information on how to run XQL queries, see [*Running XQL query APIs*](https://cortex-panw.stoplight.io/docs/cortex-xsiam-1/90ay3tlx6l9dh-running-xql-query-ap-is).
+
+        <!-- theme: info -->
+
+        > #### Note
+        >
+        > To ensure you don't surpass your quota, Cortex Cloud allows you to run up to four API queries in parallel.
+
+        **Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture Management
+      operationId: postStartXqlQuery
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  type: object
+                  properties:
+                    query:
+                      type: string
+                      description: String of the XQL query.
+                    tenants:
+                      type: array
+                      description: |-
+                        Note: This is only used when querying tenants managed by Managed Security Services Providers (MSSP).
+
+                        List of strings used for running APIs on local and Managed Security tenants. Valid values:
+                        - For single tenant (local tenant) query, enter a single-item list with your tenant_id. Additional valid values are, empty list ([]) or null (default).
+                        - For multi-tenant investigations (Managed Security parent who investigate children and/or local), enter multi-item list with the required tenant_id. List of IDs can contain the parent, children, or both parent and children.
+                      items:
+                        type: string
+                    timeframe:
+                      type: object
+                      description: "Integer in timestamp epoch milliseconds.\r\nValid values include:\r\n- Absolute Unix timestamp\
+                        \ representing a date period: {\"from\" : 1598907600000, \"to\" : 1599080399000} = date period: 31/08/20\
+                        \ 09:00:00 PM UTC - 02/09/20 8:59:59 PM UTC\r\n- Relative Unix timestamp representing the last 24\
+                        \ hours: {\"relativeTime\": 86400000} = (24 * 60 * 60 * 1000 = 86400000)."
+                      properties:
+                        from:
+                          type: integer
+                          description: Use for an absolute timeframe in Unix timestamp.
+                          example: 1598907600000
+                        to:
+                          type: integer
+                          description: Use for an absolute timeframe in Unix timestamp.
+                          example: 1599080399000
+                        relativeTime:
+                          type: integer
+                          description: Use for a relative Unix timestamp.
+                          example: 86400000
+                  required:
+                  - query
+              required:
+              - request_data
+              example:
+                request_data:
+                  query: dataset=xdr_data | fields event_id, event_type, event_sub_type | limit 3
+                  tenants: []
+                  timeframe:
+                    from: 1598907600000
+                    to: 1599080399000
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: string
+        '400':
+          description: Bad Request. Invalid JSON.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    properties:
+                      err_code:
+                        type: integer
+                      err_msg:
+                        type: string
+                      err_extra:
+                        type: object
+                        properties:
+                          err_msg:
+                            type: string
+                          query_cost:
+                            type: integer
+                          remaining_quota:
+                            type: integer
+                          total_daily_running_queries:
+                            type: integer
+                            description: The number of daily active queries.
+                          total_daily_concurrent_rejected_queries:
+                            type: integer
+                            description: The number of daily queries rejected due to too many concurrent XQL queries being
+                              run through the API.
+        '401':
+          description: Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, id,
+            or other invalid authentication parameters.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    properties:
+                      err_code:
+                        type: integer
+                      err_msg:
+                        type: string
+                      err_extra:
+                        type: object
+                        properties:
+                          err_msg:
+                            type: string
+                          query_cost:
+                            type: integer
+                          remaining_quota:
+                            type: integer
+                          total_daily_running_queries:
+                            type: integer
+                            description: The number of daily active queries.
+                          total_daily_concurrent_rejected_queries:
+                            type: integer
+                            description: The number of daily queries rejected due to too many concurrent XQL queries being
+                              run through the API.
+        '402':
+          description: Unauthorized access. User does not have the required license type to run this API.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    properties:
+                      err_code:
+                        type: integer
+                      err_msg:
+                        type: string
+                      err_extra:
+                        type: object
+                        properties:
+                          err_msg:
+                            type: string
+                          query_cost:
+                            type: integer
+                          remaining_quota:
+                            type: integer
+                          total_daily_running_queries:
+                            type: integer
+                            description: The number of daily active queries.
+                          total_daily_concurrent_rejected_queries:
+                            type: integer
+                            description: The number of daily queries rejected due to too many concurrent XQL queries being
+                              run through the API.
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    properties:
+                      err_code:
+                        type: integer
+                      err_msg:
+                        type: string
+                      err_extra:
+                        type: object
+                        properties:
+                          err_msg:
+                            type: string
+                          query_cost:
+                            type: integer
+                          remaining_quota:
+                            type: integer
+                          total_daily_running_queries:
+                            type: integer
+                            description: The number of daily active queries.
+                          total_daily_concurrent_rejected_queries:
+                            type: integer
+                            description: The number of daily queries rejected due to too many concurrent XQL queries being
+                              run through the API.
+        '500':
+          description: Internal server error. A unified status for API communication type errors.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    properties:
+                      err_code:
+                        type: integer
+                      err_msg:
+                        type: string
+                      err_extra:
+                        type: object
+                        properties:
+                          err_msg:
+                            type: string
+                          query_cost:
+                            type: integer
+                          remaining_quota:
+                            type: integer
+                          total_daily_running_queries:
+                            type: integer
+                            description: The number of daily active queries.
+                          total_daily_concurrent_rejected_queries:
+                            type: integer
+                            description: The number of daily queries rejected due to too many concurrent XQL queries being
+                              run through the API.

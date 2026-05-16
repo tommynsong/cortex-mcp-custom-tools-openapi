@@ -1,0 +1,206 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/bioc/get:
+    post:
+      tags:
+      - BIOCs
+      summary: Get BIOCs
+      description: "Return a list of BIOCs. You can return all BIOCs or filter results. You can also return extended results\
+        \ with all details included.- The response is concatenated using AND condition (OR is not supported).\r\n- The maximum\
+        \ result set size is >100.\r\n- Offset is the zero-based number of incidents from the start of the result set.\r\n\
+        \r\nYou must have **Instance Administrator** permissions to run this endpoint.\r\n"
+      operationId: post-public_api-v1-bioc-get
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - request_data
+              properties:
+                request_data:
+                  type: object
+                  properties:
+                    extended_view:
+                      type: boolean
+                    filters:
+                      type: array
+                      x-stoplight:
+                        id: 14d9zhudzr46a
+                      description: An array of filter fields.
+                      items:
+                        type: object
+                        x-stoplight:
+                          id: km8fydgl2p3bp
+                        properties:
+                          field:
+                            x-stoplight:
+                              id: tt5qv4kyerqo9
+                            enum:
+                            - name
+                            - severity
+                            - type
+                            - is_xql
+                            - comment
+                            - status
+                            - indicator
+                            - mitre_technique_id_and_name
+                            - mitre_tactic_id_and_name
+                            description: "Identifies the BIOC field the filter is matching. Filters are based on the following\
+                              \ keywords:\r\n- `name`: BIOC name.\r\n- `severity`: BIOC severity level.\r\n- `type`: BIOC\
+                              \ type.\r\n- `is_xql`: Whether or not the BIOC is XQL.\r\n- `comment`: Comment.\r\n- `status`:\
+                              \ BIOC status.\r\n- `indicator`: Indicator.\r\n- `mitre_technique_id_and_name`: MITRE technique\
+                              \ ID and name.\r\n- `mitre_tactic_id_and_name`: MITRE tactic ID and name."
+                          operator:
+                            x-stoplight:
+                              id: len2v0h2uwk05
+                            enum:
+                            - EQ
+                            - NEQ
+                            - IN
+                            - GTE
+                            - LTE
+                            description: "Identifies the comparison operator you want to use for this filter. Valid keywords\
+                              \ are:\r\n`EQ` / `NEQ`\r\n- `name`: String\r\n- `severity`: String\r\n- `type`: String\r\n-\
+                              \ `is_xql`: Boolean\r\n- `comment`: String\r\n- `status`: String\r\n- `indicator`: String\r\n\
+                              `IN`\r\n- `mitre_technique_id_and_name`: List of strings\r\n- `mitre_tactic_id_and_name`: List\
+                              \ of strings"
+                          value:
+                            oneOf:
+                            - type: string
+                            - type: array
+                              items:
+                                type: string
+                            - type: boolean
+                            x-stoplight:
+                              id: zwee25zd7v46e
+                            description: "Value that this filter must match. The contents of this field will differ depending\
+                              \ on the IOC field that you specified for this filter:\r\n- `name`, `comment`: String.\r\n-\
+                              \ `severity`: String, can be one of the following: `SEV_010_INFO`, `SEV_020_LOW`, `SEV_030_MEDIUM`,\
+                              \ `SEV_040_HIGH`\r\n- `type`: String, can be one of the following: `other`, `persistence`, `evasion`,\
+                              \ `tampering`, `file_type_obfuscation`, `privilege_escalation`, `credential_access`, `lateral_movement`,\
+                              \ `execution`, `collection`, `exfiltration`, `infiltration`, `dropper`, `file_privilege_manipulation`,\
+                              \ `reconnaissance`, `discovery`.\r\n- `is_xql`: Boolean: `true` or `false`.\r\n- `status`: String,\
+                              \ can be one of the following: `enabled`, `disabled`.\r\n- `indicator`: String or dictionary\
+                              \ in the format you wrote it.\r\n- `mitre_technique_id_and_name`: List of strings.\r\n- `mitre_tactic_id_and_name`:\
+                              \ List of strings."
+                            items: {}
+                    search_from:
+                      type: integer
+                      x-stoplight:
+                        id: fdmmcplkjr91l
+                      description: "Integer representing the starting offset within the query result set from which you want\
+                        \ BIOCs returned.\r\nBIOCs are returned as a zero-based list. Any BIOC indexed less than this value\
+                        \ is not returned in the final result set and defaults to zero."
+                    search_to:
+                      type: integer
+                      x-stoplight:
+                        id: svb4vask7korb
+                      description: "Integer representing the end offset within the result set after which you do not want\
+                        \ BIOCs returned.\r\nBIOCs in the BIOC list that are indexed higher than this value are not returned\
+                        \ in the final results set. Defaults to >100, which returns all BIOCs to the end of the list."
+        required: false
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  objects_count:
+                    type: integer
+                  objects:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        rule_id:
+                          type: integer
+                        name:
+                          type: string
+                        type:
+                          type: string
+                        severity:
+                          type: string
+                        comment:
+                          type: string
+                        status:
+                          type: string
+                        is_xql:
+                          type: boolean
+                        indicator:
+                          type: object
+                          properties:
+                            runOnCGO:
+                              type: boolean
+                            investigationType:
+                              type: string
+                            investigation:
+                              type: object
+                              properties:
+                                PROCESS_EXECUTION_EVENT:
+                                  type: object
+                                  properties:
+                                    filter:
+                                      type: object
+                                      properties:
+                                        AND:
+                                          type: array
+                                          items:
+                                            type: object
+                                            properties:
+                                              SEARCH_FIELD:
+                                                type: string
+                                              SEARCH_TYPE:
+                                                type: string
+                                              SEARCH_VALUE:
+                                                type: string
+                                              EXTRA_FIELDS:
+                                                type: array
+                                                items:
+                                                  type: object
+                                                  properties: {}
+                                              isExtended:
+                                                type: boolean
+                        mitre_tactic_id_and_name:
+                          type: array
+                          items:
+                            type: string
+                        mitre_technique_id_and_name:
+                          type: array
+                          items:
+                            type: string
+                  objects_type:
+                    type: string
+        '400':
+          description: Bad Request. Got invalid JSON.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '401':
+          description: Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, id,
+            or other invalid authentication parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '402':
+          description: Unauthorized access. User does not have the required license type to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '500':
+          description: Internal server error. A unified status for API communication type errors.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

@@ -1,0 +1,28 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/dataset/define_dataset:
+    post:
+      tags:
+      - XQL user datasets
+      summary: Define an XQL user dataset
+      description: "Define an XQL user dataset based on an existing BigQuery table created by the user.\r\n\r\n**Note:** BigQuery\
+        \ table must be an existing table under public_access_user.\r\n\r\n**Required license:** Cortex Cloud Runtime Security\
+        \ or Cortex Cloud Posture Management\r\n\r\nThese APIs are only applicable from within the XSIAM Notebook environment."
+      operationId: post-public_api-v1-dataset-define_dataset
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  type: object
+                  properties:
+                    table_name:
+                      type: string
+                      description: An existing BigQuery table name that was created by the user.
+                  required:
+                  - table_name
+      responses:
+        '200':
+          description: OK

@@ -1,0 +1,144 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/scripts/get_script_metadata:
+    post:
+      tags:
+      - Script execution
+      summary: Get Script Metadata
+      description: |-
+        Get the full definitions of a specific script in the scripts library.
+
+        **Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture Management
+      operationId: postGetScriptMetadata
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  type: object
+                  description: A dictionary containing the API request fields.
+                  properties:
+                    script_uid:
+                      type: string
+                      description: Unique identifier of the script, returned by the **Get Scripts** API per script.
+                  required:
+                  - script_uid
+              required:
+              - request_data
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    description: JSON object containing the query result.
+                    properties:
+                      script_id:
+                        type: string
+                        description: Script ID.
+                      name:
+                        type: string
+                        description: Name of script.
+                      description:
+                        type: string
+                        description: Description of script.
+                      modification_date:
+                        type: integer
+                        description: Timestamp of when the script was last modified.
+                      created_by:
+                        type: string
+                        description: Name of the user who created the script.
+                      is_high_risk:
+                        type: boolean
+                        description: Whether the script has a high-risk outcome.
+                      windows_supported:
+                        type: boolean
+                        description: Whether the script can be executed on Windows OS.
+                      linux_supported:
+                        type: boolean
+                        description: Whether the script can be executed on Linux OS.
+                      macos_supported:
+                        type: boolean
+                        description: Whether the script can be executed on macOS.
+                      script_uid:
+                        type: string
+                        description: GUID, global ID of the script, used toidentify the script when executing.
+                      entry_point:
+                        type: string
+                        description: name of the entry point selected for the script defined as `run`.
+                      script_input:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            type:
+                              type: string
+                            friendly_name:
+                              type: string
+                      script_output_type:
+                        type: string
+                        enum:
+                        - auto_detect
+                        - dictionary
+                        - number_list
+                        - number
+                        - string
+                        - string_list
+                        - boolean_list
+                        - ip
+                        - ip_list
+                        - boolean
+                        description: Type of output.
+                      script_output_dictionary_definitions:
+                        type: array
+                        description: |-
+                          When the `script_output_type` is a dictionary an array with `friendly_name`, `name`, and `type` for each output is returned.
+                          The field is empty in all other cases.
+                        items:
+                          type: object
+                          properties:
+                            friendly_name:
+                              type: string
+                            name:
+                              type: string
+                            type:
+                              type: string
+        '400':
+          description: Bad Request. Got an invalid JSON.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '401':
+          description: Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, id,
+            or other invalid authentication parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '402':
+          description: Unauthorized access. User does not have the required license type to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '500':
+          description: Internal server error. A unified status for API communication type errors.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

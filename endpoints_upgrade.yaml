@@ -1,0 +1,110 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/endpoints/upgrade:
+    post:
+      tags:
+      - Endpoint Management
+      summary: Upgrade Agents
+      description: |-
+        Creates an upgrade action for the specified endpoints to upgrade their agents to the target versions.
+
+        You can specify target versions per operating system and optionally define a timeframe window for the upgrade.
+
+        **Required license:** Cortex Cloud Runtime Security. In Cortex Cloud Posture Security, you need the Cortex Cloud Runtime Security add-on.
+      operationId: postUpgradeAgents
+      requestBody:
+        description: Upgrade request containing endpoint IDs, target versions per OS, and an optional upgrade timeframe window.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  type: object
+                  description: A dictionary containing the API request fields.
+                  required:
+                  - endpoint_ids
+                  - target_versions
+                  properties:
+                    endpoint_ids:
+                      type: array
+                      description: List of endpoint IDs to upgrade.
+                      minItems: 1
+                      items:
+                        type: string
+                    target_versions:
+                      type: object
+                      description: 'Dictionary mapping OS types to target agent versions. Valid keys: `windows`, `linux`,
+                        `macos`.'
+                      additionalProperties:
+                        type: string
+                    upgrade_timeframe_window:
+                      type: object
+                      description: Optional timeframe window to schedule the upgrade.
+                      properties:
+                        upgrade_timeframe_days:
+                          type: array
+                          description: Days of the week for the upgrade timeframe (for example, `Monday`, `Wednesday`).
+                          items:
+                            type: string
+                        upgrade_timeframe_start_time:
+                          type: string
+                          description: Start time in 24-hour `HH:MM` format.
+                          pattern: ^([01]\d|2[0-3]):([0-5]\d)$
+                        upgrade_timeframe_end_time:
+                          type: string
+                          description: End time in 24-hour `HH:MM` format.
+                          pattern: ^([01]\d|2[0-3]):([0-5]\d)$
+              required:
+              - request_data
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    description: JSON object containing the upgrade action result.
+                    properties:
+                      summary:
+                        type: string
+                        description: A summary message of the operation result.
+                      details:
+                        type: array
+                        description: Detailed eligibility or error messages per OS type.
+                        items:
+                          type: string
+        '400':
+          description: Bad Request. Got an invalid JSON.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '401':
+          description: Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, id,
+            or other invalid authentication parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '402':
+          description: Unauthorized access. User does not have the required license type to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '500':
+          description: Internal server error. A unified status for API communication type errors.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

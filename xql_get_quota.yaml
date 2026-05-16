@@ -1,0 +1,111 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/xql/get_quota:
+    post:
+      tags:
+      - XQL query
+      summary: Get XQL query Quota
+      description: "Retrieve the amount of query quota available and used. \n\nNote: This endpoint only works on XQL queries\
+        \ initiated by `/public_api/v1/xql/start_xql_query/`.\n\nFor more information on how to run XQL queries, see [*Running\
+        \ XQL query APIs*](https://cortex-panw.stoplight.io/docs/cortex-xsiam-1/90ay3tlx6l9dh-running-xql-query-ap-is).\n\n\
+        <!-- theme: info -->\n\n> #### Note\n>\n> To ensure you don't surpass your quota, Cortex Cloud allows you to run up\
+        \ to four API queries in parallel.\n\n**Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture\
+        \ Management"
+      operationId: postGetQuota
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                request_data: {}
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    properties:
+                      license_quota:
+                        type: integer
+                      additional_purchased_quota:
+                        type: integer
+                      used_quota:
+                        type: number
+                      eval_quota:
+                        type: integer
+                      total_daily_running_queries:
+                        type: integer
+                        description: The number of daily active queries. This value is reset nightly.
+                      total_daily_concurrent_rejected_queries:
+                        type: integer
+                        description: The number of daily queries rejected due to too many concurrent XQL queries being run
+                          through the API.  This value is reset nightly.
+                      current_concurrent_active_queries:
+                        type: object
+                        description: Currently running XQL queries with their current duration.
+                        additionalProperties:
+                          type: string
+                      current_concurrent_active_queries_count:
+                        type: integer
+                        description: The number of active queries currently running.
+                      max_daily_concurrent_active_query_count:
+                        type: integer
+                        description: The maximum number of queries that ran concurrently today on this tenant.  This value
+                          is reset nightly.
+        '400':
+          description: Bad Request. Got an invalid JSON.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    properties:
+                      err_code:
+                        type: integer
+                      err_msg:
+                        type: string
+                      err_extra:
+                        type: object
+                        properties:
+                          err_msg:
+                            type: string
+                          query_cost:
+                            type: integer
+                          remaining_quota:
+                            type: integer
+                          total_daily_running_queries:
+                            type: integer
+                          total_daily_concurrent_rejected_queries:
+                            type: integer
+        '401':
+          description: Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, id,
+            or other invalid authentication parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '402':
+          description: Unauthorized access. User does not have the required license type to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '500':
+          description: Internal server error. A unified status for API communication type errors.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

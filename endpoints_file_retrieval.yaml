@@ -1,0 +1,115 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/endpoints/file_retrieval:
+    post:
+      tags:
+      - Response Action
+      summary: Retrieve File
+      description: |-
+        Retrieve files from selected endpoints. You can retrieve up to 20 files, from no more than 10 endpoints.
+        - Response is concatenated using AND condition (OR is not supported).
+        - Offset is the zero-based number of cases from the start of the result set.
+
+        **Required license:** Cortex Cloud Runtime Security. In Cortex Cloud Posture Security, you need the Cortex Cloud Runtime Security add-on.
+      operationId: post-public_api-v1-endpoints-file_retrieval
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  type: object
+                  description: A dictionary containing the API request fields.
+                  properties:
+                    filters:
+                      type: array
+                      description: An array of filter fields.
+                      items:
+                        type: object
+                        properties:
+                          field:
+                            type: string
+                            enum:
+                            - endpoint_id_list
+                            description: |-
+                              Identifies the field the filter must match:
+                              - `endpoint_id_list`
+                          operator:
+                            type: string
+                            enum:
+                            - in
+                            description: |-
+                              Identifies the comparison operator you want to use for this filter. Valid keywords and values are:
+                              `in`
+                              - 'endpoint_id_list'
+                          value:
+                            type: array
+                            description: |-
+                              Value that this filter must match. Valid keywords:
+                              - 'endpoint_id_list': List of strings.
+                            items:
+                              type: string
+                        required:
+                        - field
+                        - operator
+                        - value
+                    files:
+                      type: object
+                      description: One of the operating system types must be included.
+                      properties:
+                        windows:
+                          type: array
+                          items:
+                            type: string
+                        linux:
+                          type: array
+                          items:
+                            type: string
+                        macos:
+                          type: array
+                          items:
+                            type: string
+                    incident_id:
+                      type: string
+                      description: Case ID. When included in the request, the Retrieve File action will appear in the Cortex
+                        Cloud Case View Timeline tab.
+                  required:
+                  - filters
+                  - files
+              required:
+              - request_data
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    description: JSON object containing the query result.
+                    properties:
+                      action_id:
+                        type: string
+                        description: |-
+                          ID of action to retrieve files from selected endpoints.
+                          Response only indicates the request was successfully sent to the endpoint. To track if the file was retrieved successfully either: in the Cortex XDR console, navigate to Response > Action Center > Isolation and search for the action ID. Make sure the Action ID field is selected in the table Layout settings by selecting the three vertical dots.
+                          To view the file, send a File Retrieval Details request.
+                      status:
+                        type: string
+                      endpoints_count:
+                        type: string
+                        description: Number of endpoints included in the request.
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, id,
+            or other invalid authentication parameters.
+        '402':
+          description: Unauthorized access. User does not have the required license type to run this API.
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+        '500':
+          description: Internal server error. A unified status for API communication type errors.

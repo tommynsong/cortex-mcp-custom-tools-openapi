@@ -1,0 +1,73 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/profiles/prevention/add:
+    post:
+      tags:
+      - Endpoint Management
+      summary: Add Prevention Profile
+      description: Create a new prevention profile with specified configuration.
+      operationId: add_prevention_profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - name
+              - profile_type
+              - platform
+              - modules
+              properties:
+                name:
+                  type: string
+                  minLength: 1
+                  maxLength: 600
+                  description: Name of the profile.
+                profile_type:
+                  type: string
+                  description: Type of the prevention profile.
+                platform:
+                  type: string
+                  description: Platform (OS) for the profile.
+                description:
+                  type: string
+                  nullable: true
+                  description: Optional description of the profile.
+                modules:
+                  type: object
+                  description: Configuration modules for the profile.
+                  additionalProperties:
+                    type: object
+              additionalProperties: false
+              example:
+                name: Windows_Malware_Prevention
+                profile_type: malware
+                platform: windows
+                description: Standard prevention profile for Windows endpoints
+                modules:
+                  wildfire:
+                    status: enabled
+                  behavioral_threat_protection:
+                    status: enabled
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: integer
+                    description: The ID of the newly created profile.
+                example:
+                  reply: 12345
+        '400':
+          description: Bad Request. Invalid Input.
+        '401':
+          description: Unauthorized access. User does not have the required license type to run this API.
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+        '500':
+          description: Internal Server Error.

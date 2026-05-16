@@ -1,0 +1,142 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/entries/get:
+    post:
+      tags:
+      - Cases
+      summary: Get War Room entries
+      description: |-
+        Get the War Room entries for a specific case or alert. You can filter by timestamp, ID, and tags. You can also choose which type of entries you want to retrieve (notes, chat, attachments...).
+        The response depends on what type of entry you choose to retrieve.
+
+        **Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture Management
+      operationId: post-public_api-v1-entries-get
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  description: |-
+                    The unique identifier of the case or alert for which the War Room entry is created.
+
+                    - Case IDs must be prefixed with `INCIDENT-` (for example, `INCIDENT-3`).
+                    - Alert IDs should be provided without any prefix (for example, `3`).
+                filter:
+                  type: object
+                  properties:
+                    firstID:
+                      type: string
+                      description: Return results starting from the investigation ID in `firstID` until the last investigation
+                        ID.
+                    lastID:
+                      type: string
+                      description: Return results starting from the first investigation ID until the investigation ID in `lastID`.
+                    pagesize:
+                      type: integer
+                      description: 'Filter the results by the number of entries you want returned. `"pagesize": 0` returns
+                        all the results.'
+                    fromTime:
+                      type: string
+                      description: RFC3339 timestamp. Filter results from the time the entry is created until the latest entry.
+                    categories:
+                      type: array
+                      description: |-
+                        The categories you want to filter and the results you want to receive:
+                        - `tags`: Tags added to the investigation.
+                        - `chats`: Communication between team members in the form of chat messages.
+                        - `notes`: Any entries marked as notes.
+                        - `attachments`: Any files uploaded to the War Room in a playbook, script, or by the analyst.
+                        - `incidentInfo`: The case history.
+                        - `commandAndResults`: Command and return the result of the command.
+                        - `playbookTaskResult`: Return the task result.
+                        - `playbookTaskStartAndDone`: Task and return the task result.
+                        - `playbookErrors`: When there are no playbook errors, the response returned is `0`.
+                      items:
+                        type: string
+                        enum:
+                        - tags
+                        - chats
+                        - notes
+                        - attachments
+                        - incidentInfo
+                        - commandAndResults
+                        - playbookTaskResult
+                        - playbookTaskStartAndDone
+                        - playbookErrors
+                    tags:
+                      type: array
+                      description: If using the filter category of `tags`, include the tags you want to filter by.
+                      items:
+                        type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        modified:
+                          type: string
+                        created:
+                          type: string
+                        user:
+                          type: string
+                        parentContent:
+                          type: string
+                        contents:
+                          type: string
+                        format:
+                          type: string
+                        investigationId:
+                          type: string
+                        category:
+                          type: string
+                        isTodo:
+                          type: boolean
+                        tags:
+                          type: array
+                          items:
+                            type: string
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '402':
+          description: Payment Required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

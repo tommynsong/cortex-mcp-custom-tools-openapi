@@ -1,0 +1,91 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/rbac/get_users:
+    post:
+      tags:
+      - System management
+      summary: Get Users
+      description: |-
+        Retrieve a list of the current users in your environment.
+
+        **Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture Management
+      operationId: post-public_api-v1-rbac-get_users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: array
+                    description: JSON object containing the query result.
+                    items:
+                      type: object
+                      properties:
+                        user_email:
+                          type: string
+                          description: Email address of the user.
+                        user_first_name:
+                          type: string
+                          description: First name of the user.
+                        user_last_name:
+                          type: string
+                          description: Last name of the user.
+                        role_name:
+                          type: string
+                          description: Role name associated with the user.
+                        last_logged_in:
+                          type: integer
+                          nullable: true
+                          description: Timestamp of when the user last logged in.
+                        user_type:
+                          type: string
+                          description: Type of user.
+                        groups:
+                          type: array
+                          description: Name of user groups associated with the user, if applicable.
+                          items:
+                            type: object
+                        scope:
+                          type: array
+                          description: Name of scope associated with the user, if applicable.
+                          items:
+                            type: object
+        '400':
+          description: Bad Request. Got an invalid JSON.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '401':
+          description: Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, id,
+            or other invalid authentication parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '402':
+          description: Unauthorized access. User does not have the required license type to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '500':
+          description: Internal server error. A unified status for API communication type errors.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

@@ -1,0 +1,113 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/case/search:
+    post:
+      tags:
+      - Cases
+      summary: Retrieve cases based on filters
+      description: |-
+        This endpoint retrieves a list of cases that match the specified filter criteria. It supports filtering by `case_id`, `case_domain`, `status_progress`, `severity`, and `creation_time`, along with sorting and pagination.
+
+        Request Body:
+        - `request_data`: Object containing filter criteria
+          - `filters`: Array of filter objects
+            - `field`: String (enum: 'case_id', 'case_domain', 'severity', 'creation_time', 'status_progress')
+            - `operator`: String (enum: 'in', 'gte', 'lte')
+            - `value`: Array of integers/strings or single integer
+        - `search_from`: Integer (default: 0) - Starting index for pagination
+        - `search_to`: Integer (default: 100) - Ending index for pagination
+        - `sort`: Object for sorting results
+          - `field`: String (enum: 'creation_time', 'severity', 'case_id')
+          - `keyword`: String (enum: 'asc', 'desc') - Sort order
+
+        **Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture Management
+      operationId: getCases
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  type: object
+                  properties:
+                    filters:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          field:
+                            type: string
+                            enum:
+                            - case_id
+                            - case_domain
+                            - severity
+                            - creation_time
+                            - status_progress
+                            description: Specifies the field to filter cases by.
+                          operator:
+                            type: string
+                            enum:
+                            - in
+                            - gte
+                            - lte
+                            description: Comparison operator to use with the filter.
+                          value:
+                            description: Value(s) for filtering the cases.
+                            oneOf:
+                            - type: array
+                              items:
+                                type: integer
+                            - type: array
+                              items:
+                                type: string
+                            - type: integer
+                    search_from:
+                      type: integer
+                      description: Starting index for pagination.
+                      default: 0
+                    search_to:
+                      type: integer
+                      description: Ending index for pagination.
+                      default: 100
+                    sort:
+                      type: object
+                      properties:
+                        field:
+                          type: string
+                          enum:
+                          - case_id
+                          - severity
+                          - creation_time
+                        keyword:
+                          type: string
+                          enum:
+                          - asc
+                          - desc
+                          description: Sort order (ascending or descending).
+      responses:
+        '200':
+          description: Successful response with cases
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    properties:
+                      TOTAL_COUNT:
+                        type: integer
+                      FILTER_COUNT:
+                        type: integer
+                      DATA:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Case'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalError'

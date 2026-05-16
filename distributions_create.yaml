@@ -1,0 +1,198 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/distributions/create:
+    post:
+      tags:
+      - Endpoint Management
+      summary: Create distributions
+      description: "Create an installation package. This is an async call that returns the distribution ID; it does not mean\
+        \ that the creation succeeded. To confirm the package has been created, check the status of the distribution by running\
+        \ the **Get Distribution Status** API.\r\n\r\n**Required license:** Cortex Cloud Runtime Security. In Cortex Cloud\
+        \ Posture Security, you need the Cortex Cloud Runtime Security add-on."
+      operationId: postCreate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - request_data
+              properties:
+                request_data:
+                  type: object
+                  required:
+                  - name
+                  - package_type
+                  - agent_version
+                  - deployment_platform
+                  - default_namespace
+                  - run_on_master_node
+                  - run_on_all_nodes
+                  properties:
+                    name:
+                      type: string
+                      description: The name of the installation package.
+                    platform:
+                      type: string
+                      description: The installation platform.
+                      enum:
+                      - windows
+                      - linux
+                      - macos
+                      - android
+                      - serverless
+                    package_type:
+                      type: string
+                      description: |-
+                        A string representing the type of package to create. Each JSON object must contain *one* of the following keywords:
+                        - `standalone`: Installation for a new agent. When using this, you must include the `platform` field with one of the following values: `windows`, `linux`, `macos`, `android`, `kubernetes`, `helm`.
+                        - `upgrade`: Upgrade of an agent from ESM. When using this, you must include the `agent_version` field with  one of the following values: `windows_version`, `linux_version`, or `macos_version`.
+                        - `serverless`: Create a serverless distribution. When using this, you must include the `yaml_preferences` field with the following properties: `runtime` (Node.js or python), `deployment_type` (embedded or layers), `cloud_provider` (aws), and `restrictions_profile` (Serverless restrictions profile ID).
+                        - `caas_embedded`: Container-embedded XDR agent installation using the CaaS Generic Installer (Linux dockerfile-based deployment).
+                    agent_version:
+                      type: string
+                      description: |
+                        Use `agent_version` when creating a standalone installer. The value should be the agent version number.
+                    windows_version:
+                      type: string
+                      x-stoplight:
+                        id: 9twjigc0t1i6i
+                      description: Use `windows_version` when creating an upgrade package. The value is the relevant version
+                        number.
+                    linux_version:
+                      type: string
+                      x-stoplight:
+                        id: hmqjd42g8cqmv
+                      description: Use `linux_version` when creating an upgrade package. The value is the relevant version
+                        number.
+                    macos_version:
+                      type: string
+                      x-stoplight:
+                        id: 2qvm652zub021
+                      description: Use `macos_version` when creating an upgrade package. The value is the relevant version
+                        number.
+                    deployment_platform:
+                      type: string
+                      x-stoplight:
+                        id: 4q6jcfl41vbm1
+                      description: |-
+                        When the `package_type` is `kubernetes` or `helm`, use the `deployment_platform` to indicate the type of platform. Valid values include:
+                        - `standard`
+                        - `openshift`
+                        - `gcos`
+                        - `bottlerocket`
+                        - `gke_autopilot`
+                    default_namespace:
+                      type: string
+                      x-stoplight:
+                        id: fset5sb8wj50k
+                      description: The default namespace
+                    node_selector:
+                      type: object
+                      x-stoplight:
+                        id: 8ybl28iqoste1
+                      description: |-
+                        The node selector in the following format:
+                        `"node_selector": {"key": "val"}'
+                      additionalProperties: {}
+                    proxy:
+                      type: array
+                      x-stoplight:
+                        id: rujxjdh9j3knv
+                      items:
+                        x-stoplight:
+                          id: hqxgltepmyaak
+                        type: string
+                    cluster_name:
+                      type: string
+                      x-stoplight:
+                        id: arozzkz41va5e
+                      description: Cluster name
+                    run_on_master_node:
+                      type: boolean
+                      x-stoplight:
+                        id: qkvbkex49ugtf
+                      description: Whether or not to run on the master node.
+                    run_on_all_nodes:
+                      type: boolean
+                      x-stoplight:
+                        id: 07abki35e0g3v
+                      description: Whether or not to run on all nodes.
+                    description:
+                      type: string
+                      description: A description for the distribution package.
+                    endpoint_tags:
+                      type: array
+                      description: List of endpoint tags to associate with the distribution package. Tags must already exist
+                        in the system.
+                      items:
+                        type: string
+                    yaml_preferences:
+                      type: object
+                      description: Configuration for serverless distributions.
+                      properties:
+                        runtime:
+                          type: string
+                          enum:
+                          - Node.js
+                          - python
+                          description: The runtime environment for the serverless function.
+                        deployment_type:
+                          type: string
+                          enum:
+                          - embedded
+                          - layers
+                          description: The deploy method used for the serverless agent.
+                        cloud_provider:
+                          type: string
+                          enum:
+                          - aws
+                          description: The cloud service provider hosting the serverless function. Currently only AWS is supported.
+                        restrictions_profile:
+                          type: string
+                          description: The serverless restrictions profile ID.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    properties:
+                      distribution_id:
+                        type: string
+                        description: Installation package ID.
+        '400':
+          description: Bad Request. Got an invalid JSON.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '401':
+          description: Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, id,
+            or other invalid authentication parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '402':
+          description: Unauthorized access. User does not have the required license type to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '500':
+          description: Internal server error. A unified status for API communication type errors.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

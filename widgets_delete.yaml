@@ -1,0 +1,71 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/widgets/delete:
+    post:
+      tags:
+      - Widgets
+      summary: Delete widgets
+      description: |-
+        Delete the widgets retrieved by the Get widgets API.
+
+        You must have **Instance Administrator** permissions to run this endpoint.
+      operationId: post-public_api-v1-widgets-delete
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - request_data
+              properties:
+                request_data:
+                  type: object
+                  properties:
+                    filters:
+                      type: array
+                      description: An array of filter fields.
+                      items:
+                        type: object
+                        properties:
+                          field:
+                            description: "Identifies the dashboard field the filter is matching. Filters are based on the\
+                              \ following keywords:\r\n- `title`: Widget title.\r\n- `created_by`: Name of the user who created\
+                              \ the widget."
+                            enum:
+                            - created_by
+                            - title
+                          value:
+                            description: "Identifies the comparison operator you want to use for this filter. Valid keywords\
+                              \ are:\r\n`EQ` / `NEQ`\r\n- `created_by`: String\r\n- `title`: String\r\n\r\n`IN`\r\n- `created_by`:\
+                              \ List of strings\r\n- `title`: List of strings"
+                            enum:
+                            - EQ
+                            - NEQ
+                            - IN
+                          operator:
+                            type: string
+                            description: "Value that this filter must match. The contents of this field will differ depending\
+                              \ on the widget field that you specified for this filter:\r\n- `title`, `created_by`: String\
+                              \ or list of strings."
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  objects_count:
+                    type: integer
+                    description: Number of widgets deleted.
+                  objects:
+                    type: array
+                    description: List of widget IDs of widgets successfully deleted.
+                    items:
+                      type: string
+        '599':
+          description: Invalid field or operator.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

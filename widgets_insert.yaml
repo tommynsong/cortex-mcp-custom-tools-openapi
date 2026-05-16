@@ -1,0 +1,121 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/widgets/insert:
+    post:
+      tags:
+      - Widgets
+      summary: Insert or update widgets
+      description: |-
+        Update or add the widgets retrieved by the Get widgets API.
+
+        You must have **Instance Administrator** permissions to run this endpoint.
+      operationId: post-public_api-v1-widgets-insert
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      widgets_data:
+                        type: array
+                        description: An array of widget details as retrieved by the Get widgets API.
+                        items:
+                          type: object
+                          properties:
+                            widget_key:
+                              type: string
+                            title:
+                              type: string
+                            creation_time:
+                              type: integer
+                            description:
+                              type: string
+                              nullable: true
+                            data:
+                              type: object
+                              properties:
+                                phrase:
+                                  type: string
+                                time_frame:
+                                  type: object
+                                  properties:
+                                    relativeTime:
+                                      type: integer
+                                viewOptions:
+                                  type: object
+                                  properties:
+                                    type:
+                                      type: string
+                                    commands:
+                                      type: array
+                                      items:
+                                        type: object
+                                gridRawStorageInfo:
+                                  type: object
+                                  properties:
+                                    sort:
+                                      type: string
+                                      nullable: true
+                                    coldefs:
+                                      type: object
+                                    rowHeight:
+                                      type: string
+                                    columnWidth:
+                                      type: integer
+                                      nullable: true
+                            support_time_range:
+                              type: boolean
+                            additional_info:
+                              type: object
+                              properties:
+                                query_tables:
+                                  type: array
+                                  items:
+                                    type: string
+                                query_uses_library:
+                                  type: boolean
+                            creator_mail:
+                              type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  added_objects:
+                    type: array
+                    description: List of widget keys and titles for all widgets successfully added.
+                    items:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                        title:
+                          type: string
+                  updated_objects:
+                    type: array
+                    description: List of widget keys and titles for all widgets successfully updated.
+                    items:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                        title:
+                          type: string
+                  errors:
+                    type: array
+                    description: List of widget keys and error messages for all widgets that failed to be added or updated.
+                    items:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                        error:
+                          type: string

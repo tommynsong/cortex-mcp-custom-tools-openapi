@@ -1,0 +1,92 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/endpoints/get_endpoints:
+    post:
+      tags:
+      - Endpoint Management
+      summary: Get all Endpoints
+      description: |-
+        Gets a list of all of your endpoints. The response is concatenated using AND condition (OR is not supported).
+
+        **Required license:** Cortex Cloud Runtime Security. In Cortex Cloud Posture Security, you need the Cortex Cloud Runtime Security add-on.
+      operationId: postGetEndpoints
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        agent_id:
+                          type: string
+                        agent_status:
+                          type: string
+                        operational_status:
+                          type: string
+                        host_name:
+                          type: string
+                        agent_type:
+                          type: string
+                        ip:
+                          type: array
+                          items:
+                            type: string
+                        last_seen:
+                          type: integer
+                        tags:
+                          type: object
+                          properties:
+                            server_tags:
+                              type: array
+                              items:
+                                type: object
+                            endpoint_tags:
+                              type: array
+                              items:
+                                type: object
+                        users:
+                          type: array
+                          items:
+                            type: string
+        '400':
+          description: Bad Request. Got an invalid JSON.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '401':
+          description: Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, id,
+            or other invalid authentication parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '402':
+          description: Unauthorized access. User does not have the required license type to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '500':
+          description: Internal server error. A unified status for API communication type errors.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

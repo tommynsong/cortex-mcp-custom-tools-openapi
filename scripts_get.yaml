@@ -1,0 +1,45 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/scripts/get:
+    post:
+      tags:
+      - Scripts
+      summary: Get a script
+      description: |2-
+         Get a script by filtering based on its name or ID. The script's YAML is returned in a ZIP file.
+
+         You must have **Instance Administrator** permissions to run this endpoint.
+      operationId: post-public_api-v1-scripts-get
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - request_data
+              properties:
+                request_data:
+                  type: object
+                  properties:
+                    filter:
+                      type: object
+                      description: Filter fields.
+                      x-stoplight:
+                        id: r9mm9ysvuwtxi
+                      properties:
+                        field:
+                          enum:
+                          - id
+                          - name
+                          description: "Identifies the script field the filter is matching. Filters are based on the following\
+                            \ keywords:\r\n- `name`: Script name\r\n- `id`: Script ID"
+                        value:
+                          type: string
+                          description: Value that this filter must match.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/zip:
+              schema:
+                type: object

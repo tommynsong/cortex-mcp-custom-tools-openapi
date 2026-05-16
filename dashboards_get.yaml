@@ -1,0 +1,233 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/dashboards/get:
+    post:
+      tags:
+      - Dashboards
+      summary: Get dashboards
+      description: "Get dashboard details by filtering based on the dashboard name, dashboard ID, time the dashboard was generated,\
+        \ or dashboard source.\r\n\r\nYou must have **Instance Administrator** permissions to run this endpoint.\r\n"
+      operationId: post-public_api-v1-dashboards-get
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - request_data
+              properties:
+                request_data:
+                  type: object
+                  properties:
+                    filters:
+                      type: array
+                      description: An array of filter fields.
+                      items:
+                        type: object
+                        properties:
+                          field:
+                            enum:
+                            - dashboard_id
+                            - name
+                            - time_generated
+                            - source
+                            description: "Identifies the dashboard field the filter is matching. Filters are based on the\
+                              \ following keywords:\r\n- `dashboard_id`: Dashboard ID.\r\n- `name`: Dashboard name.\r\n- `time_generated`:\
+                              \ Time the dashboard was generated in epoch milliseconds.\r\n- `source`: Dashboard source."
+                          operator:
+                            enum:
+                            - EQ
+                            - NEQ
+                            - IN
+                            - GTE
+                            - LTE
+                            description: "Identifies the comparison operator you want to use for this filter. Valid keywords\
+                              \ are:\r\n`EQ` / `NEQ`\r\n- `dashboard_id`: Integer\r\n- `name`: String\r\n- `source`: String\r\
+                              \n\r\n`IN`\r\n- `dashboard_id`: List of integers\r\n- `name`: List of strings\r\n- `source`:\
+                              \ List of strings\r\n\r\n`gte` / `lte`\r\n- `time_generated`: Integer representing the time\
+                              \ the dashboard was generated in epoch milliseconds.\r\n- `dashboard_id`: Integer representing\
+                              \ the dashboard ID"
+                          value:
+                            oneOf:
+                            - type: string
+                            - type: integer
+                            - type: array
+                              items:
+                                type: string
+                            x-stoplight:
+                              id: inat0rii5j4iu
+                            description: "Value that this filter must match. The contents of this field will differ depending\
+                              \ on the dashboard field that you specified for this filter:\r\n- `name`, `source`: String or\
+                              \ list of strings.\r\n- `time_generated`: Integer.\r\n- `dashboard_id`: Integer or list of integers."
+                            items: {}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  objects_count:
+                    type: integer
+                  objects:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        dashboards_data:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                              description:
+                                type: string
+                                nullable: true
+                              status:
+                                type: string
+                              layout:
+                                type: array
+                                items:
+                                  type: object
+                                  properties:
+                                    id:
+                                      type: string
+                                    data:
+                                      type: array
+                                      items:
+                                        type: object
+                                        properties:
+                                          key:
+                                            type: string
+                                          data:
+                                            type: object
+                                            properties:
+                                              type:
+                                                type: string
+                                              width:
+                                                type: number
+                                              height:
+                                                type: integer
+                                              time_frame:
+                                                type: object
+                                                properties:
+                                                  relativeTime:
+                                                    type: integer
+                                              alerts_or_incidents:
+                                                type: string
+                                              params:
+                                                type: array
+                                                items:
+                                                  type: object
+                                                  properties:
+                                                    name:
+                                                      type: string
+                                                    value:
+                                                      type: string
+                                              phrase:
+                                                type: string
+                                              viewOptions:
+                                                type: object
+                                                properties:
+                                                  type:
+                                                    type: string
+                                                  commands:
+                                                    type: array
+                                                    items:
+                                                      type: object
+                                                      properties:
+                                                        command:
+                                                          type: object
+                                                          properties:
+                                                            op:
+                                                              type: string
+                                                            name:
+                                                              type: string
+                                                            value:
+                                                              type: string
+                              default_dashboard_id:
+                                type: integer
+                              global_id:
+                                type: string
+                              metadata:
+                                type: object
+                                properties:
+                                  params:
+                                    type: array
+                                    items:
+                                      type: object
+                                      properties: {}
+                        widgets_data:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              widget_key:
+                                type: string
+                              title:
+                                type: string
+                              creation_time:
+                                type: integer
+                              description:
+                                type: string
+                              data:
+                                type: object
+                                properties:
+                                  params:
+                                    type: array
+                                    items:
+                                      type: object
+                                      properties:
+                                        name:
+                                          type: string
+                                        value:
+                                          type: string
+                                  phrase:
+                                    type: string
+                                  time_frame:
+                                    type: object
+                                    properties:
+                                      relativeTime:
+                                        type: integer
+                                  viewOptions:
+                                    type: object
+                                    properties:
+                                      type:
+                                        type: string
+                                      commands:
+                                        type: array
+                                        items:
+                                          type: object
+                                          properties:
+                                            command:
+                                              type: object
+                                              properties:
+                                                op:
+                                                  type: string
+                                                name:
+                                                  type: string
+                                                value:
+                                                  type: string
+                              support_time_range:
+                                type: boolean
+                              additional_info:
+                                type: object
+                                properties:
+                                  query_tables:
+                                    type: array
+                                    items:
+                                      type: string
+                                  query_uses_library:
+                                    type: boolean
+                              creator_mail:
+                                type: string
+                  objects_type:
+                    type: string
+        '599':
+          description: Invalid field or operator.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

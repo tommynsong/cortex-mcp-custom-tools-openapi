@@ -1,0 +1,37 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/legacy_exceptions/add:
+    post:
+      tags:
+      - Endpoint Management
+      summary: Add Legacy Exception Rule
+      description: |-
+        Create a new legacy exception rule.
+
+        **Prerequisites:**
+        - Use `/public_api/v1/legacy_exceptions/get_modules` endpoint to search available `module` IDs, supported `platforms`, and the required `conditions` structure.
+        - Use `/public_api/v1/endpoints/get_profiles` to search existing profile IDs to pass as `profile_ids`.
+        - New profiles can be created via `/public_api/v1/profiles/prevention/add`.
+      operationId: add_legacy_exception
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - request_data
+              properties:
+                request_data:
+                  $ref: '#/components/schemas/AddLegacyExceptionDataRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: string
+                    description: The ID of the newly created legacy exception rule.
+                    example: f87c6f24205249d896677ab63626d4f4

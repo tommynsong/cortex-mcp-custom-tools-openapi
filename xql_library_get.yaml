@@ -1,0 +1,190 @@
+openapi: 3.0.0
+paths:
+  /public_api/xql_library/get:
+    post:
+      tags:
+      - Query Library
+      summary: Get XQL Queries
+      description: |-
+        Retrieve a detailed list of XQL query libraries. You can filter by list of query names or by list of query tags.
+
+        You must have **Instance Administrator** permissions to run this endpoint.
+      operationId: post-public_api-xql_library-get
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+              - request_data
+              type: object
+              properties:
+                request_data:
+                  type: object
+                  properties:
+                    extended_view:
+                      type: boolean
+                      description: Whether to retrieve the detailed information on each XQL query.
+                      default: false
+                      x-stoplight:
+                        id: qpj2arqv8hyzj
+                    xql_query_names:
+                      type: array
+                      description: 'An array of XQL query names to search for. Note: If searching by `xql_query_names`, you
+                        cannot search by `xql_query_tags` in the same call.'
+                      items:
+                        type: string
+                    xql_query_tags:
+                      type: array
+                      description: 'An array of XQL tag names to search for. Note: If searching by `xql_query_tags`, you cannot
+                        search by `xql_query_names` in the same call.'
+                      items:
+                        type: string
+        required: false
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    properties:
+                      queries_count:
+                        type: integer
+                      xql_queries:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            name:
+                              type: string
+                            description:
+                              type: string
+                            query_text:
+                              type: string
+                            created_at:
+                              type: integer
+                            created_by:
+                              type: string
+                            created_by_pretty:
+                              type: string
+                            query_metadata:
+                              type: object
+                              properties:
+                                is_valid:
+                                  type: boolean
+                                query_calls:
+                                  type: array
+                                  items:
+                                    type: object
+                                    properties: {}
+                                is_datamodel:
+                                  type: boolean
+                                query_tables:
+                                  type: array
+                                  items:
+                                    type: string
+                                query_presets:
+                                  type: array
+                                  items:
+                                    type: object
+                                    properties: {}
+                            is_private:
+                              type: boolean
+                            labels:
+                              type: array
+                              items:
+                                type: string
+            Example 1:
+              example:
+                reply:
+                  queries_count: 0
+                  xql_queries:
+                  - xql_query_name: string
+                    xql_query: string
+                    xql_query_tags:
+                    - string
+            With extended view:
+              example:
+                reply:
+                  queries_count: 2
+                  xql_queries:
+                  - id: 1835
+                    name: test_ql11
+                    description: ''
+                    query_text: dataset = xdr_data |limit 2
+                    content_global_id: null
+                    created_at: 1684766552000
+                    created_by: N/A
+                    created_by_pretty: Public API - 5
+                    modified_at: 1684910188000
+                    modified_by: N/A
+                    modified_by_pretty: Public API - 6
+                    query_metadata:
+                      is_valid: true
+                      query_calls: []
+                      is_datamodel: false
+                      query_tables:
+                      - xdr_data
+                      query_presets: []
+                    is_private: false
+                    labels:
+                    - tag1
+                    - tag101
+                  - id: 1836
+                    name: test_ql2
+                    description: ''
+                    query_text: dataset = xdr_data |limit 2
+                    content_global_id: null
+                    created_at: 1684910190000
+                    created_by: N/A
+                    created_by_pretty: Public API - 6
+                    modified_at: null
+                    modified_by: null
+                    modified_by_pretty: null
+                    query_metadata:
+                      is_valid: true
+                      query_calls: []
+                      is_datamodel: false
+                      query_tables:
+                      - xdr_data
+                      query_presets: []
+                    is_private: false
+                    labels:
+                    - tag2
+                    - tag102
+        '400':
+          description: Bad Request. Got an invalid JSON.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '401':
+          description: Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, id,
+            or other invalid authentication parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '402':
+          description: Unauthorized access. User does not have the required license type to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '500':
+          description: Internal server error. A unified status for API communication type errors.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

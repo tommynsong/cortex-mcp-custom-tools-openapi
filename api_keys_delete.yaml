@@ -1,0 +1,80 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/api_keys/delete:
+    post:
+      tags:
+      - API Keys
+      summary: Delete API keys
+      description: |-
+        Delete API keys by ID.
+
+        **Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture Management
+      operationId: post-public_api-v1-api_keys-delete
+      parameters:
+      - schema:
+          type: string
+          example: DCdIeow0xm73EwnxjPza1tdHTfZQv2eH7bTKlTPkgBHLj8aSjFzjgTE9bQUK1DidlWLrnYRhaYQ4PCIyNrNJbMUC6DOWi8ANIn1JWpMTE2neGvoDIRsKUbj6pJ1z7Gmr
+        in: header
+        name: authorization
+        description: api_key
+        required: true
+      - schema:
+          type: string
+        in: header
+        required: true
+        name: x-child-tenant-id
+        description: child tenant ID
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - request_data
+              properties:
+                request_data:
+                  type: object
+                  properties:
+                    filters:
+                      type: array
+                      description: An array of filter fields.
+                      items:
+                        type: object
+                        properties:
+                          field:
+                            enum:
+                            - id
+                            description: "Identifies the API key field the filter is matching. Filters are based on the following\
+                              \ keyword:\r\n- `id`: The API key ID.\r\n"
+                          operator:
+                            enum:
+                            - in
+                            description: "Identifies the comparison operator you want to use for this filter. Valid keyword\
+                              \ is:\r\n`in`\r\n- `id`: Integer representing the API key ID.\r\n"
+                          value:
+                            type: array
+                            description: Array of API key IDs.
+                            items:
+                              type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    properties:
+                      update_count:
+                        type: integer
+                        description: The number of API keys deleted.
+        '400':
+          description: Bad Request. Invalid Input.
+        '401':
+          description: Unauthorized access. User does not have the required license type to run this API.
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+        '500':
+          description: Internal Server Error.

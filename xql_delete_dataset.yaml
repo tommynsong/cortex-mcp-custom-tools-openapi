@@ -1,0 +1,32 @@
+openapi: 3.0.0
+paths:
+  /public_api/v2/xql/delete_dataset:
+    post:
+      tags:
+      - Dataset Management
+      summary: Delete a dataset
+      description: "Delete a dataset with the specified name. The following dataset types can be deleted: Lookup, Raw, User,\
+        \ Snapshot, and Correlation. You can only delete a dataset with dependencies by setting `force` to TRUE.\r\n\r\n**Note:**\
+        \ The System dataset and other protected datasets cannot be deleted.\r\n\r\n**Required license:** Cortex Cloud Runtime\
+        \ Security or Cortex Cloud Posture Management"
+      operationId: post-public_api-v1-xql-delete_dataset
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  type: object
+                  properties:
+                    dataset_name:
+                      type: string
+                      description: The name of the dataset to be deleted.
+                    force:
+                      type: boolean
+                      description: '**Warning:** Setting this to `True` forces deletion even when there are dependencies.'
+                  required:
+                  - dataset_name
+      responses:
+        '200':
+          description: OK

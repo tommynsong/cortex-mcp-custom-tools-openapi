@@ -1,0 +1,36 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/dataset/delete_dataset:
+    post:
+      tags:
+      - XQL user datasets
+      summary: Delete an XQL user dataset
+      description: "Delete an XQL user dataset that was created by the Cortex SDK.\r\n\r\n**Required license:** Cortex Cloud\
+        \ Runtime Security or Cortex Cloud Posture Management\r\n\r\nThese APIs are only applicable from within the XSIAM\
+        \ Notebook environment."
+      operationId: post-public_api-v1-dataset-delete_dataset
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  type: object
+                  properties:
+                    dataset_name:
+                      type: string
+                      description: The dataset name to be deleted.
+                    delete_underlying_bq_table:
+                      type: boolean
+                      description: Define whether or not to delete the BigQuery table related to the dataset.
+                      default: false
+                  required:
+                  - dataset_name
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object

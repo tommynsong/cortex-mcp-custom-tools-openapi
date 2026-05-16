@@ -1,0 +1,101 @@
+openapi: 3.0.0
+paths:
+  /public_api/xql_library/delete:
+    post:
+      tags:
+      - Query Library
+      summary: Delete XQL Queries
+      description: |-
+        Delete XQL queries. You can filter by list of query names or by list of query tags.
+
+        You must have **Instance Administrator** permissions to run this endpoint.
+      operationId: post-public_api-xql_library-delete
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - request_data
+              properties:
+                request_data:
+                  type: object
+                  properties:
+                    xql_query_names:
+                      type: array
+                      description: 'List of XQL query names to delete. Note: If searching by `xql_query_names`, you cannot
+                        search by `xql_query_tags` in the same call.'
+                      items:
+                        type: string
+                    xql_query_tags:
+                      type: array
+                      description: 'List of XQL query tags. Note: If searching by `xql_query_tags`, you cannot search by `xql_query_names`
+                        in the same call.'
+                      items:
+                        type: string
+        required: false
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    properties:
+                      queries_count:
+                        type: integer
+                      xql_query_names:
+                        type: array
+                        items:
+                          type: string
+                      errors:
+                        type: array
+                        items:
+                          type: object
+                          properties: {}
+            Example 1:
+              example:
+                reply:
+                  queries_count: 6
+                  xql_query_names:
+                  - test_ql11
+                  - test_ql2
+                  - test_ql22
+                  - test_ql3
+                  - test_ql33
+                  - test_ql1000
+                  errors: []
+        '400':
+          description: Bad Request. Got an invalid JSON.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '401':
+          description: Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, id,
+            or other invalid authentication parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '402':
+          description: Unauthorized access. User does not have the required license type to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '500':
+          description: Internal server error. A unified status for API communication type errors.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

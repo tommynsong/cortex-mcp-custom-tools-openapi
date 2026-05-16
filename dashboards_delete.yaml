@@ -1,0 +1,101 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/dashboards/delete:
+    post:
+      tags:
+      - Dashboards
+      summary: Delete dashboards
+      description: |-
+        Delete the dashboards retrieved by the Get dashboards API.
+
+        You must have **Instance Administrator** permissions to run this endpoint.
+      operationId: post-public_api-v1-dashboards-delete
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - request_data
+              properties:
+                request_data:
+                  type: object
+                  properties:
+                    filters:
+                      type: array
+                      description: An array of filter fields.
+                      items:
+                        type: object
+                        properties:
+                          field:
+                            description: "Identifies the dashboard field the filter is matching. Filters are based on the\
+                              \ following keywords:\r\n- `dashboard_id`: Dashboard ID.\r\n- `name`: Dashboard name.\r\n- `time_generated`:\
+                              \ Time the dashboard was generated in epoch milliseconds.\r\n- `source`: Dashboard source."
+                            enum:
+                            - dashboard_id
+                          operator:
+                            description: "Identifies the comparison operator you want to use for this filter. Valid keywords\
+                              \ are:\r\n`EQ` / `NEQ`\r\n- `dashboard_id`: Integer\r\n- `name`: String\r\n- `source`: String\r\
+                              \n\r\n`IN`\r\n- `dashboard_id`: List of integers\r\n- `name`: List of strings\r\n- `source`:\
+                              \ List of strings\r\n\r\n`gte` / `lte`\r\n- `time_generated`: Integer representing the time\
+                              \ the dashboard was generated in epoch milliseconds.\r\n- `dashboard_id`': Integer representing\
+                              \ the dashboard ID."
+                            enum:
+                            - EQ
+                            - NEQ
+                            - IN
+                            - GTE
+                            - LTE
+                          value:
+                            oneOf:
+                            - type: string
+                            - type: integer
+                            - type: array
+                              items:
+                                type: string
+                            description: "Value that this filter must match. The contents of this field will differ depending\
+                              \ on the dashboard field that you specified for this filter:\r\n- `name`, `source`: String or\
+                              \ list of strings.\r\n- `time_generated`: Integer.\r\n- `dashboard_id`: Integer or list of integers."
+                            items: {}
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  objects_count:
+                    type: integer
+                  objects:
+                    type: object
+                    properties:
+                      succeeded_items:
+                        type: array
+                        description: List of the global ID and internal ID of dashboards successfully deleted.
+                        items:
+                          type: object
+                          properties:
+                            global_id:
+                              type: string
+                            internal_id:
+                              type: integer
+                      failures_items:
+                        type: array
+                        description: List of global IDs and internal IDs that were not deleted and the error messages explaining
+                          why.
+                        items:
+                          type: object
+                          properties:
+                            global_id:
+                              type: string
+                            internal_id:
+                              type: integer
+                            error:
+                              type: string
+        '599':
+          description: Invalid field or operator.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

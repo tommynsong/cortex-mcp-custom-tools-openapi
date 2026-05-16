@@ -1,0 +1,116 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/scheduled_queries/insert:
+    post:
+      tags:
+      - Scheduled Queries
+      summary: Insert or update scheduled queries
+      description: "Insert new scheduled queries or update existing scheduled queries. \n\nYou must have **Instance Administrator**\
+        \ permissions to run this endpoint."
+      operationId: post-public_api-v1-scheduled_queries-insert
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - request_data
+              properties:
+                request_data:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                    - query_definition_name
+                    - xql
+                    - timeframe
+                    - schedule
+                    properties:
+                      query_definition_name:
+                        type: string
+                        description: '**Note:** You should use a unique `query_definition_name` for each scheduled query on
+                          each tenant.'
+                      xql:
+                        type: string
+                      timeframe:
+                        type: object
+                        properties:
+                          relativeTime:
+                            type: integer
+                      schedule:
+                        type: object
+                        required:
+                        - trigger_type
+                        properties:
+                          trigger_type:
+                            type: string
+                          run_date:
+                            type: integer
+        required: false
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    properties:
+                      <query_id>:
+                        type: object
+                        properties:
+                          query_definition_name:
+                            type: string
+                          xql:
+                            type: string
+                          timeframe:
+                            type: object
+                            properties:
+                              relativeTime:
+                                type: integer
+                          schedule:
+                            type: object
+                            properties:
+                              trigger_type:
+                                type: string
+                              run_date:
+                                type: integer
+                        description: The query_id of the scheduled query that was inserted or updated.
+                        x-stoplight:
+                          id: 6ep5rvk31v53f
+                    description: "Upon successful insert or update, the reply returns each individual query_id with the query\
+                      \ definitions.\r\nIf the insert or update failed, the reply will include the scheduled query name and\
+                      \ the error message."
+        '400':
+          description: Bad Request. Got an invalid JSON.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '401':
+          description: Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, id,
+            or other invalid authentication parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '402':
+          description: Unauthorized access. User does not have the required license type to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '500':
+          description: Internal server error. A unified status for API communication type errors.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

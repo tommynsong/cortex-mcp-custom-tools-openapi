@@ -1,0 +1,139 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/scripts/run_script:
+    post:
+      tags:
+      - Script execution
+      summary: Run Script
+      description: |-
+        Initiate a new endpoint script execution action using a script from the script library. The script can be run on up to 1000 endpoints.
+
+        **Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture Management
+      operationId: postRunScript
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  type: object
+                  description: A dictionary containing the API request fields.
+                  properties:
+                    filters:
+                      type: array
+                      description: Array of filter fields for running the script on a number of endpoints at once.
+                      items:
+                        type: object
+                        properties:
+                          field:
+                            type: string
+                            enum:
+                            - endpoint_id_list
+                            description: |-
+                              String that identifies a list the filters match. Filters are based on the following keywords:
+                              - `endpoint_id_list`: List of endpoint IDs.
+                          operator:
+                            type: string
+                            enum:
+                            - in
+                            description: |-
+                              String that identifies the comparison operator you want to use for this filter. Valid keywords and values are:
+                              `in`
+                              - `endpoint_id_list`: List of strings
+                            default: in
+                          value:
+                            type: array
+                            description: Value that this filter must match.
+                            items:
+                              type: string
+                        required:
+                        - field
+                        - operator
+                        - value
+                    script_uid:
+                      type: string
+                      description: GUID, unique identifier of the script, returned by the **Get Scripts** API per script.
+                    parameters_values:
+                      type: object
+                      description: |-
+                        Dictionary containing the parameter name, `key`, and its value for this execution, `value`.
+
+                        You can obtain these values by running **Get Script Metadata** API.
+                      properties:
+                        x:
+                          type: string
+                        y:
+                          type: integer
+                      required:
+                      - x
+                      - y
+                    timeout:
+                      type: integer
+                      description: Timeout in seconds for this execution. Default value is 600.
+                      default: 600
+                    incident_id:
+                      type: string
+                      description: |-
+                        Case ID.
+                        When included in the request, the **Run Script** action will appear in the **Cortex Cloud Case View Timeline** tab.
+                  required:
+                  - filters
+                  - script_uid
+              required:
+              - request_data
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    description: JSON object containing the query result.
+                    properties:
+                      action_id:
+                        type: integer
+                        description: ID of the action initiated. ID will be used as a reference to track in the action center.
+                      endpoints_count:
+                        type: integer
+                        description: Number of endpoints the action was initiated on.
+                      status:
+                        type: integer
+                        description: |-
+                          Integer representing whether the action:
+                          - 1: succeeded
+                          - 0: failed
+        '400':
+          description: Bad Request. Got an invalid JSON.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '401':
+          description: Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, id,
+            or other invalid authentication parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '402':
+          description: Unauthorized access. User does not have the required license type to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '500':
+          description: Internal server error. A unified status for API communication type errors.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

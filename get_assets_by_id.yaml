@@ -1,0 +1,143 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/assets/{id}:
+    get:
+      tags:
+      - Asset inventory
+      summary: Get asset by ID
+      description: |-
+        Retrieve detailed information about the asset specified by asset ID.
+
+        **Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture Management
+      operationId: get-public_api-v1-assets-by-id
+      parameters:
+      - name: id
+        in: path
+        description: Asset ID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        xdm.asset.last_observed:
+                          type: integer
+                          description: Timestamp of when the asset was last observed
+                        xdm.asset.cloud.region:
+                          type: string
+                          description: Region of the cloud asset
+                          nullable: true
+                        xdm.asset.id:
+                          type: string
+                          description: Asset ID
+                        xdm.asset.provider:
+                          type: string
+                        xdm.asset.first_observed:
+                          type: integer
+                          description: Timestamp of when the asset was first observed
+                        xdm.asset.type.name:
+                          type: string
+                          description: Represents the provider-specific name for a particular asset within a category
+                        xdm.asset.strong_id:
+                          type: string
+                        xdm.asset.name:
+                          type: string
+                          description: Asset name
+                          nullable: true
+                        xdm.asset.type.class:
+                          type: string
+                          description: The highest-level grouping of assets based on their general purpose or domain. It is
+                            a broad classification that defines the overall function of the assets.
+                        xdm.asset.type.id:
+                          type: string
+                          description: Asset type ID
+                        xdm.asset.type.category:
+                          type: string
+                          description: A more detailed grouping within a class. It categorizes assets based on their normalized
+                            function or common type, regardless of the provider or implementation.
+                        issues_critical:
+                          type: integer
+                        xdm.asset.realm:
+                          type: string
+                        xdm.asset.group_ids:
+                          type: array
+                          description: List of asset group IDs
+                          items:
+                            type: string
+                        cases_breakdown:
+                          type: object
+                          properties:
+                            critical:
+                              type: integer
+                              description: Number of critical cases
+                            high:
+                              type: integer
+                              description: Number of high cases
+                            low:
+                              type: integer
+                              description: Number of low cases
+                            medium:
+                              type: integer
+                              description: Number of medium cases
+                        issues_breakdown:
+                          type: object
+                          properties:
+                            critical:
+                              type: integer
+                              description: Number of critical issues
+                            high:
+                              type: integer
+                              description: Number of high issues
+                            low:
+                              type: integer
+                              description: Number of low issues
+                            medium:
+                              type: integer
+                              description: Number of medium issues
+                        cases_critical:
+                          type: integer
+                        xdm.host.ipv4_addresses:
+                          type: array
+                          items:
+                            type: string
+                  metadata:
+                    type: object
+                    properties:
+                      filter_count:
+                        type: integer
+                      total_count:
+                        type: integer
+        '403':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UnauthorizedErrorResponse'
+        '404':
+          description: Asset Not Found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NotFoundErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GenericErrorResponse'

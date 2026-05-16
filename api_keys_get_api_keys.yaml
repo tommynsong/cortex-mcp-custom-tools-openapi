@@ -1,0 +1,117 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/api_keys/get_api_keys:
+    post:
+      tags:
+      - API keys
+      summary: Get existing API keys
+      description: |-
+        Get a list of API keys filtered by expiration date, role, or ID.
+
+        **Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture Management
+      operationId: post-public_api-v1-api_keys-get_api_keys
+      parameters:
+      - schema:
+          type: string
+          example: DCdIeow0xm73EwnxjPza1tdHTfZQv2eH7bTKlTPkgBHLj8aSjFzjgTE9bQUK1DidlWLrnYRhaYQ4PCIyNrNJbMUC6DOWi8ANIn1JWpMTE2neGvoDIRsKUbj6pJ1z7Gmr
+        in: header
+        name: authorization
+        description: api_key
+        required: true
+      - schema:
+          type: string
+        in: header
+        name: x-child-tenant-id
+        description: child tenant ID
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - request_data
+              properties:
+                request_data:
+                  type: object
+                  properties:
+                    filters:
+                      type: array
+                      description: An array of filter fields.
+                      items:
+                        type: object
+                        properties:
+                          field:
+                            enum:
+                            - expiration
+                            - roles
+                            - id
+                            description: "Identifies the API key field the filter is matching. Filters are based on the following\
+                              \ keywords:\r\n- `expiration`: Time the API key expires in epoch milliseconds.\r\n- `roles`:\
+                              \ The role assigned to the API key at creation.\r\n- `id`: API key ID."
+                          operator:
+                            enum:
+                            - gte
+                            - lte
+                            - contains
+                            - in
+                            description: "Identifies the comparison operator you want to use for this filter. Valid keywords\
+                              \ are:\r\n\r\n- `gte` / `lte` operator is used with `expiration` field (Integer in timestamp\
+                              \ epoch milliseconds).\r\n\r\n- `contains` operator is used with `roles` field (Array of strings).\r\
+                              \n\r\n- `in` operator is used with `id` field (Array of integers)."
+                          value:
+                            oneOf:
+                            - type: integer
+                            - type: array
+                              items: {}
+                            description: "Value that this filter must match. The contents of this field will differ depending\
+                              \ on the API key field that you specified for this filter:\r\n- `expiration`: Integer representing\
+                              \ the number of milliseconds after the Unix epoch, UTC timezone.\r\n- `roles`: Array of strings\
+                              \ representing the roles in the Cortex XSOAR system.\r\n- `id`: Array of integers representing\
+                              \ the API key IDs."
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          x-stoplight:
+                            id: fsnzw06dwaffj
+                          properties:
+                            id:
+                              type: integer
+                            creation_time:
+                              type: integer
+                            created_by:
+                              type: string
+                            user_name:
+                              type: string
+                            roles:
+                              type: array
+                              items:
+                                type: string
+                            security_level:
+                              type: string
+                            comment:
+                              type: string
+                              nullable: true
+                            expiration:
+                              type: integer
+                      filter_count:
+                        type: integer
+                        x-stoplight:
+                          id: 8ccx0nm3xqf1c
+                      total_count:
+                        type: integer
+                        x-stoplight:
+                          id: dijqhqelstv7z
+                        description: 'Note: The `total_count` value contains all API Keys, including ones that have expired.'

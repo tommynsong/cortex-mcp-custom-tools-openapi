@@ -1,0 +1,112 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/integrations/syslog/update:
+    post:
+      tags:
+      - Syslog servers
+      summary: Update a syslog integration
+      description: |-
+        Update the details of the specified syslog integration.
+
+        You must have **View/Edit Alert Notification** permissions to run this endpoint.
+
+        **Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture Management
+      operationId: post-public_api-v1-integrations-syslog-update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - request_data
+              properties:
+                request_data:
+                  type: object
+                  description: A dictionary containing the API request fields.
+                  required:
+                  - syslog_id
+                  properties:
+                    syslog_id:
+                      type: string
+                      description: ID of the syslog server
+                    name:
+                      type: string
+                      description: Unique name for the syslog server integration.
+                    address:
+                      type: string
+                      description: IP address or fully qualified domain name (FQDN) of the syslog server.
+                    port:
+                      type: string
+                      description: The port number on which the syslog server listens for messages.
+                    protocol:
+                      type: string
+                      enum:
+                      - TCP
+                      - UDP
+                      - TLS
+                      description: |-
+                        Select a method of communication:
+                        - `TCP`: No validation is made on the connection with the syslog server. However, if an error occurred with the domain used to make the connection, the Test connection will fail.
+                        - `UDP`: No error checking, error correction, or acknowledgment. No validation is done for the connection or when sending data.
+                        - `TLS`:  Cortex validates the syslog server certificate and uses the certificate signature and public key to encrypt the data sent over the connection.
+                    facility:
+                      type: string
+                      description: Choose one of the syslog standard values. The value maps to how your syslog server uses
+                        the facility field to manage messages. For details on the facility field, see [RFC 5424](https://datatracker.ietf.org/doc/html/rfc5424).
+                    security_info:
+                      type: object
+                      description: The `security_info` parameters are relevant only when `protocol` is `TLS`.
+                      properties:
+                        certificate_name:
+                          type: string
+                          description: When using TLS for communication between Cortex and the syslog server, Cortex validates
+                            that the syslog receiver has a certificate. Specify the certificate name here.
+                        ignore_cert_errors:
+                          type: boolean
+                          description: Whether to ignore certificate errors. For security reasons, this is not recommended.
+                            If you set this to `true`, logs will be forwarded even if the certificate contains errors.
+                        certificate_content:
+                          type: string
+                          description: Binary string of the certificate.
+                          format: binary
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: boolean
+                    description: Whether the update was successful.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '402':
+          description: Payment Required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

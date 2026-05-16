@@ -1,0 +1,49 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/playbooks/insert:
+    post:
+      tags:
+      - Playbooks
+      summary: Insert or update playbooks
+      description: |-
+        Add or update a playbook by passing the YAML in a ZIP file.
+
+        You must have **Instance Administrator** permissions to run this endpoint.
+      operationId: post-public_api-v1-playbooks-insert
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  x-stoplight:
+                    id: sm9jstz2gemgj
+                  format: binary
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  objects_count:
+                    type: integer
+                    description: The number of playbooks identified and attempted to be added.
+                  objects:
+                    type: object
+                    properties:
+                      failures_items:
+                        type: array
+                        description: This field in the response indicates that the playbook IDs listed failed to be added.
+                        items:
+                          type: object
+                          properties:
+                            error:
+                              type: string
+                              description: Error message.
+                            id:
+                              type: string
+                              description: Playbook ID of the playbook that failed to be added.

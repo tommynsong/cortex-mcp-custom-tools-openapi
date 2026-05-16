@@ -1,0 +1,44 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/asset-groups:
+    post:
+      tags:
+      - Asset groups
+      summary: Get all or filtered asset groups
+      description: |-
+        By grouping assets based on shared attributes, you can address them collectively. Asset groups enable more efficient bulk actions and simplifies both filtering and scoping within the inventory and across the platform.
+
+        Get all or filtered asset groups.
+
+        **Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture Management
+      operationId: post-public_api-v1-asset-groups-get
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/assetgroups_body'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GenericApiResponse'
+        '403':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UnauthorizedErrorResponse'
+        '500':
+          description: Internal Server Error, Invalid Input
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GenericErrorResponse'

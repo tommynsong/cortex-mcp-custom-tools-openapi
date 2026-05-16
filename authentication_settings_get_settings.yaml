@@ -1,0 +1,121 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/authentication-settings/get/settings:
+    post:
+      tags:
+      - Authentication settings
+      summary: Get authentication settings for all configured domains
+      description: |
+        Get all the authentication settings for every configured domain in the tenant.
+
+        You must have **Instance Administrator** permissions to run this endpoint.
+
+        **Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture Management
+      operationId: post-public_api-v1-authentication-settings-get-settings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  type: object
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        tenant_id:
+                          type: string
+                        name:
+                          type: string
+                        domain:
+                          type: string
+                        idp_enabled:
+                          type: boolean
+                        default_role:
+                          type: string
+                          nullable: true
+                        is_account_role:
+                          type: string
+                          nullable: true
+                        idp_certificate:
+                          type: string
+                        idp_issuer:
+                          type: string
+                        idp_sso_url:
+                          type: string
+                        metadata_url:
+                          type: string
+                        mappings:
+                          type: object
+                          properties:
+                            email:
+                              type: string
+                            firstname:
+                              type: string
+                            group_name:
+                              type: string
+                            lastname:
+                              type: string
+                        advanced_settings:
+                          type: object
+                          properties:
+                            authn_context_enabled:
+                              type: boolean
+                            force_authn:
+                              type: object
+                              nullable: true
+                            idp_single_logout_url:
+                              type: string
+                            relay_state:
+                              type: string
+                            service_provider_private_key:
+                              type: string
+                            service_provider_public_cert:
+                              type: string
+                        sp_entity_id:
+                          type: string
+                        sp_logout_url:
+                          type: string
+                        sp_url:
+                          type: string
+        '400':
+          description: Bad Request. Got an invalid JSON.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '401':
+          description: Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, id,
+            or other invalid authentication parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '402':
+          description: Unauthorized access. User does not have the required license type to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '500':
+          description: Internal server error. A unified status for API communication type errors.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

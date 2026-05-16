@@ -1,0 +1,44 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/asset-groups/delete/{group_id}:
+    post:
+      tags:
+      - Asset groups
+      summary: Delete an Asset Group
+      description: |-
+        Delete the Asset Group specified by Asset Group ID.
+
+        **Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture Management
+      operationId: post-public_api-v1-asset-groups-delete-by-id
+      parameters:
+      - name: group_id
+        in: path
+        description: Asset Group ID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GenericAssetGroupsResponse'
+        '403':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UnauthorizedErrorResponse'
+        '500':
+          description: Internal Server Error, Invalid Input
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GenericErrorResponse'

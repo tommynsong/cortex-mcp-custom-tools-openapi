@@ -1,0 +1,308 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/endpoints/get_endpoint:
+    post:
+      tags:
+      - Endpoint Management
+      summary: Get Endpoint
+      description: |-
+        Gets a list of filtered endpoints.
+        - The response is concatenated using AND condition (OR is not supported).
+        - The maximum result set size is 100.
+        - Offset is the zero-based number of endpoints from the start of the result set.
+
+        **Required license:** Cortex Cloud Runtime Security. In Cortex Cloud Posture Security, you need the Cortex Cloud Runtime Security add-on.
+      operationId: post-public_api-v1-endpoints-get_endpoint
+      requestBody:
+        description: You can send a request to retrieve either all or filtered results.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  type: object
+                  description: |-
+                    A dictionary containing the API request fields.
+
+                    An empty dictionary returns all results.
+                  properties:
+                    filters:
+                      type: array
+                      description: Array of filter fields.
+                      items:
+                        type: object
+                        properties:
+                          field:
+                            type: string
+                            enum:
+                            - endpoint_id_list
+                            - endpoint_status
+                            - dist_name
+                            - first_seen
+                            - last_seen
+                            - ip_list
+                            - group_name
+                            - platform
+                            - alias
+                            - isolate
+                            - hostname
+                            - public_ip_list
+                            - cloud_provider
+                            - cloud_region
+                            - cloud_provider_account_id
+                            - cloud_instance_id
+                            - cloud_id
+                            description: |-
+                              Identifies the field the filter is matching. Filters are based on the following keywords:
+                              - `endpoint_id_list`: List of endpoint IDs.
+                              - `endpoint_status`: Status of the endpoint ID.
+                              - `dist_name`: Distribution / Installation Package name.
+                              - `first_seen`: When the agent was first seen.
+                              - `last_seen`: When the agent was last seen.
+                              - `ip_list`: List of IP addresses.
+                              - `group_name`: Group name the agent belongs to.
+                              - `platform`: Platform name.
+                              - `alias`: Alias name.
+                              - `isolate`: If the endpoint was isolated.
+                              - `hostname`: Host name.
+                              - `public_ip_list`: Public IP addresses that correlate to the last IPv4 address from which the XDR agent connected (know as `Last Origin IP`).
+                              - `cloud_provider`: Cloud provider (for example, AWS, GCP, Azure).
+                              - `cloud_region`: Cloud region where the endpoint is deployed.
+                              - `cloud_provider_account_id`: Cloud provider account ID.
+                              - `cloud_instance_id`: Cloud instance ID of the endpoint.
+                              - `cloud_id`: Cloud ID of the endpoint.
+                          operator:
+                            type: string
+                            enum:
+                            - in
+                            - gte
+                            - lte
+                            description: |-
+                              Identifies the comparison operator you want to use for this filter. Valid keywords and values are:
+                              `in`
+                              - `endpoint_id_list`, `dist_name`, `group_name`, `alias`, `hostname`, `username`, `public_ip_list`: List of strings.
+                              - `endpoint_status`: Permitted values are: `connected`, `disconnected`, `lost`, or `uninstalled`
+                              - `ip_list`: List of strings. For example: "192.168.5.12".
+                              - `platform`: Permitted values are: `windows`, `linux`, `macos`, `android`.
+                              - `isolate`: Permitted values are: `isolated` or `unisolated`.
+                              - `scan_status`: Permitted values are: `none`, `pending`, `in_progress`, `canceled`, `aborted`, `pending_cancellation`, `success`, or `error`.
+                              `gte` / `lte`
+                              - `first_seen` and `last_seen`: Timestamp epoch milliseconds.
+                              - `cloud_provider`, `cloud_region`, `cloud_provider_account_id`, `cloud_instance_id`, `cloud_id`: List of strings.
+                          value:
+                            description: |-
+                              Value that this filter must match. Valid keywords:
+                              - `endpoint_id_list`, `dist_name`, `group_name`, `alias`, `hostname`, `username`, `public_ip_list`: List of strings.
+                              - `endpoint_status`: String. Permitted values are: `connected`, `disconnected`, `lost`, or `uninstalled`
+                              - `ip_list`: List of strings.
+                              - `platform`: String. Permitted values are: `windows`, `linux`, `macos`, `android`.
+                              - `isolate`: String. Permitted values are: `isolated` or `unisolated`.
+                              - `scan_status`: String. Permitted values are: `none`, `pending`, `in_progress`, `canceled`, `aborted`, `pending_cancellation`, `success`, or `error`.
+                              - `first_seen` and `last_seen`: Integer. Timestamp epoch milliseconds.
+                              - `cloud_provider`, `cloud_region`, `cloud_provider_account_id`, `cloud_instance_id`, `cloud_id`: List of strings.
+                            oneOf:
+                            - type: string
+                            - type: array
+                              items:
+                                type: string
+                        required:
+                        - field
+                        - operator
+                        - value
+                    search_from:
+                      type: integer
+                      description: |-
+                        Represents the start offset within the query result set from which you want endpoints returned.
+
+                        Endpoints are returned as a zero-based list. Any endpoint indexed less than this value is not returned in the final result set and defaults to zero.
+                    search_to:
+                      type: integer
+                      description: |-
+                        Represents the end offset within the result set after which you do not want endpoints returned.
+
+                        Endpoint in the endpoint list that is indexed higher than this value is not returned in the final results set. Defaults to 100, which returns all endpoints to the end of the list.
+                    sort:
+                      type: object
+                      description: Identifies the sort order for the result set.
+                      properties:
+                        field:
+                          type: string
+                          enum:
+                          - endpoint_id
+                          - first_seen
+                          - last_seen
+                          description: Identifies the field you want to sort by. Case-sensitive.
+                          default: first_seen
+                        keyword:
+                          type: string
+                          enum:
+                          - ASC
+                          - DESC
+                          description: Whether you want to sort in ascending (`ASC`) or descending (`DESC`) order. Case-sensitive.
+                          default: DESC
+                      required:
+                      - field
+                      - keyword
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    description: JSON object containing the query result.
+                    properties:
+                      total_count:
+                        type: integer
+                        description: Number of total results of this filter without paging.
+                      result_count:
+                        type: integer
+                        description: Number of endpoints actually returned as result.
+                      endpoints:
+                        type: array
+                        description: A list of endpoints.
+                        items:
+                          type: object
+                          properties:
+                            endpoint_id:
+                              type: string
+                            endpoint_name:
+                              type: string
+                            endpointTags:
+                              type: string
+                            endpoint_type:
+                              type: string
+                            endpoint_status:
+                              type: string
+                            operational_status_details:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  title:
+                                    type: string
+                                  reason:
+                                    type: string
+                            os_type:
+                              type: string
+                            os_version:
+                              type: string
+                            ip:
+                              type: array
+                              items:
+                                type: string
+                            ipv6:
+                              type: array
+                              items:
+                                type: object
+                            public_ip:
+                              type: string
+                            users:
+                              type: array
+                              items:
+                                type: string
+                            domain:
+                              type: string
+                            alias:
+                              type: string
+                            first_seen:
+                              type: integer
+                            last_seen:
+                              type: integer
+                            content_version:
+                              type: string
+                            installation_package:
+                              type: string
+                            active_directory:
+                              type: string
+                              nullable: true
+                            install_date:
+                              type: integer
+                            endpoint_version:
+                              type: string
+                            is_isolated:
+                              type: string
+                            isolated_date:
+                              type: string
+                              nullable: true
+                            group_name:
+                              type: array
+                              items:
+                                type: string
+                            operational_status:
+                              type: string
+                            operational_status_description:
+                              type: string
+                            scan_status:
+                              type: string
+                            content_release_timestamp:
+                              type: integer
+                            last_content_update_time:
+                              type: integer
+                            content_status:
+                              type: string
+                            operating_system:
+                              type: string
+                            mac_address:
+                              type: array
+                              items:
+                                type: string
+                            assigned_prevention_policy:
+                              type: string
+                            assigned_extensions_policy:
+                              type: string
+                            cloud_provider:
+                              type: string
+                              description: Cloud provider of the endpoint (for example, AWS, GCP, Azure). Returns an empty
+                                string if the endpoint is not a cloud agent.
+                            cloud_region:
+                              type: string
+                              description: Cloud region where the endpoint is deployed. Returns an empty string if the endpoint
+                                is not a cloud agent.
+                            cloud_provider_account_id:
+                              type: string
+                              description: Cloud provider account ID associated with the endpoint. Returns an empty string
+                                if the endpoint is not a cloud agent.
+                            cloud_instance_id:
+                              type: string
+                              description: Cloud instance ID of the endpoint. Returns an empty string if the endpoint is not
+                                a cloud agent.
+                            cloud_id:
+                              type: string
+                              description: Cloud ID of the endpoint. Returns an empty string if the endpoint is not a cloud
+                                agent.
+        '400':
+          description: Bad Request. Got an invalid JSON.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '401':
+          description: Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, id,
+            or other invalid authentication parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '402':
+          description: Unauthorized access. User does not have the required license type to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '500':
+          description: Internal server error. A unified status for API communication type errors.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

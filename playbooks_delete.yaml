@@ -1,0 +1,73 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/playbooks/delete:
+    post:
+      tags:
+      - Playbooks
+      summary: Delete a playbook
+      description: |-
+        Delete a playbook by filtering based on its name or ID.
+
+        You must have **Instance Administrator** permissions to run this endpoint.
+      operationId: post-public_api-v1-playbooks-delete
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - request_data
+              properties:
+                request_data:
+                  type: object
+                  properties:
+                    filter:
+                      type: object
+                      description: Filter fields.
+                      x-stoplight:
+                        id: 1rgatxcevfcq6
+                      properties:
+                        field:
+                          enum:
+                          - id
+                          - name
+                          description: "Identifies the playbook field the filter is matching. Filters are based on the following\
+                            \ keywords:\r\n- `name`: Playbook name\r\n- `id`: Playbook ID"
+                        value:
+                          type: string
+                          description: Value that this filter must match.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  objects_count:
+                    type: integer
+                    description: The number of playbooks identified and attempted to be deleted.
+                  objects:
+                    type: object
+                    properties:
+                      failures_items:
+                        type: array
+                        description: This field in the response indicates that the playbook IDs listed failed to be deleted.
+                        items:
+                          type: object
+                          properties:
+                            error:
+                              type: string
+                              description: Error message.
+                            id:
+                              type: string
+                              description: Playbook ID of the playbook that failed to be deleted.
+                      succeeded_items:
+                        type: array
+                        description: This field in the response indicates that the playbook IDs listed were successfully deleted.
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                              description: Playbook ID of the playbook that was successfully deleted.

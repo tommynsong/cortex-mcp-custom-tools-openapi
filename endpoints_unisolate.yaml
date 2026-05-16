@@ -1,0 +1,127 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/endpoints/unisolate:
+    post:
+      tags:
+      - Response Action
+      summary: Unisolate Endpoints
+      description: |-
+        Reverse the isolation of one or more endpoints in single request.
+
+        Note: You can only send a request with either `endpoint_id` to unisolate one endpoint or with filters to unisolate more than one endpoint. An error is raised if you try to use both `endpoint_id` and the filters.
+
+        **Required license:** Cortex Cloud Runtime Security. In Cortex Cloud Posture Security, you need the Cortex Cloud Runtime Security add-on.
+      operationId: postUnisolate
+      requestBody:
+        description: One of `endpoint_id` of `filters` is required, but not both.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  type: object
+                  description: A dictionary containing the API request fields.
+                  properties:
+                    filters:
+                      type: array
+                      description: |-
+                        An array of filter fields for unisolating a number of endpoints at once.
+                        Note: This field is only required if unisolating more than one endpoint.
+                      items:
+                        type: object
+                        properties:
+                          field:
+                            type: string
+                            enum:
+                            - endpoint_id_list
+                            description: |-
+                              String that identifies a list the filters match. Filters are based on the following keywords:
+                              - `endpoint_id_list`: List of endpoint IDs.
+                          operator:
+                            type: string
+                            enum:
+                            - in
+                            description: |-
+                              String that identifies the comparison operator you want to use for this filter. Valid keywords and values are:
+                              `in`
+                              - `endpoint_id_list`: List of strings
+                          value:
+                            type: array
+                            description: |-
+                              Value that this filter must match. Valid keywords:
+                              - `endpoint_id_list`: List of strings
+                            items:
+                              type: string
+                        required:
+                        - field
+                        - operator
+                        - value
+                    endpoint_id:
+                      type: string
+                      description: |-
+                        The ID of the endpoint to unisolate.
+
+                        Note: this field is only required if unisolating one endpoint.
+                    incident_id:
+                      type: string
+                      description: |-
+                        Case ID.
+                        When included in the request, the **Unisolate Endpoints** action will appear in the **Cortex Cloud Case View Timeline** tab.
+                  required:
+                  - endpoint_id
+              required:
+              - request_data
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    description: JSON object containing the query result.
+                    properties:
+                      action_id:
+                        type: string
+                        description: |-
+                          ID of the action to unisolate selected endpoints.
+                          Response only indicates the request was successfully sent to the endpoint. To track if the endpoint was restored either:
+                          - In the Cortex XDR console, navigate to **Response** > **Action Center** > **Isolation** and search for the action ID. Make sure the **Action ID** field is selected in the table **Layout** settings.
+                          - Send a **Get Action Status** API request.
+                      endpoints_count:
+                        type: string
+                        description: Number of endpoints included in the request.
+        '400':
+          description: Bad Request. Got an invalid JSON.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '401':
+          description: Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, id,
+            or other invalid authentication parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '402':
+          description: Unauthorized access. User does not have the required license type to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '500':
+          description: Internal server error. A unified status for API communication type errors.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

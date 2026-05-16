@@ -1,0 +1,47 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/legacy_exceptions/fetch:
+    post:
+      tags:
+      - Endpoint Management
+      summary: Fetch Legacy Exception Rules
+      description: |
+        Retrieves a paginated list of Legacy Exception rules for agents based on optional filters and sorting criteria.
+
+        This endpoint allows you to:
+        - Retrieve all rules or filter by specific criteria
+        - Sort results by any field in ascending or descending order
+        - Paginate through large result sets
+        - Get total count and filtered count of rules
+      operationId: get_legacy_exceptions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetLegacyExceptionDataRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPublicLegacyExceptionResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    properties:
+                      err_code:
+                        type: integer
+                        description: HTTP error code.
+                      err_msg:
+                        type: string
+                        description: High-level error message
+                      err_extra:
+                        type: string
+                        description: Detailed error information describing the specific validation failures.

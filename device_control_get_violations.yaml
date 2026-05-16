@@ -1,0 +1,187 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/device_control/get_violations:
+    post:
+      tags:
+      - Endpoint Management
+      summary: Get Violations
+      description: |-
+        Gets a list of device control violations filtered by selected fields. You can retrieve up to 100 violations.
+
+        When filtering by multiple fields:
+        - Response is concatenated using AND condition (OR is not supported).
+        - Maximum result set size is 100.
+        - Offset is the zero-based number of cases from the start of the result set.
+
+        **Required license:** Cortex Cloud Runtime Security. In Cortex Cloud Posture Security, you need the Cortex Cloud Runtime Security add-on.
+      operationId: postGetViolations
+      requestBody:
+        description: You can send a request to retrieve either *all* or *filtered* results.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  type: object
+                  description: An empty object returns all results.
+                  properties:
+                    filters:
+                      type: array
+                      description: Provides an array of filter fields.
+                      items:
+                        type: object
+                        properties:
+                          field:
+                            type: string
+                            enum:
+                            - endpoint_id_list
+                            - type
+                            - timestamp
+                            - ip_list
+                            - vendor
+                            - vendor_id
+                            - product
+                            - product_id
+                            - serial
+                            - hostname
+                            - violation_id_list
+                            - username
+                            description: |-
+                              String that identifies the violation field the filter is matching. Filters are based on the following keywords:
+                              - `endpoint_id_list`: List of endpoint IDs.
+                              - `type`: Type of violation.
+                              - `timestamp`: Timestamp of the violation.
+                              - `ip_list`: List of IP addresses.
+                              - `vendor`: Name of vendor.
+                              - `vendor_id`: Vendor ID.
+                              - `product`: Name of product.
+                              - `product_id`: Product ID.
+                              - `serial`: Serial number.
+                              - `hostname`: Hostname.
+                              - `violation_id_list`: List of violation IDs.
+                              - `username`: Username.
+                          operator:
+                            type: string
+                            enum:
+                            - in
+                            - gte
+                            - lte
+                            description: |-
+                              String that identifies the comparison operator you want to use for this filter. Valid keywords are:
+                              `in`
+                              — Permitted for all fields except `timestamp`.
+                              `gte` / `lte`
+                              — Permitted only for `timestamp`.
+                          value:
+                            description: |-
+                              Value that this filter must match. The contents of this field will differ depending on the violation field that you specified for this filter:
+                              - `timestamp`: Integer, in UTC timezone epoch milliseconds
+                              - `violation_id_list`: List of integers
+                              - `ip_list`: Must contain an IP string
+                              - `type`: Must be either `cd-rom`, `disk drive`, `floppy disk`, `portable device`
+                              - All other fields need to be list of strings.
+                            oneOf:
+                            - type: array
+                              items:
+                                oneOf:
+                                - type: integer
+                                - type: string
+                            - type: integer
+                            - type: string
+                        required:
+                        - field
+                        - operator
+                        - value
+                    search_from:
+                      type: integer
+                      description: |-
+                        Integer representing the starting offset within the query result set from which you want violations returned.
+                        Violations are returned as a zero-based list. Any violation indexed less than this value is not returned in the final result set and defaults to zero.
+                    search_to:
+                      type: integer
+                      description: |-
+                        An integer representing the end of offset within the result set after which you do not want violations returned.
+                        Violations in the violation list that are indexed higher than this value are not returned in the final results set. Defaults to zero, which returns all alerts to the end of the list.
+                    sort:
+                      type: object
+                      description: Identifies the sort order for the result set.
+                      properties:
+                        field:
+                          type: string
+                          enum:
+                          - endpoint_id_list
+                          - type
+                          - timestamp
+                          - ip_list
+                          - vendor
+                          - vendor_id
+                          - product
+                          - product_id
+                          - serial
+                          - hostname
+                          - violation_id_list
+                          - username
+                          description: The field you want to sort by.
+                        value:
+                          type: string
+                          enum:
+                          - asc
+                          - desc
+                          description: Can be either `asc` (ascending) or `desc` (descending).
+                          default: desc
+                      required:
+                      - field
+                      - value
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    properties:
+                      total_count:
+                        type: integer
+                        description: Number of total results of this filter without paging.
+                      result_count:
+                        type: integer
+                        description: Number of alerts actually returned as a result.
+                      violations:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/violation'
+        '400':
+          description: Bad Request. Got an invalid JSON.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '401':
+          description: Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, id,
+            or other invalid authentication parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '402':
+          description: Unauthorized access. User does not have the required license type to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '500':
+          description: Internal server error. A unified status for API communication type errors.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

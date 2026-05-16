@@ -1,0 +1,136 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/integrations/syslog/get:
+    post:
+      tags:
+      - Syslog servers
+      summary: Get all or filtered syslog servers
+      description: |-
+        Get a complete or filtered list of syslog servers.
+
+        You must have **View Alert Notification** permissions to run this endpoint.
+
+        **Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture Management
+      operationId: post-public_api-v1-integrations-syslog-get
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  type: object
+                  description: A dictionary containing the API request fields. An empty dictionary returns all results.
+                  properties:
+                    filters:
+                      type: array
+                      description: Array of filter fields. Each JSON object must contain a field, operator, and value.
+                      items:
+                        type: object
+                        properties:
+                          field:
+                            type: string
+                            enum:
+                            - name
+                            - id
+                            - address
+                            - status
+                            description: |-
+                              String that identifies the syslog server field the filter is matching. Filters are based on the following case-sensitive keywords:
+
+                              - `name`
+                              - `id`
+                              - `address`
+                              - `status`
+                          operator:
+                            type: string
+                            enum:
+                            - eq
+                            description: |-
+                              String that identifies the comparison operator you want to use for this filter. Valid operator keywords and corresponding filter fields are:
+                              - **eq** - used with `name`, `id`, `address`, and `status`
+                          value:
+                            type: string
+                            description: |-
+                              Value that the filter must match. The contents of this field will differ depending on the website field that you specified for this filter:
+
+                              - name - string
+              required:
+              - request_data
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  objects_count:
+                    type: integer
+                    description: The number of syslog servers that are returned.
+                  objects:
+                    type: array
+                    description: The syslog server details.
+                    items:
+                      type: object
+                      properties:
+                        SYSLOG_INTEGRATION_ID:
+                          type: integer
+                        SYSLOG_INTEGRATION_NAME:
+                          type: string
+                          description: Syslog server integration name.
+                        SYSLOG_INTEGRATION_ADDRESS:
+                          type: string
+                          description: IP address or fully qualified domain name (FQDN) of the syslog server.
+                        SYSLOG_INTEGRATION_PORT:
+                          type: integer
+                          description: The port number on which the syslog server listens for messages.
+                        SYSLOG_INTEGRATION_PROTOCOL:
+                          type: string
+                          description: |-
+                            The communication protocol:
+                            - TCP: No validation is made on the connection with the syslog server. However, if an error occurred with the domain used to make the connection, the Test connection will fail.
+                            - UDP: No error checking, error correction, or acknowledgment. No validation is done for the connection or when sending data.
+                            - TLS:  Cortex validates the syslog server certificate and uses the certificate signature and public key to encrypt the data sent over the connection.
+                        FACILITY:
+                          type: string
+                        SYSLOG_INTEGRATION_STATUS:
+                          type: string
+                        SYSLOG_INTEGRATION_ERROR:
+                          type: string
+                          nullable: true
+                        SYSLOG_INTEGRATION_CERTIFICATE_NAME:
+                          type: string
+                          nullable: true
+                        SYSLOG_INTEGRATION_IGNORE_CERTIFICATE_ERROR:
+                          type: string
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '402':
+          description: Payment Required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

@@ -1,0 +1,94 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/assets/{id}/raw_fields:
+    get:
+      tags:
+      - Asset inventory
+      summary: Get raw fields of asset by ID
+      description: |-
+        Get the raw fields of the asset specified by asset ID.
+
+        **Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture Management
+      operationId: get-public_api-v1-assets-raw-fields-by-id
+      parameters:
+      - name: id
+        in: path
+        description: Asset ID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            xdm__asset__raw_fields:
+                              type: object
+                              properties:
+                                Platform Discovery:
+                                  type: object
+                                  properties:
+                                    Adjustable:
+                                      type: boolean
+                                    Description:
+                                      type: string
+                                    GlobalQuota:
+                                      type: boolean
+                                    QuotaAppliedAtLevel:
+                                      type: string
+                                    QuotaArn:
+                                      type: string
+                                    QuotaCode:
+                                      type: string
+                                    QuotaName:
+                                      type: string
+                                    ServiceCode:
+                                      type: string
+                                    ServiceName:
+                                      type: string
+                                    Unit:
+                                      type: string
+                                    Value:
+                                      type: integer
+                      metadata:
+                        type: object
+                        properties:
+                          filter_count:
+                            type: integer
+                          total_count:
+                            type: integer
+        '403':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UnauthorizedErrorResponse'
+        '404':
+          description: Asset Not Found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NotFoundErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GenericErrorResponse'

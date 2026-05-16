@@ -1,0 +1,78 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/hash_exceptions/allowlist:
+    post:
+      tags:
+      - Response Action
+      summary: Allow List Files
+      description: |-
+        Add files which do not exist in the allow or block lists to an allow list.
+
+        **Required license:** Cortex Cloud Runtime Security. In Cortex Cloud Posture Security, you need the Cortex Cloud Runtime Security add-on.
+      operationId: postAllowlist
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  type: object
+                  description: A dictionary containing the API request fields.
+                  properties:
+                    hash_list:
+                      type: array
+                      description: A list of hashed files you want to add to the allow list. Hash must be a valid SH256.
+                      items:
+                        type: string
+                    comment:
+                      type: string
+                      description: Additional information regarding the action.
+                    incident_id:
+                      type: integer
+                      description: |-
+                        The case ID related to the hash.
+                        When included in the request, the **Allow List** action will appear in the **Cortex Cloud Case View Timeline** tab.
+                  required:
+                  - hash_list
+              required:
+              - request_data
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: boolean
+                description: true=File successfully added to the allow list.
+        '400':
+          description: Bad Request. Got an invalid JSON.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '401':
+          description: Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, id,
+            or other invalid authentication parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '402':
+          description: Unauthorized access. User does not have the required license type to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '500':
+          description: Internal server error. A unified status for API communication type errors.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

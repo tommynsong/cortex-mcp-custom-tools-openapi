@@ -1,0 +1,85 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/api_keys/generate:
+    post:
+      tags:
+      - API Keys
+      summary: Generate an API key
+      description: |-
+        Generate a new API key and define the roles assigned to it and whether the security level is standard or advanced.
+
+        **Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture Management
+      operationId: post-public_api-v1-api_keys-generate
+      parameters:
+      - schema:
+          type: string
+          example: DCdIeow0xm73EwnxjPza1tdHTfZQv2eH7bTKlTPkgBHLj8aSjFzjgTE9bQUK1DidlWLrnYRhaYQ4PCIyNrNJbMUC6DOWi8ANIn1JWpMTE2neGvoDIRsKUbj6pJ1z7Gmr
+        in: header
+        name: authorization
+        description: api_key
+        required: true
+      - schema:
+          type: string
+        in: header
+        required: true
+        name: x-child-tenant-id
+        description: child tenant ID
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - request_data
+              properties:
+                request_data:
+                  type: object
+                  required:
+                  - roles
+                  - security_level
+                  properties:
+                    roles:
+                      type: array
+                      description: A list of roles to be assigned to the API key.
+                      items:
+                        type: string
+                    security_level:
+                      description: The security level of the API key. API keys with advanced security are hashed with a nonce
+                        and timestamp, which is useful for proprietary scripts and are intended to prevent replay attacks.
+                        Standard security API keys can be used as-is and are suitable for curl.
+                      enum:
+                      - standard
+                      - advanced
+                    expiration:
+                      type: integer
+                      x-stoplight:
+                        id: 2erymx2ujjmcq
+                      description: Integer in timestamp epoch milliseconds. Default value is one week from the time of the
+                        API call. Maximum expiration date is six months from the time of the API call.
+                    comment:
+                      type: string
+                      x-stoplight:
+                        id: ewsk7qmmgq9so
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      key:
+                        type: string
+        '400':
+          description: Bad Request. Invalid Input.
+        '401':
+          description: Unauthorized access. User does not have the required license type to run this API.
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+        '500':
+          description: Internal Server Error.

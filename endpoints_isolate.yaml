@@ -1,0 +1,109 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/endpoints/isolate:
+    post:
+      tags:
+      - Response Action
+      summary: Isolate Endpoints
+      description: |-
+        Isolate one or more endpoints in a single request. Request is limited to 1000 endpoints.
+
+        **Required license:** Cortex Cloud Runtime Security. In Cortex Cloud Posture Security, you need the Cortex Cloud Runtime Security add-on.
+      operationId: post-public_api-v1-endpoints-isolate
+      requestBody:
+        description: 'Note: You can send a request with either `endpoint_id` for isolating one endpoint or `filters` for isolating
+          more than one endpoint. You cannot use both parameters in the same call.'
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  type: object
+                  description: A dictionary containing the API request fields.
+                  properties:
+                    filters:
+                      type: array
+                      description: |-
+                        Array of filtered fields for isolating a number of endpoints at once.
+                        Note: Only required if isolating more than one endpoint.
+                      items:
+                        type: object
+                        properties:
+                          field:
+                            type: string
+                            enum:
+                            - endpoint_id_list
+                            description: |-
+                              Identifies a list the filters match. Filters are
+                              based on the following keywords:
+                              - `endpoint_id_list`: List of endpoint IDs.
+                          operator:
+                            type: string
+                            enum:
+                            - in
+                            description: |-
+                              Identifies the comparison operator you want to use for this filter. Valid keywords and values are:
+                              `in`
+                              - `endpoint_id_list` —List of strings
+                          value:
+                            type: array
+                            description: |-
+                              Value that this filter must match. Valid keywords:
+                              - `endpoint_id_list`: List of strings
+                            items:
+                              type: string
+                        required:
+                        - field
+                        - operator
+                        - value
+                    endpoint_id:
+                      type: string
+                      description: |-
+                        Identifies the endpoint to isolate.
+                        Note: Only required if isolating one endpoint.
+                    incident_id:
+                      type: string
+                      description: |-
+                        The case ID.
+                        When included in the request, the **Isolate Endpoints action** will appear in the Cortex Cloud Case View Timeline tab.
+                  required:
+                  - endpoint_id
+              required:
+              - request_data
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    description: JSON object containing the query result.
+                    properties:
+                      action_id:
+                        type: string
+                        description: |-
+                          Action ID to scan selected endpoints.
+                          The response only indicates the request was successfully sent to the endpoint. To track if the isolation succeeded either:
+                          - In the Cortex XDR console, navigate to **Response** > **Action Center** > **Isolation** and search for
+                          the action ID. Make sure the Action ID field is
+                          selected in the table Layout settings by selecting
+                          the vertical ellipses.
+                          - Send a **Get Action Status** request.
+                      endpoints_count:
+                        type: string
+                        description: Number of endpoints included in the request.
+        '400':
+          description: Bad Request. Got an invalid JSON.
+        '401':
+          description: Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, ID,
+            or other invalid authentication parameters.
+        '402':
+          description: Unauthorized access. User does not have the required license type to run this API.
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+        '500':
+          description: Internal server error. A unified status for API communication type errors.

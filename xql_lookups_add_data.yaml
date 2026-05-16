@@ -1,0 +1,57 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/xql/lookups/add_data:
+    post:
+      tags:
+      - Lookup Datasets
+      summary: Add or update data in a lookup dataset
+      description: "Add or update data in a lookup dataset.\r\n\r\nWhen updating data, any field not specified in the `data`\
+        \ field, but specified on at least one of the rows, will be set to `None`.\r\n\r\nThe `/public_api/xql/lookups/add_data/`\
+        \  endpoint does not support concurrent edits. Sending concurrent calls to this endpoint can cause data to be unintentionally\
+        \ overwritten or deleted. To allow sufficient time for each API call to complete its operation before initiating another\
+        \ one, assume that 1000 entries can be added per API every 10 seconds.\r\n\r\n**Note: ** \r\n\r\n- The maximum size\
+        \ of a lookup dataset is 50 MB. Attempting to exceed this limit will fail.\r\n- Requests time out after three minutes.\r\
+        \n\r\n**Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture Management"
+      operationId: post-public_api-v1-xql-lookups-add_data
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  type: object
+                  properties:
+                    dataset_name:
+                      type: string
+                      description: Unique dataset name
+                    key_fields:
+                      type: array
+                      description: "The fields used to identify existing records. If there is not an exact match to the key_fields\
+                        \ specified, a new row is created. \r\nWhen you specify `key_fields`, these fields are mandatory in\
+                        \ data entries. When `key_fields` are not specified, existing data entries are not updated, and new\
+                        \ entries are added with the specified data."
+                      items:
+                        type: string
+                    data:
+                      type: object
+                      description: Key-value pairs of data entries.
+                      additionalProperties:
+                        type: string
+                  required:
+                  - dataset_name
+                  - data
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  added:
+                    type: integer
+                  updated:
+                    type: integer
+                  skipped:
+                    type: integer

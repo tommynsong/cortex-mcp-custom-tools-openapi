@@ -1,0 +1,124 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/bioc/delete:
+    post:
+      tags:
+      - BIOCs
+      summary: Delete BIOCs
+      description: |-
+        Delete BIOCs selected by filter.
+
+        You must have **Instance Administrator** permissions to run this endpoint.
+      operationId: post-public_api-v1-bioc-delete
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - request_data
+              properties:
+                request_data:
+                  type: object
+                  properties:
+                    filters:
+                      type: array
+                      description: An array of filter fields.
+                      items:
+                        type: object
+                        properties:
+                          field:
+                            type: string
+                            enum:
+                            - name
+                            - severity
+                            - type
+                            - is_xql
+                            - comment
+                            - status
+                            - indicator
+                            - mitre_technique_id_and_name
+                            - mitre_tactic_id_and_name
+                            description: "Identifies the BIOC field the filter is matching. Filters are based on the following\
+                              \ keywords:\r\n- `name`: BIOC name.\r\n- `severity`: BIOC severity level.\r\n- `type`: BIOC\
+                              \ type.\r\n- `is_xql`: Whether or not the BIOC is XQL.\r\n- `comment`: Comment.\r\n- `status`:\
+                              \ BIOC status.\r\n- `indicator`: Indicator.\r\n- `mitre_technique_id_and_name`: MITRE technique\
+                              \ ID and name.\r\n- `mitre_tactic_id_and_name`: MITRE tactic ID and name."
+                          operator:
+                            type: string
+                            enum:
+                            - EQ
+                            - NEQ
+                            - IN
+                            - GTE
+                            - LTE
+                            description: "Identifies the comparison operator you want to use for this filter. Valid keywords\
+                              \ are:\r\n`EQ` / `NEQ`\r\n- `name`: String\r\n- `severity`: String\r\n- `type`: String\r\n-\
+                              \ `is_xql`: Boolean\r\n- `comment`: String\r\n- `status`: String\r\n- `indicator`: String\r\n\
+                              `IN`\r\n- `mitre_technique_id_and_name`: List of strings\r\n- `mitre_tactic_id_and_name`: List\
+                              \ of strings"
+                          value:
+                            oneOf:
+                            - type: boolean
+                            - type: string
+                            - type: array
+                              items:
+                                type: string
+                            description: "Value that this filter must match. The contents of this field will differ depending\
+                              \ on the IOC field that you specified for this filter:\r\n- `name`, `comment`: String.\r\n-\
+                              \ `severity`: String, can be one of the following: `SEV_010_INFO`, `SEV_020_LOW`, `SEV_030_MEDIUM`,\
+                              \ `SEV_040_HIGH`\r\n- `type`: String, can be one of the following: `other`, `persistence`, `evasion`,\
+                              \ `tampering`, `file_type_obfuscation`, `privilege_escalation`, `credential_access`, `lateral_movement`,\
+                              \ `execution`, `collection`, `exfiltration`, `infiltration`, `dropper`, `file_privilege_manipulation`,\
+                              \ `reconnaissance`, `discovery`.\r\n- `is_xql`: Boolean: `true` or `false`.\r\n- `status`: String,\
+                              \ can be one of the following: `enabled`, `disabled`.\r\n- `indicator`: String or dictionary\
+                              \ in the format you wrote it.\r\n- `mitre_technique_id_and_name`: List of strings.\r\n- `mitre_tactic_id_and_name`:\
+                              \ List of strings."
+                            items: {}
+        required: false
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  objects_count:
+                    type: integer
+                    description: Number of BIOC objects deleted.
+                  objects:
+                    type: array
+                    items:
+                      type: integer
+        '400':
+          description: Bad Request. Got invalid JSON.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '401':
+          description: Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, id,
+            or other invalid authentication parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '402':
+          description: Unauthorized access. User does not have the required license type to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '500':
+          description: Internal server error. A unified status for API communication type errors.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

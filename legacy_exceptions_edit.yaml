@@ -1,0 +1,40 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/legacy_exceptions/edit:
+    post:
+      tags:
+      - Endpoint Management
+      summary: Edit Legacy Exception Rule
+      description: |
+        Update an existing legacy exception rule.
+
+        **Prerequisites:**
+
+        To get the required fields:
+        - Use `/public_api/v1/legacy_exceptions/fetch` to retrieve existing exception details.
+        - The `id` field in the fetch API response corresponds to `exception_id` in this request.
+        - The `rule_name` field in the fetch API response corresponds to `name` in this request.
+        - The `scope` field is not returned by the fetch API. Use `"PROFILE"` if `profile_ids` is non-empty in the fetch response; use `"GLOBAL"` if `profile_ids` is `[]`.
+      operationId: edit_legacy_exception
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - request_data
+              properties:
+                request_data:
+                  $ref: '#/components/schemas/EditLegacyExceptionDataRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: string
+                    description: The ID of the edited legacy exception rule.
+                    example: f87c6f24205249d896677ab63626d4f4

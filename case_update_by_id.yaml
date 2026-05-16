@@ -1,0 +1,39 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/case/update/{case-id}:
+    post:
+      tags:
+      - Cases
+      summary: Update existing case
+      description: "Update an existing case in the system. **Users can only update one case at a time.**  \n- At least one\
+        \ of the following fields is **mandatory**:  \n  - case_id  \n\n**Required license:** Cortex Cloud Runtime Security\
+        \ or Cortex Cloud Posture Management"
+      operationId: updateCase
+      parameters:
+      - name: case-id
+        in: path
+        description: Numeric ID of the case to update
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  type: object
+                  properties:
+                    update_data:
+                      $ref: '#/components/schemas/UpdateCase'
+      responses:
+        '204':
+          description: Case updated successfully
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalError'

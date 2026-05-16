@@ -1,0 +1,102 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/rbac/get_roles:
+    post:
+      tags:
+      - System management
+      summary: Get Roles
+      description: |-
+        Retrieve information about one or more roles created in your environment.
+
+        **Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture Management
+      operationId: post-public_api-v1-rbac-get_roles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  type: object
+                  description: A dictionary containing the API request fields.
+                  properties:
+                    role_names:
+                      type: array
+                      description: List of one or more role names in your environment for which you want detailed information.
+                      items:
+                        type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: array
+                    description: JSON object containing the query result.
+                    items:
+                      type: object
+                      properties:
+                        pretty_name:
+                          type: string
+                          description: Name of the role as it appears in the Management Console.
+                        permissions:
+                          type: array
+                          description: List of permissions associated with this role.
+                          items:
+                            type: string
+                        insert_time:
+                          type: integer
+                          description: Timestamp of when the Role was created.
+                        update_time:
+                          type: integer
+                          description: Timestamp of when the Role was last updated.
+                        created_by:
+                          type: string
+                          description: Email of the user who created the Role.
+                        description:
+                          type: string
+                          description: Description of the Role, if available.
+                        groups:
+                          type: array
+                          description: Group names associated with the Role.
+                          items:
+                            type: string
+                        users:
+                          type: array
+                          description: Email addresses of users associated with the Role.
+                          items:
+                            type: string
+        '400':
+          description: Bad Request. Got an invalid JSON.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '401':
+          description: Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, id,
+            or other invalid authentication parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '402':
+          description: Unauthorized access. User does not have the required license type to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '500':
+          description: Internal server error. A unified status for API communication type errors.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

@@ -1,0 +1,102 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/endpoints/get_profiles:
+    post:
+      tags:
+      - Endpoint Management
+      - Profiles
+      summary: Get endpoint security profiles
+      description: "Returns a list of endpoint security profiles of the requested type.\nOptionally filters by a list of profile\
+        \ IDs.\n\n**Required permission:** `profiles_view`\n\n\n**Notes**: \n- File-Integrity-Monitoring (FIM) extension profiles\
+        \ are omitted when FIM is disabled for the profile's OS type.\n- `is_in_user_scope` and `at_risk` are removed from\
+        \ every profile object before the response is returned."
+      operationId: getProfiles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - request_data
+              properties:
+                request_data:
+                  $ref: '#/components/schemas/GetProfilesRequestData'
+      responses:
+        '200':
+          description: OK. Profiles retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetProfilesResponse'
+        '400':
+          description: |
+            Bad request. Possible causes:
+            - `type` field is missing (`TypeIsMandatory`)
+            - `type` value is not `prevention` or `extension` (`TypeNotSupported`)
+            - `profile_ids` is provided but is not a list (`ProfileIDsMustBeAList`)
+            - Any internal error during profile retrieval (`GeneralError`)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    properties:
+                      err_code:
+                        type: integer
+                        description: HTTP-equivalent error code
+                      err_msg:
+                        type: string
+                        description: Short error category string
+                      err_extra:
+                        type: string
+                        description: Human-readable detail explaining the specific error
+                        nullable: true
+        '401':
+          description: Unauthorized – missing or invalid API-key headers
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    properties:
+                      err_code:
+                        type: integer
+                        description: HTTP-equivalent error code
+                      err_msg:
+                        type: string
+                        description: Short error category string
+                      err_extra:
+                        type: string
+                        description: Human-readable detail explaining the specific error
+                        nullable: true
+        '403':
+          description: |-
+            Forbidden. Possible causes:
+
+            - The API key does not have the `profiles_view` permission
+            - The feature flag `ALPHAFEATURES_PUBLIC_API_GET_POLICIES` is disabled
+            - The tenant is a secondary HA replica
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    properties:
+                      err_code:
+                        type: integer
+                        description: HTTP-equivalent error code
+                      err_msg:
+                        type: string
+                        description: Short error category string
+                      err_extra:
+                        type: string
+                        description: Human-readable detail explaining the specific error
+                        nullable: true
+        '500':
+          description: Internal Server Error

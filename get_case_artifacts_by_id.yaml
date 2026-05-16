@@ -1,0 +1,44 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/case/artifacts/{case-id}:
+    get:
+      tags:
+      - Cases
+      summary: Retrieve Case Artifacts by Case Id
+      description: |-
+        This endpoint retrieves the artifacts for a given case_id
+
+        **Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture Management
+      operationId: getCaseArtifacts
+      parameters:
+      - name: case-id
+        in: path
+        description: Numeric ID of the case
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Successful response with cases
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    properties:
+                      TOTAL_COUNT:
+                        type: integer
+                      FILTER_COUNT:
+                        type: integer
+                      DATA:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/CaseArtifact'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalError'

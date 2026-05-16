@@ -1,0 +1,61 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/profiles/add_signer_cn_to_allowlist:
+    post:
+      tags:
+      - Endpoint Management
+      summary: Add Signer CN to Allowlist
+      description: Add one or more signer common names to the allowlist of a specific Windows malware prevention profile.
+        This endpoint only works on Windows Malware profiles.
+      operationId: add_signer_cn_to_allowlist
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - profile_name
+              - signers
+              properties:
+                profile_name:
+                  type: string
+                  maxLength: 600
+                  description: The name of the Windows malware prevention profile. Cannot be 'Default'.
+                signers:
+                  oneOf:
+                  - type: string
+                    maxLength: 600
+                  - type: array
+                    items:
+                      type: string
+                      maxLength: 600
+                    maxItems: 1000
+                  description: A single signer CN string or a list of signer CN strings to add. Total signers cap is 1000.
+              additionalProperties: false
+              example:
+                profile_name: Windows_Malware_Prevention
+                signers:
+                - CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US
+                - CN=Palo Alto Networks, O=Palo Alto Networks, L=Santa Clara, S=California, C=US
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    nullable: true
+                example:
+                  reply: null
+        '400':
+          description: Bad Request. Invalid Input.
+        '401':
+          description: Unauthorized access. User does not have the required license type to run this API.
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+        '500':
+          description: Internal Server Error.

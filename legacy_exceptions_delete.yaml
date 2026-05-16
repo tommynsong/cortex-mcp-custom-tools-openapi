@@ -1,0 +1,43 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/legacy_exceptions/delete:
+    post:
+      tags:
+      - Endpoint Management
+      summary: Delete Legacy Exception Rules
+      description: |-
+        Deletes one or more legacy exception rules by their IDs.
+
+        Use `/public_api/v1/legacy_exceptions/fetch` endpoint to retrieve the `id` values of the exceptions you want to delete.
+      operationId: delete_legacy_exceptions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  type: object
+                  required:
+                  - exception_ids
+                  properties:
+                    exception_ids:
+                      type: array
+                      description: List of legacy exception IDs to delete. Corresponds to the `id` field returned by the fetch
+                        API.
+                      minItems: 1
+                      items:
+                        type: string
+                        example: f87c6f24205249d896677ab63626d4f4
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: integer
+                    description: The number of successfully deleted legacy exception rules.
+                    example: 1

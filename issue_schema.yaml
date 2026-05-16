@@ -1,0 +1,43 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/issue/schema:
+    post:
+      tags:
+      - Issues
+      summary: Retrieve issue schema
+      description: |-
+        This endpoint retrieves the schema definition for issues, including core fields, normalized fields, and custom fields. Each field includes its name, pretty name, and data type.
+
+        **Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture Management.
+      operationId: getIssueSchema
+      responses:
+        '200':
+          description: Successful response with issue schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/IssueSchemaField'
+              example:
+                reply:
+                  data:
+                  - field_name: xdm.issue.name
+                    field_pretty_name: Name
+                    data_type: TEXT
+                  - field_name: xdm.issue.a_normalized_field
+                    field_pretty_name: A normalized field
+                    data_type: TEXT
+                  - field_name: my_custom_field
+                    field_pretty_name: My custom field
+                    data_type: boolean
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalError'

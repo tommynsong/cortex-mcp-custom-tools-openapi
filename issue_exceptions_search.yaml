@@ -1,0 +1,145 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/issue_exceptions/search/:
+    post:
+      tags:
+      - Issues
+      summary: Retrieve issue exceptions based on filters
+      description: "This endpoint retrieves a list of issue exceptions that match the specified filter criteria. It supports\
+        \ filtering along with sorting and pagination. \n\n**Required permission:** `Exception Management Admin View`, `Exception\
+        \ Approver Admin View`\n\n\n**Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture Management"
+      operationId: searchIssueExceptions
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  type: object
+                  properties:
+                    filters:
+                      type: object
+                      description: Filter criteria using AND/OR structure. Each filter condition contains SEARCH_FIELD, SEARCH_TYPE,
+                        and SEARCH_VALUE.
+                      properties:
+                        SEARCH_FIELD:
+                          type: string
+                          enum:
+                          - EXCEPTION_ID
+                          - EXTERNAL_EXCEPTION_ID
+                          - NAME
+                          - STATUS
+                          - EXPIRATION_TS
+                          - IMPACTED_ISSUES_COUNT
+                          - BACKWARD_SCAN_STATUS
+                          - JUSTIFICATION_CATEGORY
+                          - REQUESTOR_NAME
+                          - APPROVER_NAME
+                          - CREATED_TS
+                          - APPROVAL_TS
+                          - JUSTIFICATION_TEXT
+                          - APPROVAL_JUSTIFICATION
+                          - REQUESTOR_EMAIL
+                          - APPROVER_EMAIL
+                          description: String that identifies the exception field the filter is matching.
+                        SEARCH_TYPE:
+                          type: string
+                          enum:
+                          - EQ
+                          - NEQ
+                          - GTE
+                          - LTE
+                          - GT
+                          - LT
+                          - IN
+                          - CONTAINS
+                          - CONTAINS_NOT
+                          description: |-
+                            Identifies the comparison operator to use for this filter. The following list shows which operators can be used for each filter field:
+
+                            - **EQ** / **NEQ** - use with all fields
+                            - **GTE** / **LTE** / **GT** / **LT** - use with `EXCEPTION_ID`, `EXPIRATION_TS`, `IMPACTED_ISSUES_COUNT`, `CREATED_TS`, `APPROVAL_TS`
+                            - **IN** - use with `EXCEPTION_ID`, `STATUS`, `BACKWARD_SCAN_STATUS`, `JUSTIFICATION_CATEGORY`
+                            - **CONTAINS** / **CONTAINS_NOT** — use with `EXTERNAL_EXCEPTION_ID`, `NAME`, `REQUESTOR_NAME`, `APPROVER_NAME`, `JUSTIFICATION_TEXT`, `APPROVAL_JUSTIFICATION`, `REQUESTOR_EMAIL`, `APPROVER_EMAIL`
+                        SEARCH_VALUE:
+                          description: |-
+                            Value that this filter must match. The contents of this field will differ depending on the field that you specified for this filter:
+
+                            - EXCEPTION_ID — Integer, e.g. `1`, `42`
+                            - EXTERNAL_EXCEPTION_ID — String, e.g. `"EXT-001"`
+                            - NAME — String, e.g. `"CVE Exception"`
+                            - STATUS — String. Values are: `APPROVED`, `DISABLED`, `EXPIRED`, `NO_DECISION_MADE`, `PENDING_DECISION`, `REJECTED`, `SELF_APPROVED`
+                            - EXPIRATION_TS — Epoch milliseconds, e.g. `1712448000000`
+                            - IMPACTED_ISSUES_COUNT — Integer, e.g. `0`, `10`, `100`
+                            - BACKWARD_SCAN_STATUS — String. Values are: `COMPLETED`, `FAILED`, `IN_PROGRESS`, `PENDING`
+                            - JUSTIFICATION_CATEGORY — String. Values are: `COMPENSATING_CONTROL`, `PLANNED_REMEDIATION`, `RISK_ACCEPTED`, `VENDOR_DEPENDENCY`
+                            - REQUESTOR_NAME — String, e.g. `"John Doe"`
+                            - APPROVER_NAME — String, e.g. `"Jane Smith"`
+                            - CREATED_TS — Epoch milliseconds, e.g. `1712448000000`
+                            - APPROVAL_TS — Epoch milliseconds, e.g. `1712448000000`
+                            - JUSTIFICATION_TEXT — String, e.g. `"Risk accepted per policy"`
+                            - APPROVAL_JUSTIFICATION — String, e.g. `"Approved by security team"`
+                            - REQUESTOR_EMAIL — String, e.g. `"john@example.com"`
+                            - APPROVER_EMAIL — String, e.g. `"jane@example.com"`
+                          oneOf:
+                          - type: string
+                          - type: integer
+                          - type: array
+                            items:
+                              type: string
+                    search_from:
+                      type: integer
+                      default: 0
+                      x-stoplight:
+                        id: xbrrvako6rdok
+                      description: Starting index for pagination.
+                    search_to:
+                      type: integer
+                      default: 100
+                      x-stoplight:
+                        id: 86vo1xy78nmjf
+                      description: Ending index for pagination.
+                    sort:
+                      type: object
+                      nullable: true
+                      description: Sort configuration
+                      properties:
+                        FIELD:
+                          type: string
+                          description: Field name to sort by
+                        ORDER:
+                          type: string
+                          enum:
+                          - ASC
+                          - DESC
+                          description: Sort direction
+      responses:
+        '200':
+          description: Exceptions retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    properties:
+                      exceptions:
+                        type: array
+                        description: List of matching exception objects
+                        items:
+                          $ref: '#/components/schemas/IssueException'
+                      filter_count:
+                        type: integer
+                        description: Number of exceptions matching the applied filters
+                      total_count:
+                        type: integer
+                        description: Total number of exceptions (ignoring filters)
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalError'

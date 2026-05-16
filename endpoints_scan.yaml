@@ -1,0 +1,92 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/endpoints/scan:
+    post:
+      tags:
+      - Response Action
+      summary: Scan Endpoints
+      description: |-
+        Run a scan on selected endpoints.
+        - Response is concatenated using AND condition (OR is not supported).
+        - Offset is the zero-based number of cases from the start of the result set.
+
+        **Required license:** Cortex Cloud Runtime Security. In Cortex Cloud Posture Security, you need the Cortex Cloud Runtime Security add-on.
+      operationId: postScan
+      requestBody:
+        description: 'Note: You can send a request to retrieve either **all** or **filtered** results.'
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  type: object
+                  description: A dictionary containing the API request fields.
+                  properties:
+                    filters:
+                      type: string
+                      enum:
+                      - all
+                      description: An array of filter fields. To scan all endpoints, use the value `all`.
+                    incident_id:
+                      type: string
+                      description: |-
+                        Case ID.
+                        When included in the request, the **Scan Endpoints** action will appear in the **Cortex Cloud Case View Timeline** tab.
+                  required:
+                  - filters
+              required:
+              - request_data
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    description: JSON object containing the query result.
+                    properties:
+                      action_id:
+                        type: string
+                        description: |-
+                          ID of action to scan selected endpoints.
+                          Response only indicates the request was successfully sent to the endpoint. To track if the scan was successful either:
+                          - In Cortex XDR console, navigate to **Response** > **Action Center** > **All Actions** and search for the action ID. Make sure the **Action ID** field is selected in the table **Layout** settings.
+                          - Send a **Get Action Status** API request.
+                      endpoints_count:
+                        type: string
+                        description: Number of endpoints included in the request.
+        '400':
+          description: Bad Request. Got an invalid JSON.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '401':
+          description: Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, id,
+            or other invalid authentication parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '402':
+          description: Unauthorized access. User does not have the required license type to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '500':
+          description: Internal server error. A unified status for API communication type errors.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

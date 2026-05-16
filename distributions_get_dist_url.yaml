@@ -1,0 +1,89 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/distributions/get_dist_url:
+    post:
+      tags:
+      - Endpoint Management
+      summary: Get Distribution URL
+      description: |-
+        Get the distribution URL for downloading the installation package.
+
+        **Required license:** Cortex Cloud Runtime Security. In Cortex Cloud Posture Security, you need the Cortex Cloud Runtime Security add-on.
+      operationId: postGetDistUrl
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  type: object
+                  properties:
+                    distribution_id:
+                      type: string
+                      description: Installation package ID.
+                    package_type:
+                      type: string
+                      description: |-
+                        A string representing the type of installation package. Select *one* of the following valid keywords and values:
+                        - `upgrade`
+                        Package type should match the distribution type or platform:
+                        - `sh`: x86_64 Linux SH installer
+                        - `rpm`: x86_64 Linux RPM installer
+                        - `deb`: x86_64 Linux DEB installer
+                        - `aarch64_sh`: aarch64 Linux SH installer
+                        - `aarch64_rpm`: aarch64 Linux RPM installer
+                        - `aarch64_deb`: aarch64 Linux DEB installer
+                        - `pkg`: Mac
+                        - `x86`: Windows
+                        - `x64`: Windows
+                  required:
+                  - distribution_id
+                  - package_type
+              required:
+              - request_data
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    properties:
+                      distribution_url:
+                        type: string
+                        description: URL for downloading the installation package.
+        '400':
+          description: Bad Request. Got an invalid JSON.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '401':
+          description: Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, id,
+            or other invalid authentication parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '402':
+          description: Unauthorized access. User does not have the required license type to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '500':
+          description: Internal server error. A unified status for API communication type errors.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

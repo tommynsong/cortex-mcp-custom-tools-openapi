@@ -1,0 +1,385 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/scheduled_queries/list:
+    post:
+      tags:
+      - Scheduled Queries
+      summary: Get scheduled queries
+      description: |-
+        Return a list of scheduled queries. You can return all scheduled queries or filter results. You can also return extended results with all details included.
+
+        You must have **Instance Administrator** permissions to run this endpoint.
+      operationId: post-public_api-v1-scheduled_queries-list
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - request_data
+              properties:
+                request_data:
+                  type: object
+                  properties:
+                    filters:
+                      type: array
+                      description: An array of filter fields.
+                      items:
+                        type: object
+                        properties:
+                          field:
+                            type: string
+                            description: |-
+                              Identifies the query field the filter is matching. Filters are based on the following keywords:
+                              - `query_def_id`
+                              - `timestamp`
+                            enum:
+                            - query_def_id
+                            - timestamp
+                          operator:
+                            type: string
+                            enum:
+                            - EQ
+                            - NEQ
+                          value:
+                            type: string
+                    extended_view:
+                      type: boolean
+                      description: Display the extended view of the queries, which includes additional fields. If this is
+                        `false`, the response does not include `total_count ` or `result_count`. Extended fields may change
+                        in future versions.
+                      default: false
+                    list_ids:
+                      type: array
+                      description: List of scheduled query IDs to retrieve.
+                      items:
+                        type: string
+        required: false
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            query_def_id:
+                              type: string
+                            query_definition_name:
+                              type: string
+                            xql:
+                              type: string
+                            timeframe:
+                              type: object
+                              properties:
+                                relativeTime:
+                                  type: string
+                            schedule:
+                              type: object
+                              properties:
+                                run_date:
+                                  type: integer
+                                trigger_type:
+                                  type: string
+                            tenants:
+                              type: object
+                              nullable: true
+                            enable:
+                              type: boolean
+                          x-stoplight:
+                            id: 188ktiy8wl6kd
+                      filter_count:
+                        type: integer
+                        x-stoplight:
+                          id: mawer3y2u8ejj
+                      total_count:
+                        type: integer
+                        x-stoplight:
+                          id: ijqlrdn9a5ezn
+            Retrieve all scheduled queries:
+              example:
+                reply:
+                  data:
+                  - query_def_id: qc_1683459520_6832
+                    query_definition_name: QUERY-4845
+                    xql: ''
+                    timeframe: {}
+                    schedule:
+                      run_date: 1683459540000
+                      trigger_type: date
+                    tenants: null
+                    enable: true
+                  - query_def_id: qc_1682934776_6824
+                    query_definition_name: XQL-QUERY-4850
+                    xql: dataset = xdr_data | limit 10
+                    timeframe:
+                      relativeTime: 86400000
+                    schedule:
+                      start_date: null
+                      end_date: null
+                      trigger_type: cron
+                      hour: '8'
+                      minute: '16'
+                      second: '00'
+                      day_of_week: null
+                      week: null
+                      month: null
+                    tenants: null
+                    enable: true
+                  - query_def_id: qc_1681978513_6803
+                    query_definition_name: QUERY-4851
+                    xql: ''
+                    timeframe: {}
+                    schedule:
+                      run_date: 1681978620000
+                      trigger_type: date
+                    tenants: null
+                    enable: true
+                  filter_count: 3
+                  total_count: 27
+            Retrieve all scheduled queries with extended view:
+              example:
+                reply:
+                  data:
+                  - query_def_id: qc_1683459520_6832
+                    query_name: QUERY-4845
+                    query_timestamp: 1683459520335
+                    execution_user: yyedid@paloaltonetworks.com
+                    query_desc:
+                    - pretty_name: Process
+                      data_type: null
+                      render_type: entity
+                      entity_map: null
+                      dml_ui: false
+                    - pretty_name: action type
+                      data_type: null
+                      render_type: attribute
+                      entity_map: null
+                      dml_type: null
+                    - pretty_name: '='
+                      data_type: null
+                      render_type: operator
+                      entity_map: null
+                    - pretty_name: execution
+                      data_type: null
+                      render_type: value
+                      entity_map: null
+                    - pretty_name: AND
+                      data_type: null
+                      render_type: connector
+                      entity_map: null
+                    - pretty_name: target process name
+                      data_type: TEXT
+                      render_type: attribute
+                      entity_map: attributes
+                      dml_type: null
+                    - pretty_name: '='
+                      data_type: null
+                      render_type: operator
+                      entity_map: attributes
+                    - pretty_name: aaa
+                      data_type: null
+                      render_type: value
+                      entity_map: attributes
+                    - pretty_name: Time
+                      data_type: null
+                      render_type: entity
+                      entity_map: null
+                      dml_ui: false
+                    - pretty_name: event timestamp
+                      data_type: null
+                      render_type: attribute
+                      entity_map: time
+                      dml_type: null
+                    - pretty_name: in last
+                      data_type: null
+                      render_type: operator
+                      entity_map: time
+                    - pretty_name: 24H
+                      data_type: null
+                      render_type: value
+                      entity_map: time
+                    raw_query:
+                      runOnCGO: true
+                      investigationType: PROCESS_EXECUTION_EVENT
+                      investigation:
+                        process_execution_event:
+                          filter:
+                            and:
+                            - search_field: event_timestamp
+                              search_type: relative_timestamp
+                              search_value: 86400000
+                            - search_field: action_process_image_name
+                              search_type: eq
+                              search_value: aaa
+                              extra_fields: []
+                              isExtended: false
+                    schedule_json:
+                      run_date: 1683459540000
+                      trigger_type: date
+                    schedule: 05/07/2023 14:39:00
+                    next_run_time: null
+                    IS_DISABLED: false
+                    TENANTS: null
+                    IS_BQL: false
+                    IS_XQL: false
+                    IS_PUBLIC_API: false
+                    ADDITIONAL_METADATA: {}
+                  - QUERY_DEF_ID: qc_1682934776_6824
+                    QUERY_NAME: XQL-QUERY-4850
+                    QUERY_TIMESTAMP: 1682934776329
+                    EXECUTION_USER: agolan@paloaltonetworks.com
+                    QUERY_DESC: dataset = xdr_data | limit 10
+                    RAW_QUERY:
+                      xql: dataset = xdr_data | limit 10
+                      timeframe:
+                        relativeTime: 86400000
+                      master_global_conf: null
+                    SCHEDULE_JSON:
+                      start_date: null
+                      end_date: null
+                      trigger_type: cron
+                      hour: '8'
+                      minute: '16'
+                      second: '00'
+                      day_of_week: null
+                      week: null
+                      month: null
+                    SCHEDULE: Daily at 8:16
+                    NEXT_RUN_TIME: 1684397760000
+                    IS_DISABLED: false
+                    TENANTS: null
+                    IS_BQL: false
+                    IS_XQL: true
+                    IS_PUBLIC_API: false
+                    ADDITIONAL_METADATA:
+                      column_order: null
+                      dashboard_id: null
+                      query_editor: xql
+                      query_source: investigation
+                      default_limit: null
+                      original_tables:
+                      - xdr_data
+                      xql_query_uses_call: 0
+                  - QUERY_DEF_ID: qc_1681978513_6803
+                    QUERY_NAME: QUERY-4851
+                    QUERY_TIMESTAMP: 1681978513156
+                    EXECUTION_USER: staranus@paloaltonetworks.com
+                    QUERY_DESC:
+                    - pretty_name: File
+                      data_type: null
+                      render_type: entity
+                      entity_map: null
+                      dml_ui: false
+                    - pretty_name: action type
+                      data_type: null
+                      render_type: attribute
+                      entity_map: null
+                      dml_type: null
+                    - pretty_name: '='
+                      data_type: null
+                      render_type: operator
+                      entity_map: null
+                    - pretty_name: all
+                      data_type: null
+                      render_type: value
+                      entity_map: null
+                    - pretty_name: Time
+                      data_type: null
+                      render_type: entity
+                      entity_map: null
+                      dml_ui: false
+                    - pretty_name: event timestamp
+                      data_type: null
+                      render_type: attribute
+                      entity_map: time
+                      dml_type: null
+                    - pretty_name: in last
+                      data_type: null
+                      render_type: operator
+                      entity_map: time
+                    - pretty_name: 24H
+                      data_type: null
+                      render_type: value
+                      entity_map: time
+                    RAW_QUERY:
+                      runOnCGO: true
+                      investigationType: FILE_EVENT
+                      investigation:
+                        FILE_EVENT:
+                          filter:
+                            AND:
+                            - SEARCH_FIELD: event_timestamp
+                              SEARCH_TYPE: RELATIVE_TIMESTAMP
+                              SEARCH_VALUE: 86400000
+                            - OR:
+                              - SEARCH_FIELD: event_sub_type
+                                SEARCH_TYPE: EQ
+                                SEARCH_VALUE: '1'
+                                isExtended: false
+                              - SEARCH_FIELD: event_sub_type
+                                SEARCH_TYPE: EQ
+                                SEARCH_VALUE: '2'
+                                isExtended: false
+                              - SEARCH_FIELD: event_sub_type
+                                SEARCH_TYPE: EQ
+                                SEARCH_VALUE: '3'
+                                isExtended: false
+                              - SEARCH_FIELD: event_sub_type
+                                SEARCH_TYPE: EQ
+                                SEARCH_VALUE: '5'
+                                isExtended: false
+                              - SEARCH_FIELD: event_sub_type
+                                SEARCH_TYPE: EQ
+                                SEARCH_VALUE: '6'
+                                isExtended: false
+                    SCHEDULE_JSON:
+                      run_date: 1681978620000
+                      trigger_type: date
+                    SCHEDULE: 04/20/2023 11:17:00
+                    NEXT_RUN_TIME: null
+                    IS_DISABLED: false
+                    TENANTS: null
+                    IS_BQL: false
+                    IS_XQL: false
+                    IS_PUBLIC_API: false
+                    ADDITIONAL_METADATA: {}
+        '400':
+          description: Bad Request. Got an invalid JSON.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '401':
+          description: Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, id,
+            or other invalid authentication parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '402':
+          description: Unauthorized access. User does not have the required license type to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '500':
+          description: Internal server error. A unified status for API communication type errors.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

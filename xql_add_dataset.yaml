@@ -1,0 +1,51 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/xql/add_dataset:
+    post:
+      tags:
+      - Dataset Management
+      summary: Add Dataset
+      description: "Add a dataset of type `lookup` with the specified name and schema.\r\n\r\n**Required license:** Cortex\
+        \ Cloud Runtime Security or Cortex Cloud Posture Management"
+      operationId: post-public_api-v1-xql-add_dataset
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  type: object
+                  properties:
+                    dataset_name:
+                      type: string
+                      description: The designated name of the dataset.
+                    dataset_type:
+                      type: string
+                      description: Dataset type. Currently only `lookup` is supported.
+                    dataset_schema:
+                      type: object
+                      description: The schema of the dataset in a comma-separated list of JSON pairs where the key is the
+                        field name and the value is the field type.
+                      additionalProperties:
+                        type: string
+                        enum:
+                        - text
+                        - number
+                        - bool
+                        - datetime
+                  required:
+                  - dataset_name
+                  - dataset_type
+                  - dataset_schema
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  dataset_name:
+                    type: string
+                    description: Name of the dataset added.

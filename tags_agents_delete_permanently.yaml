@@ -1,0 +1,95 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/tags/agents/delete_permanently:
+    post:
+      tags:
+      - Endpoint Management
+      summary: Delete Tags Permanently
+      description: |-
+        Permanently delete one or more endpoint tags from the system. Tags that are currently assigned to endpoints cannot be deleted. A maximum of 10 tags can be deleted per API call.
+
+        **Required role:** Admin
+
+        **Required license:** This feature is included with Cortex Cloud Runtime Security or Cortex Cloud Posture Management.
+      operationId: postDeletePermanently
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - request_data
+              properties:
+                request_data:
+                  type: object
+                  required:
+                  - tags
+                  properties:
+                    tags:
+                      type: array
+                      description: List of tag names to permanently delete from the system.
+                      maxItems: 10
+                      items:
+                        type: string
+                    reason:
+                      type: string
+                      description: Reason for deleting the tags.
+                      minLength: 20
+                      maxLength: 200
+      responses:
+        '200':
+          description: Successful response — tags were permanently deleted from the system.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        description: Success message confirming the tags were deleted.
+        '400':
+          description: Bad Request. The request failed validation or the specified tags could not be deleted.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    properties:
+                      err_code:
+                        type: integer
+                      err_msg:
+                        type: string
+                        description: Error message describing why the tags could not be deleted.
+                      err_extra:
+                        type: string
+                        description: Additional error context.
+        '401':
+          description: Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, id,
+            or other invalid authentication parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '402':
+          description: Unauthorized access. Missing required license.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

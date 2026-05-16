@@ -1,0 +1,117 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/get_risk_score:
+    post:
+      tags:
+      - System management
+      summary: Get Risk Score
+      description: |
+        Retrieve the risk score of a specific user or endpoint in your environment, along with the reason for the score.
+      operationId: post-public_api-v1-get_risk_score
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  type: object
+                  description: A dictionary containing the API request fields.
+                  properties:
+                    id:
+                      type: string
+                      description: |-
+                        Unique ID of a specific user or endpoint.
+
+                        - User ID should be in the following format: `netBIOS/samAccount`
+                        - Endpoint ID is the Cortex Agent ID.
+
+                        You can only request one ID at a time.
+                  required:
+                  - id
+              required:
+              - request_data
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    description: JSON object containing the query result.
+                    properties:
+                      type:
+                        type: string
+                        description: |
+                          Form of identification element.
+                      id:
+                        type: string
+                        description: Identification value of the type field.
+                      score:
+                        type: integer
+                        description: The score assigned to the type.
+                      norm_risk_score:
+                        type: integer
+                        description: Normalization of the risk score.
+                        minimum: 0
+                        maximum: 1000
+                      risk_level:
+                        type: string
+                        enum:
+                        - LOW
+                        - MED
+                        - HIGH
+                        description: The risk level.
+                      reasons:
+                        type: array
+                        description: Details describing when and which case name affected the score.
+                        items:
+                          type: object
+                          properties:
+                            date created:
+                              type: string
+                            description:
+                              type: string
+                            severity:
+                              type: string
+                            status:
+                              type: string
+                            points:
+                              type: integer
+                      email:
+                        type: string
+                        description: Email address.
+        '400':
+          description: Bad Request. Got an invalid JSON.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '401':
+          description: Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, id,
+            or other invalid authentication parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '402':
+          description: Unauthorized access. User does not have the required license type to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '500':
+          description: Internal server error. A unified status for API communication type errors.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

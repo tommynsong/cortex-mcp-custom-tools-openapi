@@ -1,0 +1,167 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/scripts/get_scripts:
+    post:
+      tags:
+      - Script execution
+      summary: Get Scripts
+      description: |-
+        Get a list of scripts available in the scripts library.
+
+        **Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture Management
+      operationId: postGetScripts
+      requestBody:
+        description: You can send a request to retrieve either **all** or **filtered** results.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  type: object
+                  description: |-
+                    A dictionary containing the API request fields.
+                    An empty dictionary returns all results.
+                  properties:
+                    filters:
+                      type: array
+                      description: An array of filter fields.
+                      items:
+                        type: object
+                        properties:
+                          field:
+                            type: string
+                            enum:
+                            - name
+                            - description
+                            - created_by
+                            - script_uid
+                            - modification_date
+                            - windows_supported
+                            - linux_supported
+                            - macos_supported
+                            - is_high_risk
+                            description: |-
+                              Identifies a list the filters match. Filters are based on the following keywords:
+                              - `name`: String of the script name.
+                              - `description`: String of the script description.
+                              - `created_by`: String of the user name of who created the script.
+                              - `script_uid`: GUID, global ID of the script, used to identify the script when executing.
+                              - `modification_date`: Timestamp of when the script was last modified.
+                              - `windows_supported`: Whether the script can be executed on Windows operating system.
+                              - `linux_supported`: Whether the script can be executed on Linux operating system.
+                              - `macos_supported`: Whether the script can be executed on Mac operating system.
+                              - `is_high_risk`: Whether the script has a high-risk outcome.
+                          operator:
+                            type: string
+                            enum:
+                            - in
+                            - gte
+                            - lte
+                            description: |-
+                              String that identifies the comparison operator you want to use for this filter. Valid keywords and values are:
+                              `in`
+                              - `name`, `description`, `created_by`, `script_uid`, `windows_supported`, `linux_supported`, `macos_supported`, `is_high_risk`: List of strings.
+                              `gte` / `lte`
+                              - `modification_date`: Integer in timestamp epoch milliseconds.
+                          value:
+                            description: Value that this filter must match.
+                            oneOf:
+                            - type: array
+                              items:
+                                type: string
+                            - type: boolean
+                            - type: integer
+                        required:
+                        - field
+                        - operator
+                        - value
+                  required:
+                  - filters
+              required:
+              - request_data
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    description: JSON object containing the query result.
+                    properties:
+                      total_count:
+                        type: integer
+                        description: Number of total results of this filter without paging.
+                      result_count:
+                        type: integer
+                        description: Number of scripts returned as result.
+                      scripts:
+                        type: array
+                        description: An array of scripts.
+                        items:
+                          type: object
+                          properties:
+                            script_id:
+                              type: string
+                              description: Script ID.
+                            name:
+                              type: string
+                              description: Name of script.
+                            description:
+                              type: string
+                              description: Description of script.
+                            modification_date:
+                              type: integer
+                              description: Timestamp of when the script was last modified.
+                            created_by:
+                              type: string
+                              description: Name of the user who created the script.
+                            is_high_risk:
+                              type: boolean
+                              description: Whether the script has a high-risk outcome.
+                            windows_supported:
+                              type: boolean
+                              description: Whether the script can be executed on Windows OS.
+                            linux_supported:
+                              type: boolean
+                              description: Whether the script can be executed on Linux OS.
+                            macos_supported:
+                              type: boolean
+                              description: Whether the script can be executed on macOS.
+                            script_uid:
+                              type: string
+                              description: GUID, global ID of the script, used to identify the script when executing.
+        '400':
+          description: Bad Request. Got an invalid JSON.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '401':
+          description: Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, id,
+            or other invalid authentication parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '402':
+          description: Unauthorized access. User does not have the required license type to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '500':
+          description: Internal server error. A unified status for API communication type errors.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

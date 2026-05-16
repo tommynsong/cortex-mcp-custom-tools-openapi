@@ -1,0 +1,86 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/integrations/syslog/delete:
+    post:
+      tags:
+      - Syslog servers
+      summary: Delete all or filtered syslog integrations
+      description: |-
+        Delete all the syslog integrations or the ones who match the filter criteria.
+
+        You must have **View/Edit Alert Notification** permissions to run this endpoint.
+
+        **Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture Management
+      operationId: post-public_api-v1-integrations-syslog-delete
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  type: object
+                  description: A dictionary containing the API request fields. An empty dictionary deletes all syslog servers.
+                  properties:
+                    filters:
+                      type: array
+                      description: Array of filter fields. Each JSON object must contain a field, operator, and value.
+                      items:
+                        type: object
+                        properties:
+                          field:
+                            type: string
+                            enum:
+                            - name
+                            description: |-
+                              String that identifies the syslog server field the filter is matching. Filters are based on the following case-sensitive keywords:
+
+                              - `name`
+                          operator:
+                            type: string
+                            enum:
+                            - eq
+                            description: |-
+                              String that identifies the comparison operator you want to use for this filter. Valid operator keywords and corresponding filter fields are:
+                              - **eq** - used with `name`
+                          value:
+                            type: string
+                            description: |-
+                              Value that the filter must match. The contents of this field will differ depending on the website field that you specified for this filter:
+
+                              - name - string
+              required:
+              - request_data
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '402':
+          description: Payment Required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

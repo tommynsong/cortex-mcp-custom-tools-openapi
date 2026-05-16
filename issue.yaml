@@ -1,0 +1,45 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/issue:
+    post:
+      tags:
+      - Issues
+      summary: Create a new issue
+      description: "This endpoint allows users to create a new issue by providing the necessary details. \n**Users can only\
+        \ create one issue at a time.**\n- The request must include the following required fields:\n  - `name`\n  - `description`\n\
+        \  - `observation_time`\n  - `domain`\n  - `category`\n\n**Required license:** Cortex Cloud Runtime Security or Cortex\
+        \ Cloud Posture Management\n"
+      operationId: createIssue
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  type: object
+                  properties:
+                    issue:
+                      $ref: '#/components/schemas/CreateIssue'
+      responses:
+        '202':
+          description: Issue created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  external_id:
+                    type: string
+                  detection_method:
+                    type: string
+              example:
+                external_id: 7c96737d50f74c7b9487450426e9eafb
+                detection_method: CREATE_ALERT_PUBLIC_API
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalError'

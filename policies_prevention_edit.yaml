@@ -1,0 +1,74 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/policies/prevention/edit:
+    post:
+      tags:
+      - Endpoint Management
+      summary: Edit prevention policy rules
+      description: |-
+        Updates one or more prevention policy rules. Each item in `edit_requests` specifies a rule by its 32-character hexadecimal UUID and includes the fields to modify. Only explicitly provided (non-null) fields are updated; all others remain unchanged.
+
+        **Constraints**
+        - The default (catch-all) rule (`is_any = true`) cannot be modified for `name`, `description`, or `target_filter`.
+        - Profile IDs must exist, correspond to the correct profile type (exploit, malware, restrictions, agent_settings, or exceptions), and match the OS platform of the target rule.
+        - Updates are applied atomically. If the policy has been modified since it was last retrieved, the request fails with a `409 Conflict` error due to stale data.
+
+        **Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture Management.
+      operationId: editPreventionPolicy
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditPreventionPolicyRequest'
+      responses:
+        '200':
+          description: All requested edits were applied successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              example:
+                reply: true
+        '400':
+          description: |
+            Bad request. Possible causes include:
+            - Missing required parameters (for example, `edit_requests` or `id`).
+            - Invalid field values (for example, incorrect type or empty string).
+            - Invalid `target_filter` structure.
+            - Unsupported filter field.
+            - Invalid operator for the specified filter field.
+            - Invalid value for the specified filter field.
+            - Attempt to modify metadata or `target_filter` of the default (catch-all) rule.
+            - Profile type does not match the expected type for the slot.
+            - Profile OS does not match the rule's platform.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: |
+            A referenced rule ID or profile ID was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: |
+            Stale data conflict. The policy was modified by another actor since it was last read. Retry the operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                reply:
+                  err_code: 409
+                  err_msg: |
+                    The policy update failed because the policy was changed since the last read. Retry the operation.
+        '500':
+          description: |
+            Internal server error. The policy update failed for an unexpected reason, or the saved policy failed internal validation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'

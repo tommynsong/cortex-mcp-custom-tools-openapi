@@ -1,0 +1,64 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/authentication-settings/delete:
+    post:
+      tags:
+      - Authentication settings
+      summary: Delete authentication settings by domain
+      description: "Delete all authentication settings for the specified domain. \n\n**Note: ** The first configuration on\
+        \ the tenant is the default configuration and cannot be deleted.\n\nYou must have **Instance Administrator** permissions\
+        \ to run this endpoint.\n\n**Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture Management"
+      operationId: post-public_api-v1-authentication-settings-delete
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  type: object
+                  properties:
+                    domain:
+                      type: string
+                      description: The domain whose authentication settings you want to delete.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: boolean
+        '400':
+          description: Bad Request. Got an invalid JSON.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '401':
+          description: Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, id,
+            or other invalid authentication parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '402':
+          description: Unauthorized access. User does not have the required license type to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '500':
+          description: Internal server error. A unified status for API communication type errors.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

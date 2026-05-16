@@ -1,0 +1,61 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/issue_exceptions/:
+    post:
+      tags:
+      - Issues
+      summary: Create a new issue exception
+      description: |-
+        This endpoint allows users to create a new issue exception by providing the necessary details.
+        **Users can only create one exception at a time.**
+        - The request must include the following required fields:
+          - `name`
+          - `rule`
+          - `justification_text`
+          - `justification_category`
+          - `expiration_ts`
+          - `approver_email`
+
+        - Optional fields:
+          - `external_exception_id`
+
+        If the tenant has approval required enabled, the `approver_email` field is mandatory and the exception will be created with `Pending Status` status. Otherwise, the exception is `Self Approved` automatically.
+
+        The `requestor_name` and `requestor_email` fields are automatically populated from the API key context.
+
+        **Required permission:** `Exception Management Admin View/Edit`, `Exception Approver Admin View/Edit`
+
+
+        **Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture Management
+
+        For the complete list of fields you can use as `SEARCH_FIELD` in the `rule` parameter, see [Issue exception supported fields](../docs/issue-exception-supported-fields.md).
+      operationId: createIssueException
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  $ref: '#/components/schemas/CreateIssueException'
+      responses:
+        '200':
+          description: Exception created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    properties:
+                      exception_id:
+                        type: integer
+                        description: ID of the newly created exception
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalError'

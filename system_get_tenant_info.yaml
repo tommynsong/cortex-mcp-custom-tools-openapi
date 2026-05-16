@@ -1,0 +1,153 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/system/get_tenant_info:
+    post:
+      tags:
+      - System management
+      summary: Get Tenant Info
+      description: |-
+        Get your tenant license information.
+
+        **Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture Management
+      operationId: post-public_api-v1-system-get_tenant_info
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  type: object
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    description: List of available licenses, number of devices, and purchased add-ons on your tenant.
+                    properties:
+                      xsiam_premium_expiration:
+                        type: integer
+                      purchased_xsiam_premium:
+                        type: object
+                        properties:
+                          users:
+                            type: integer
+                          gb:
+                            type: integer
+                          agents:
+                            type: integer
+                      pro_per_endpoint_expiration:
+                        type: integer
+                      purchased_pro_per_endpoint:
+                        type: object
+                        properties:
+                          agents:
+                            type: integer
+                      data_enabled_pro_per_endpoint:
+                        type: integer
+                      prevent_expiration:
+                        type: integer
+                      purchased_prevent:
+                        type: integer
+                      installed_prevent:
+                        type: integer
+                      pro_gb_expiration:
+                        type: integer
+                      purchased_pro_gb:
+                        type: object
+                        properties:
+                          gb:
+                            type: integer
+                      installed_pro_gb:
+                        type: integer
+                      compute_unit_expiration:
+                        type: integer
+                      purchased_compute_unit:
+                        type: integer
+                      host_insights_expiration:
+                        type: integer
+                      enabled_host_insights:
+                        type: integer
+                      purchased_host_insights:
+                        type: integer
+                      forensics_expiration:
+                        type: integer
+                      enabled_forensics:
+                        type: integer
+                      pro_cloud_expiration:
+                        type: integer
+                      purchased_pro_cloud:
+                        type: object
+                        properties:
+                          agents:
+                            type: integer
+                      installed_pro_cloud:
+                        type: integer
+                      data_enabled_pro_cloud:
+                        type: integer
+                      identity_threat_expiration:
+                        type: integer
+                      xth_expiration:
+                        type: integer
+                      purchased_xth:
+                        type: integer
+                      threat_intelligence_management_expiration:
+                        type: integer
+                      purchased_threat_intelligence_management:
+                        type: integer
+                      attack_surface_management_expiration:
+                        type: integer
+                      purchased_attack_surface_management:
+                        type: integer
+                      xsiam_ep_hot_expiration:
+                        type: string
+                      purchased_xsiam_ep_hot:
+                        type: integer
+                      xsiam_ep_cold_expiration:
+                        type: string
+                      purchased_xsiam_ep_cold:
+                        type: integer
+                      xsiam_gb_hot_expiration:
+                        type: string
+                      purchased_xsiam_gb_hot:
+                        type: integer
+                      xsiam_gb_cold_expiration:
+                        type: string
+                      purchased_xsiam_gb_cold:
+                        type: integer
+        '400':
+          description: Bad Request. Got an invalid JSON.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '401':
+          description: Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, id,
+            or other invalid authentication parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '402':
+          description: Unauthorized access. User does not have the required license type to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

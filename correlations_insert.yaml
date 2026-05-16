@@ -1,0 +1,196 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/correlations/insert:
+    post:
+      tags:
+      - Correlation Rules
+      summary: Insert or update Correlation Rules
+      description: |-
+        Insert new Correlation Rules or update existing Correlation Rules.
+
+        **Note:** The Correlation Rule `id` is tenant specific and can't be used across tenants. Inserting Correlation Rules with the same `id` as an existing Correlation Rule on that tenant will overwrite the existing Correlation Rule.
+
+        You must have **Instance Administrator** permissions to run this endpoint.
+      operationId: post-public_api-v1-correlations-insert
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - request_data
+              properties:
+                request_data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      rule_id:
+                        type: integer
+                        x-stoplight:
+                          id: b4dhukubmkyr3
+                      name:
+                        type: string
+                        description: Correlation rule name.
+                      severity:
+                        enum:
+                        - SEV_010_INFO
+                        - SEV_020_LOW
+                        - SEV_030_MEDIUM
+                        - SEV_040_HIGH
+                        description: Correlation rule severity.
+                      xql_query:
+                        type: string
+                        description: Correlation rule XQL query.
+                      is_enabled:
+                        type: boolean
+                        description: Whether the correlation rule is enabled or disabled.
+                      description:
+                        type: string
+                        description: Correlation rule description.
+                      alert_name:
+                        type: string
+                        description: Alert name.
+                      alert_category:
+                        enum:
+                        - OTHER
+                        - PERSISTENCE
+                        - EVASION
+                        - TAMPERING
+                        - FILE_TYPE_OBFUSCATION
+                        - PRIVILEGE_ESCALATION
+                        - CREDENTIAL_ACCESS
+                        - LATERAL_MOVEMENT
+                        - EXECUTION
+                        - COLLECTION
+                        - EXFILTRATION
+                        - INFILTRATION
+                        - DROPPER
+                        - FILE_PRIVILEGE_MANIPULATION
+                        - RECONNAISSANCE
+                        - DISCOVERY
+                        description: Alert category.
+                      alert_description:
+                        type: string
+                        description: Alert description.
+                      alert_fields:
+                        type: object
+                        description: Alert fields.
+                        additionalProperties: {}
+                      execution_mode:
+                        enum:
+                        - SCHEDULED
+                        - REAL_TIME
+                        description: Correlation rule execution mode.
+                      search_window:
+                        type: string
+                        description: Search window.
+                        example: '"2 hours"'
+                      simple_schedule:
+                        type: string
+                        description: Correlation rule simple schedule.
+                        example: '"5 minutes"'
+                      timezone:
+                        type: string
+                        description: Correlation rule timezone.
+                        example: '"Asia/Jerusalem"'
+                      crontab:
+                        type: string
+                        description: Linux scheduling for correlation rule.
+                        example: '"*/10 * * * *"'
+                      suppression_enabled:
+                        type: boolean
+                      suppression_duration:
+                        type: string
+                        example: '"1 hours"'
+                      suppression_fields:
+                        type: array
+                        items:
+                          type: string
+                          example: '"event_type"'
+                      dataset:
+                        type: string
+                      user_defined_severity:
+                        type: string
+                        nullable: true
+                      user_defined_category:
+                        type: string
+                        nullable: true
+                      mitre_defs:
+                        type: object
+                        additionalProperties: {}
+                      investigation_query_link:
+                        type: string
+                      drilldown_query_timeframe:
+                        enum:
+                        - QUERY
+                        - ALERT
+                      mapping_strategy:
+                        enum:
+                        - AUTO
+                        - CUSTOM
+        required: false
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  added_objects:
+                    type: array
+                    description: List of Correlation Rule objects added.
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        status:
+                          type: string
+                  updated_objects:
+                    type: array
+                    description: List of Correlation Rule objects updated.
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        status:
+                          type: string
+                  errors:
+                    type: array
+                    description: List of error messages, if there are any.
+                    items:
+                      type: string
+        '400':
+          description: Bad Request. Got invalid JSON.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '401':
+          description: Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, id,
+            or other invalid authentication parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '402':
+          description: Unauthorized access. User does not have the required license type to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '500':
+          description: Internal server error. A unified status for API communication type errors.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

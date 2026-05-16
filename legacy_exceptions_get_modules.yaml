@@ -1,0 +1,94 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/legacy_exceptions/get_modules:
+    post:
+      tags:
+      - Endpoint Management
+      summary: Get Legacy Exceptions Modules
+      description: |+
+        Get a list of supported legacy exception modules available in the tenant. Each module entry includes its `module_id`, supported `platforms`, and the `conditions_definition` schema that must be used when creating or editing a legacy exception rule for that module.
+
+        **Note**: No request body required. Send an empty body.
+
+      operationId: get_legacy_exceptions_modules
+      requestBody:
+        description: No request body required. Send an empty body.
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        module_id:
+                          type: integer
+                          description: Unique numeric identifier for the module. Use as the `module` field in add/edit requests.
+                          example: 1
+                        pretty_name:
+                          type: string
+                          description: Full display name including profile type category
+                          example: Malware > Respond to Malicious Causality Chains
+                        title:
+                          type: string
+                          description: Short title of the module.
+                          example: Respond to Malicious Causality Chains
+                        label:
+                          type: string
+                          description: Label describing what the exception allow-lists (for example, "Files / Folders in Allow
+                            List").
+                          example: Allow List of Remote Ipv4/ipv6 Ip Address, Range or Cidr
+                        profile_type:
+                          type: string
+                          description: Category of the protection profile this module belongs to.
+                          example: Malware
+                        platforms:
+                          type: array
+                          description: List of platforms this module supports. Only use these platforms in add/edit requests
+                            for this module.
+                          items:
+                            type: string
+                            example: Windows
+                        conditions_definition:
+                          type: object
+                          description: Schema definition for the `conditions` object required when creating or editing a legacy
+                            exception rule for this module. Each key is a condition field name, and its value describes the
+                            expected schema and a human-readable description.
+                          properties:
+                            remoteIpsWhitelist:
+                              type: object
+                              properties:
+                                schema:
+                                  type: object
+                                  properties:
+                                    type:
+                                      type: string
+                                    items:
+                                      type: object
+                                      properties:
+                                        type:
+                                          type: string
+                                    minItems:
+                                      type: integer
+                                description:
+                                  type: string
+                                  description: Human-readable description of the condition field.
+        '400':
+          description: Bad Request. Invalid Input.
+        '401':
+          description: Unauthorized access. User does not have the required license type to run this API.
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+        '500':
+          description: Internal Server Error.

@@ -1,0 +1,72 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/triage_endpoint:
+    post:
+      tags:
+      - Endpoint Management
+      summary: Initiate Forensics Triage
+      description: |-
+        Initiate forensics triage for the specified agents.
+        - Maximum of 10 concurrent triage actions at a time.
+        - Specified agents must have Forensics License enabled.
+        - Specified agents must be the same OS, Windows or macOS, but not a mixture of both.
+        - Specified configuration must have type "Online = True".
+
+        **Required license:** Cortex Cloud Runtime Security. In Cortex Cloud Posture Security, you need the Cortex Cloud Runtime Security add-on.
+      operationId: post-public_api-v1-triage_endpoint
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  type: object
+                  properties:
+                    agent_ids:
+                      type: array
+                      description: 'List of agents to run forensics triage on. '
+                      items:
+                        type: string
+                    collector_uuid:
+                      type: string
+                      description: UUID of the triage configuration. If none is specified, the default configuration is used
+                        for this action.
+                  required:
+                  - agent_ids
+              required:
+              - request_data
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    properties:
+                      group_action_id:
+                        type: integer
+                        description: Unique ID for triage action.
+                      successful_agent_ids:
+                        type: array
+                        description: List of agent IDs that successfully received the triage action.
+                        items:
+                          type: string
+                      unsuccessful_agent_ids:
+                        type: array
+                        description: List of agent IDs that did not successfully receive the triage action.
+                        items:
+                          type: object
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '402':
+          description: Payment Required
+        '403':
+          description: Forbidden
+        '500':
+          description: Internal Server Error

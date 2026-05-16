@@ -1,0 +1,118 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/indicators/delete:
+    post:
+      tags:
+      - IOCs
+      summary: Delete Indicators (IOCs)
+      description: |-
+        Delete IOCs selected by filter.
+
+        You must have **Instance Administrator** permissions to run this endpoint.
+      operationId: post-public_api-v1-indicators-delete
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - request_data
+              properties:
+                request_data:
+                  type: object
+                  properties:
+                    filters:
+                      type: array
+                      description: An array of filter fields.
+                      items:
+                        type: object
+                        properties:
+                          field:
+                            enum:
+                            - indicator
+                            - type
+                            - severity
+                            - expiration_date
+                            - default_expiration_enabled
+                            - comment
+                            - reputation
+                            - reliability
+                            description: "Identifies the IOC field the filter is matching. Filters are based on the following\
+                              \ keywords:\r\n- `indicator`: Indicator.\r\n- `type`: Indicator type.\r\n- `severity`: Indicator\
+                              \ severity.\r\n- `expiration_date`: Expiration date in epoch milliseconds.\r\n- `default_expiration_enabled`:\
+                              \ Whether the default expiration is enabled.\r\n- `comment`: Comment.\r\n- `reputation`: Reputation\
+                              \ level.\r\n- `reliability`: Reliability level."
+                          operator:
+                            type: string
+                            enum:
+                            - EQ
+                            - NEQ
+                            - IN
+                            - GTE
+                            - LTE
+                            description: "Identifies the comparison operator you want to use for this filter. Valid keywords\
+                              \ are:\r\n`gte` / `lte`\r\n- `expiration_date`: Integer in timestamp epoch milliseconds\r\n\
+                              `EQ` / `NEQ`\r\n- `indicator`: String\r\n- `type`: String\r\n- `severity`: String\r\n- `default_expiration_enabled`:\
+                              \ Boolean\r\n- `comment`: String\r\n- `reputation`: String\r\n- `reliability`: String"
+                          value:
+                            oneOf:
+                            - type: integer
+                            - type: boolean
+                            - type: string
+                            - type: array
+                              items: {}
+                            description: "Value that this filter must match. The contents of this field will differ depending\
+                              \ on the IOC field that you specified for this filter:\r\n- `indicator`, `comment`: String.\r\
+                              \n- `type`: String, can be one of the following: `hash`, `ip`, `path`, `domain_name`, `filename`,\
+                              \ `mixed`.\r\n- `severity`: String, can be one of the following: `SEV_010_INFO`, `SEV_020_LOW`,\
+                              \ `SEV_030_MEDIUM`, `SEV_040_HIGH`\r\n- `expiration_date`: Integer representing the number of\
+                              \ milliseconds after the Unix epoch, UTC timezone.\r\n- `default_expiration_enabled`: Boolean\
+                              \ value: `true` or `false`.\r\n- `comment`: String.\r\n- `reputation`: String, can be one of\
+                              \ the following: `good`, `bad`, `suspicious`, `unknown`, `no_reputation`.\r\n- `reliability`:\
+                              \ String, can be one of the following: `A`, `B`, `C`, `D`, `E`, `F`, `G`."
+        required: false
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  objects_count:
+                    type: integer
+                  objects:
+                    type: array
+                    items:
+                      type: integer
+        '400':
+          description: Bad Request. Got invalid JSON.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '401':
+          description: Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, id,
+            or other invalid authentication parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '402':
+          description: Unauthorized access. User does not have the required license type to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '500':
+          description: Internal server error. A unified status for API communication type errors.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

@@ -1,0 +1,42 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/asset-groups/create:
+    post:
+      tags:
+      - Asset groups
+      summary: Create an Asset Group
+      description: |-
+        Create a dynamic Asset Group by specifying the filters, or a static group to manually include individual assets.
+
+        **Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture Management
+      operationId: post-public_api-v1-asset-groups-create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/assetgroups_create_body'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CreateAssetGroupResponse'
+        '403':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UnauthorizedErrorResponse'
+        '500':
+          description: Internal Server Error, Invalid Input
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GenericErrorResponse'

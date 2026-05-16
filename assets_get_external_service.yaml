@@ -1,0 +1,316 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/assets/get_external_service:
+    post:
+      tags:
+      - Attack surface management
+      summary: Get External Service
+      description: |+
+        Get service details according to the service ID. You can send up to 20 IDs.
+
+      operationId: post-public_api-v1-assets-get_external_service
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  type: object
+                  description: A dictionary containing the API request fields.
+                  properties:
+                    service_id_list:
+                      type: array
+                      description: Represents the service ID you want to get details for.
+                      items:
+                        type: string
+              required:
+              - request_data
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    description: JSON object containing the query result.
+                    properties:
+                      details:
+                        type: array
+                        description: Service details according to the service ID.
+                        items:
+                          type: object
+                          properties:
+                            service_id:
+                              type: string
+                            service_name:
+                              type: string
+                            service_type:
+                              type: string
+                            ip_address:
+                              type: array
+                              items:
+                                type: string
+                            domain:
+                              type: array
+                              items:
+                                type: object
+                            externally_detected_providers:
+                              type: array
+                              items:
+                                type: string
+                            is_active:
+                              type: string
+                            first_observed:
+                              type: integer
+                            last_observed:
+                              type: integer
+                            port:
+                              type: integer
+                            protocol:
+                              type: string
+                            active_classifications:
+                              type: array
+                              items:
+                                type: string
+                            inactive_classifications:
+                              type: array
+                              items:
+                                type: object
+                            discovery_type:
+                              type: string
+                            business_units:
+                              type: array
+                              items:
+                                type: string
+                            externally_inferred_vulnerability_score:
+                              type: object
+                              nullable: true
+                            externally_inferred_cves:
+                              type: array
+                              items:
+                                type: object
+                            details:
+                              type: object
+                              properties:
+                                serviceKey:
+                                  type: string
+                                serviceKeyType:
+                                  type: string
+                                businessUnits:
+                                  type: array
+                                  items:
+                                    type: object
+                                    properties:
+                                      name:
+                                        type: string
+                                providerDetails:
+                                  type: array
+                                  items:
+                                    type: object
+                                    properties:
+                                      name:
+                                        type: string
+                                      firstObserved:
+                                        type: integer
+                                      lastObserved:
+                                        type: integer
+                                certificates:
+                                  type: array
+                                  items:
+                                    type: object
+                                    properties:
+                                      certificate:
+                                        type: object
+                                        properties:
+                                          issuer:
+                                            type: string
+                                          issuerAlternativeNames:
+                                            type: string
+                                          issuerCountry:
+                                            type: string
+                                          issuerEmail:
+                                            type: string
+                                            nullable: true
+                                          issuerLocality:
+                                            type: string
+                                          issuerName:
+                                            type: string
+                                          issuerOrg:
+                                            type: string
+                                          formattedIssuerOrg:
+                                            type: string
+                                          issuerOrgUnit:
+                                            type: string
+                                          issuerState:
+                                            type: string
+                                          publicKey:
+                                            type: string
+                                          publicKeyAlgorithm:
+                                            type: string
+                                          publicKeyRsaExponent:
+                                            type: integer
+                                          signatureAlgorithm:
+                                            type: string
+                                          subject:
+                                            type: string
+                                          subjectAlternativeNames:
+                                            type: string
+                                          subjectCountry:
+                                            type: string
+                                          subjectEmail:
+                                            type: string
+                                          subjectLocality:
+                                            type: string
+                                          subjectName:
+                                            type: string
+                                          subjectOrg:
+                                            type: string
+                                          subjectOrgUnit:
+                                            type: string
+                                          subjectState:
+                                            type: string
+                                          serialNumber:
+                                            type: string
+                                          validNotBefore:
+                                            type: integer
+                                          validNotAfter:
+                                            type: integer
+                                          version:
+                                            type: string
+                                          publicKeyBits:
+                                            type: integer
+                                          publicKeyModulus:
+                                            type: string
+                                          publicKeySpki:
+                                            type: string
+                                          sha1Fingerprint:
+                                            type: string
+                                          sha256Fingerprint:
+                                            type: string
+                                          md5Fingerprint:
+                                            type: string
+                                      activityStatus:
+                                        type: string
+                                      lastObserved:
+                                        type: integer
+                                      firstObserved:
+                                        type: integer
+                                domains:
+                                  type: array
+                                  items:
+                                    type: object
+                                ips:
+                                  type: array
+                                  items:
+                                    type: object
+                                    properties:
+                                      ip:
+                                        type: string
+                                      protocol:
+                                        type: string
+                                      provider:
+                                        type: string
+                                      geolocation:
+                                        type: object
+                                        properties:
+                                          latitude:
+                                            type: integer
+                                          longitude:
+                                            type: integer
+                                          countryCode:
+                                            type: string
+                                          city:
+                                            type: string
+                                          regionCode:
+                                            type: string
+                                          timeZone:
+                                            type: integer
+                                            nullable: true
+                                      activityStatus:
+                                        type: string
+                                      lastObserved:
+                                        type: integer
+                                      firstObserved:
+                                        type: integer
+                                classifications:
+                                  type: array
+                                  items:
+                                    type: object
+                                    properties:
+                                      name:
+                                        type: string
+                                      activityStatus:
+                                        type: string
+                                      values:
+                                        type: array
+                                        items:
+                                          type: object
+                                          properties:
+                                            jsonValue:
+                                              type: string
+                                            firstObserved:
+                                              type: integer
+                                            lastObserved:
+                                              type: integer
+                                      firstObserved:
+                                        type: integer
+                                      lastObserved:
+                                        type: integer
+                                tlsVersions:
+                                  type: array
+                                  items:
+                                    type: object
+                                    properties:
+                                      tlsVersion:
+                                        type: string
+                                      cipherSuite:
+                                        type: string
+                                      firstObserved:
+                                        type: integer
+                                      lastObserved:
+                                        type: integer
+                                      activityStatus:
+                                        type: string
+                                inferredCvesObserved:
+                                  type: array
+                                  items:
+                                    type: object
+                                enrichedObservationSource:
+                                  type: string
+                                ip_ranges:
+                                  type: object
+        '400':
+          description: Bad Request. Got an invalid JSON.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '401':
+          description: Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, id,
+            or other invalid authentication parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '402':
+          description: Unauthorized access. User does not have the required license type to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '500':
+          description: Internal server error. A unified status for API communication type errors.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

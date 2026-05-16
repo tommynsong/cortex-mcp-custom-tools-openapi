@@ -1,0 +1,83 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/scheduled_queries/delete:
+    post:
+      tags:
+      - Scheduled Queries
+      summary: Delete a scheduled query
+      description: |-
+        Delete scheduled queries.
+
+        You must have **Instance Administrator** permissions to run this endpoint.
+      operationId: post-public_api-v1-scheduled_queries-delete
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - request_data
+              properties:
+                request_data:
+                  type: array
+                  items:
+                    type: string
+        required: false
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        scheduled_query_id:
+                          type: string
+                          description: Each JSON pair in the response is the scheduled query ID and the results of the deletion
+                            request.
+                          x-stoplight:
+                            id: 0f0bx0289jnl4
+                      x-stoplight:
+                        id: ji3octpahr2ro
+            Example 1:
+              example:
+                reply:
+                  qc_1677754985_6538: true
+                  qc_1677754986_6539: true
+                  test: Can't delete this query
+        '400':
+          description: Bad Request. Got an invalid JSON.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '401':
+          description: Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, id,
+            or other invalid authentication parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '402':
+          description: Unauthorized access. User does not have the required license type to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '500':
+          description: Internal server error. A unified status for API communication type errors.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

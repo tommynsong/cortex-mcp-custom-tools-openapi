@@ -1,0 +1,141 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/endpoints/update_agent_name:
+    post:
+      tags:
+      - Endpoint Management
+      summary: Set an Endpoint Alias
+      description: |-
+        Set or modify an Alias field for your endpoints.
+
+        **Required license:** Cortex Cloud Runtime Security. In Cortex Cloud Posture Security, you need the Cortex Cloud Runtime Security add-on.
+      operationId: postUpdateAgentName
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  type: object
+                  properties:
+                    filters:
+                      type: array
+                      description: An array of filter fields.
+                      items:
+                        type: object
+                        properties:
+                          field:
+                            type: string
+                            enum:
+                            - endpoint_id_list
+                            - endpoint_status
+                            - dist_name
+                            - ip_list
+                            - group_name
+                            - platform
+                            - alias
+                            - isolate
+                            - hostname
+                            - cloud_provider
+                            - cloud_region
+                            - cloud_provider_account_id
+                            - cloud_instance_id
+                            - cloud_id
+                            description: |-
+                              String that identifies the field the filter is matching. Filters are based on the following keywords:
+                              - `endpoint_id_list`: List of endpoint IDs.
+                              - `endpoint_status`: Status of the endpoint ID.
+                              - `dist_name`: Distribution / Installation Package name.
+                              - `ip_list`: List of IP addresses.
+                              - `group_name`: Group name the agent belongs to.
+                              - `platform`: Platform name.
+                              - `alias`: Alias name.
+                              - `isolate`: If the endpoint was isolated.
+                              - `hostname`: Hostname.
+                              - `cloud_provider`: Cloud provider (for example, AWS, GCP, Azure).
+                              - `cloud_region`: Cloud region where the endpoint is deployed.
+                              - `cloud_provider_account_id`: Cloud provider account ID.
+                              - `cloud_instance_id`: Cloud instance ID of the endpoint.
+                              - `cloud_id`: Cloud ID of the endpoint.
+                          operator:
+                            type: string
+                            enum:
+                            - in
+                            - gte
+                            - lte
+                            description: |-
+                              String that identifies the comparison operator you want to use for this filter. Valid keywords and values are:
+                              `in`
+                              - `endpoint_id_list`, `dist_name`, `group_name`, `alias`, `hostname`, `username`: List of strings.
+                              - `endpoint_status`: Permitted values are `connected` or `disconnected`
+                              - `ip_list`: List of strings, for example 192.168.5.12.
+                              - `platform`: Permitted values are `windows`, `linux`, `macos`, or `android`
+                              - `isolate`: Permitted values are `isolated` or `unisolated`.
+                              - `scan_status`: Permitted values are `none`, `pending`, `in_progress`, `canceled`, `aborted`, `pending_cancellation`, `success`, or `error`.
+                              `gte` / `lte`
+                              - `first_seen` and `last_seen`: Integer in timestamp epoch milliseconds.
+                              - `cloud_provider`, `cloud_region`, `cloud_provider_account_id`, `cloud_instance_id`, `cloud_id`: List of strings.
+                          value:
+                            description: |-
+                              Value that this filter must match. The contents of this field will differ depending on the endpoint field that you specified for this filter:
+                              - `endpoint_id_list`, `dist_name`, `hostname`, `alias`, `group_name`: List of strings.
+                              - `endpoint_status`: Must contain only the following valid values: `connected` or `disconnected`
+                              - `ip_list`: String list of IP addresses.
+                              - `platform`: Must contain only the following valid values: `windows`, `linux`, `macos`, or `android`.
+                              - `isolate`: Must contain only the following valid values: `isolated` or `unisolated`.
+                              - `cloud_provider`, `cloud_region`, `cloud_provider_account_id`, `cloud_instance_id`, `cloud_id`: List of strings.
+                            oneOf:
+                            - type: array
+                              items:
+                                type: string
+                            - type: string
+                        required:
+                        - field
+                        - operator
+                        - value
+                    alias:
+                      type: string
+                      description: |-
+                        The alias name you want to set or modify.
+
+                        Note: If you send an empty field, the current alias name is deleted.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: boolean
+                description: true=The alias name was set or modified successfully.
+        '400':
+          description: Bad Request. Got an invalid JSON.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '401':
+          description: Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, id,
+            or other invalid authentication parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '402':
+          description: Unauthorized access. User does not have the required license type to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '500':
+          description: Internal server error. A unified status for API communication type errors.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

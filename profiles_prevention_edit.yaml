@@ -1,0 +1,70 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/profiles/prevention/edit:
+    post:
+      tags:
+      - Endpoint Management
+      summary: Edit Prevention Profile
+      description: "Update an existing prevention profile with new configuration. At least one field in update_data (name,\
+        \ description, or modules) must be provided. \n\nNote: Default profiles cannot be edited. "
+      operationId: edit_prevention_profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - profile_id
+              - update_data
+              properties:
+                profile_id:
+                  type: integer
+                  description: The ID of the profile to edit.
+                update_data:
+                  type: object
+                  minProperties: 1
+                  properties:
+                    name:
+                      type: string
+                      minLength: 1
+                      maxLength: 600
+                      nullable: true
+                    description:
+                      type: string
+                      nullable: true
+                    modules:
+                      type: object
+                      nullable: true
+                      additionalProperties:
+                        type: object
+                      description: Updated configuration modules for the profile.
+              additionalProperties: false
+              example:
+                profile_id: 12345
+                update_data:
+                  description: Updated description for the profile
+                  modules:
+                    wildfire:
+                      status: enabled
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: boolean
+                    description: True if the profile was successfully updated.
+                example:
+                  reply: true
+        '400':
+          description: Bad Request. Invalid Input.
+        '401':
+          description: Unauthorized access. User does not have the required license type to run this API.
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+        '500':
+          description: Internal Server Error.

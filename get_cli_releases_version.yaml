@@ -1,0 +1,27 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/cli/releases/version:
+    get:
+      tags:
+      - Cortex CLI
+      summary: Get the latest version of the Cortex CLI
+      description: |-
+        Get the latest version of Cortex CLI
+
+        **Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture Management
+      operationId: GetPublicCLIVersion
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VersionObj'
+        '400':
+          description: Bad Request. Invalid Input.
+        '401':
+          description: Unauthorized access. User does not have the required license type to run this API.
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+        '500':
+          description: Service had unexpected internal error

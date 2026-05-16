@@ -1,0 +1,53 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/get_triage_presets:
+    post:
+      tags:
+      - Response Action
+      summary: Get triage presets
+      description: "Get all triage preset information including triage name, platform, description, created by, and triage\
+        \ type.\r\n\r\n**Required license:** In Cortex Cloud Runtime Security, requires the Forensics add-on. Not supported\
+        \ in Cortex Cloud Posture Management."
+      operationId: post-public_api-v1-get_triage_presets
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  type: object
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    properties:
+                      triage_presets:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            uuid:
+                              type: string
+                              description: Preset/configuration UUID
+                            name:
+                              type: string
+                              description: Triage name
+                            os:
+                              type: string
+                              description: 'Triage operating system/platform: `Windows` or `macOS`'
+                            description:
+                              type: string
+                              description: Description
+                            created_by:
+                              type: string
+                              description: Triage was created by
+                            type:
+                              type: string
+                              description: 'Triage type: Online, Offline, Online/Offline'

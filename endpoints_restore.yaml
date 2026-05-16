@@ -1,0 +1,89 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/endpoints/restore:
+    post:
+      tags:
+      - Response Action
+      summary: Restore File
+      description: |-
+        Restore a quarantined file on a requested endpoints.
+        When filtering by multiple fields:
+        - Response is concatenated using AND condition (OR is not supported).
+        - Maximum result set size is 100.
+        - Offset is the zero-based number of cases from the start of the result set.
+
+        **Required license:** Cortex Cloud Runtime Security. In Cortex Cloud Posture Security, you need the Cortex Cloud Runtime Security add-on.
+      operationId: postRestore
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  type: object
+                  description: A dictionary containing the API request fields.
+                  properties:
+                    file_hash:
+                      type: string
+                      description: String that represents the file in hash. Hash must be a valid SHA256.
+                    endpoint_id:
+                      type: string
+                      description: |-
+                        String that represents the endpoint ID.
+                        Note: if it is not specified, the request will run restore on all endpoints which relate to the quarantined file you defined.
+                    incident_id:
+                      type: integer
+                      description: |-
+                        String representing the case ID.
+                        When included in the request, the Restore File action will appear in the Cortex Cloud Case View Timeline tab.
+                  required:
+                  - file_hash
+              required:
+              - request_data
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    properties:
+                      action_id:
+                        type: string
+                      endpoints_count:
+                        type: string
+        '400':
+          description: Bad Request. Got an invalid JSON.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '401':
+          description: Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, id,
+            or other invalid authentication parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '402':
+          description: Unauthorized access. User does not have the required license type to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '500':
+          description: Internal server error. A unified status for API communication type errors.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

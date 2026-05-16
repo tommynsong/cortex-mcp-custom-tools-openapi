@@ -1,0 +1,53 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/issue_exceptions/disable/:
+    post:
+      tags:
+      - Issues
+      summary: Disable an issue exception
+      description: |-
+        This endpoint allows users to disable an existing issue exception. This will trigger a reversion scan to restore matching issues that were previously suppressed by this exception. **A disabled exception cannot be reactivated.**
+
+        **Required permission:** `Exception Management Admin View/Edit`, `Exception Approver Admin View/Edit`
+
+
+        **Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture Management
+      operationId: disableIssueException
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  type: object
+                  required:
+                  - exception_id
+                  properties:
+                    exception_id:
+                      type: integer
+                      description: ID of the issue exception to disable
+      responses:
+        '200':
+          description: Exception disabled successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    properties:
+                      rows_affected:
+                        type: integer
+                        description: Number of database rows affected
+                      status:
+                        type: string
+                        description: New status of the exception
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalError'

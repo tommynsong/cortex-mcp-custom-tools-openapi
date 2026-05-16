@@ -1,0 +1,74 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/distributions/get_versions:
+    post:
+      tags:
+      - Endpoint Management
+      summary: Get Distribution version
+      description: |-
+        Get a list of all the agent versions to use for creating a distribution list.
+
+        **Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture Management
+      operationId: postGetVersions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    properties:
+                      windows:
+                        type: array
+                        description: List of Windows agent versions.
+                        items:
+                          type: string
+                      linux:
+                        type: array
+                        description: List of Linux agent versions.
+                        items:
+                          type: string
+                      macos:
+                        type: array
+                        description: List of Mac agent versions.
+                        items:
+                          type: string
+        '400':
+          description: Bad Request. Got an invalid JSON.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '401':
+          description: Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, id,
+            or other invalid authentication parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '402':
+          description: Unauthorized access. User does not have the required license type to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '500':
+          description: Internal server error. A unified status for API communication type errors.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

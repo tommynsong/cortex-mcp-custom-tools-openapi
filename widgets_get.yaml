@@ -1,0 +1,145 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/widgets/get:
+    post:
+      tags:
+      - Widgets
+      summary: Get widgets
+      description: "Get widget details by filtering based on the widget title and widget creator.\r\n\r\n**Note:** The endpoint\
+        \ only returns XQL widgets and not predefined widgets.\r\n\r\nYou must have **Instance Administrator** permissions\
+        \ to run this endpoint."
+      operationId: post-public_api-v1-widgets-get
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - request_data
+              properties:
+                request_data:
+                  type: object
+                  properties:
+                    filters:
+                      type: array
+                      description: An array of filter fields.
+                      items:
+                        type: object
+                        properties:
+                          field:
+                            description: "Identifies the dashboard field the filter is matching. Filters are based on the\
+                              \ following keywords:\r\n- `title`: Widget title.\r\n- `created_by`: Name of the user who created\
+                              \ the widget."
+                            enum:
+                            - title
+                            - created_by
+                          operator:
+                            description: "Identifies the comparison operator you want to use for this filter. Valid keywords\
+                              \ are:\r\n`eq` / `neq`\r\n- `created_by`: String\r\n- `title`: String\r\n\r\n`IN`\r\n- `created_by`:\
+                              \ List of strings\r\n- `title`: List of strings"
+                            enum:
+                            - EQ
+                            - NEQ
+                            - IN
+                          value:
+                            type: string
+                            x-stoplight:
+                              id: 5i1vq1hrxr3i5
+                            description: "Value that this filter must match. The contents of this field will differ depending\
+                              \ on the widget field that you specified for this filter:\r\n- `title`, `created_by`: String\
+                              \ or list of strings."
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  objects_count:
+                    type: integer
+                    description: Number of widgets returned.
+                  objects:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        widgets_data:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              widget_key:
+                                type: string
+                              title:
+                                type: string
+                              creation_time:
+                                type: integer
+                              description:
+                                type: string
+                                nullable: true
+                              data:
+                                type: object
+                                properties:
+                                  phrase:
+                                    type: string
+                                  time_frame:
+                                    type: object
+                                    properties:
+                                      relativeTime:
+                                        type: integer
+                                  viewOptions:
+                                    type: object
+                                    properties:
+                                      type:
+                                        type: string
+                                      commands:
+                                        type: array
+                                        items:
+                                          type: object
+                                  gridRawStorageInfo:
+                                    type: object
+                                    properties:
+                                      sort:
+                                        type: string
+                                        nullable: true
+                                      coldefs:
+                                        type: object
+                                      rowHeight:
+                                        type: string
+                                      columnWidth:
+                                        type: integer
+                                        nullable: true
+                              support_time_range:
+                                type: boolean
+                              additional_info:
+                                type: object
+                                properties:
+                                  query_tables:
+                                    type: array
+                                    items:
+                                      type: string
+                                  query_uses_library:
+                                    type: boolean
+                              creator_mail:
+                                type: string
+                              is_public:
+                                type: boolean
+                                x-stoplight:
+                                  id: nh9kv1pf9nl64
+                                description: Indicates whether the widget is public to all users (TRUE) or is restricted to
+                                  specific users (FALSE).
+                              is_predefined:
+                                type: boolean
+                                x-stoplight:
+                                  id: q5djact8tv1wx
+                                description: Indicates whether the widget is a predefined widget (TRUE) or a user-created
+                                  widget (FALSE).
+                  objects_type:
+                    type: string
+        '599':
+          description: Invalid field or operator.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

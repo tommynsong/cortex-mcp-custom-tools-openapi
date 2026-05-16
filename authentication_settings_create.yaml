@@ -1,0 +1,165 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/authentication-settings/create:
+    post:
+      tags:
+      - Authentication settings
+      summary: Create authentication settings for IdP SSO or metadata URL
+      description: |-
+        Create authentication settings for IdP SSO or metadata URL. You must include either the `metadata_url` field or all of the following fields: `idp_sso_url`, `idp_issuer`, and `idp_certificate`.
+
+        You must have **Instance Administrator** permissions to run this endpoint.
+
+        **Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture Management
+      operationId: post-public_api-v1-authentication-settings-create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      description: The name of the SSO integration.
+                    default_role:
+                      type: string
+                      description: |-
+                        The default role automatically assigned to every user who authenticates to Cortex using SAML. This is an inherited role and is not the same as a direct role assigned to the user.
+
+                        If a role with the same name exists on both Cortex Gateway and the tenant, the role will mapped to the role from the tenant. If you want to use specifically the role from Cortex Gateway, use the `is_account_role` parameter set to `true`.
+                    is_account_role:
+                      type: boolean
+                      description: Whether the role was created in Cortex Gateway or in the tenant. When the value is `true`,
+                        the role was created in Cortex Gateway.
+                      default: false
+                    domain:
+                      type: string
+                      description: "When configuring the first SSO, this parameter should be included as empty because it\
+                        \ is the default SSO and has a fixed, read-only value. \nFor additional SSOs, specify this IdP with\
+                        \ an email domain (user@<domain>). When logging in, users are redirected to the IdP associated with\
+                        \ their email domain or to the default IdP if no association exists."
+                    mappings:
+                      type: object
+                      description: These IdP attribute mappings are dependent on your organization’s IdP.
+                      properties:
+                        email:
+                          type: string
+                          description: The IdP attribute mapped to the user's email address in the Syslog server.
+                        firstname:
+                          type: string
+                          description: The IdP attribute mapped to the user's first name.
+                        lastname:
+                          type: string
+                          description: The IdP attribute mapped to the user's last name.
+                        group_name:
+                          type: string
+                          description: |-
+                            The IdP attribute mapped to the user's group membership for authorization.
+
+                            **Note:** Cortex requires the IdP to send the group membership as part of the SAML token. Some IdPs send values in a format that include a comma, which is not compatible with Cortex. In that case, you must configure your IdP to send a single value without a comma for each group membership. For example, if your IdP sends the Group DN (a comma-separated list), by default, you must configure IdP to send the Group CN (Common Name) instead.
+                      required:
+                      - email
+                      - firstname
+                      - lastname
+                      - group_name
+                    advanced_settings:
+                      type: object
+                      description: The advanced settings are optional to configure and some are specific for a particular
+                        IdP.
+                      properties:
+                        relay_state:
+                          type: string
+                          description: The URL for a specific page that you want users to be directed to after they've been
+                            authenticated by your organization's IdP and log in to Cortex.
+                        idp_single_logout_url:
+                          type: string
+                          description: The URL of the IdP's Single Logout endpoint. This ensures that when a user initiates
+                            a logout from Cortex, the identity provider logs the user out of all applications in the current
+                            identity provider login session.
+                        service_provider_public_cert:
+                          type: string
+                          description: The Syslog server's public X.509 certificate in PEM format for IdP validation.
+                        service_provider_private_key:
+                          type: string
+                          description: The Syslog server's private key in PEM format for signing SAML responses. (This is
+                            mostly required for ADFS)
+                        authn_context_enabled:
+                          type: boolean
+                          description: |-
+                            Whether to remove the `RequestedAuthnContext` parameter from SAML requests.
+                            If `true`, allows users to log in by using additional authentication methods.
+                          default: false
+                        force_authn:
+                          type: boolean
+                          description: Whether to force users to reauthenticate to access the Cortex tenant if requested by
+                            the IdP, even if they already authenticated to access other applications.
+                          default: false
+                    idp_sso_url:
+                      type: string
+                      description: |-
+                        The login URL of your IdP and should be copied from your SAML integration configuration on the IdP.
+                        For example:
+                        - Okta: https://cortex-test.okta.com/app/cortex-test/eacbt6b2jj08CasdUQ7sdf15d7/sso/SAML
+                        - Microsoft Azure: https://login.microsoftonline.com/6a5a9780-96a4-41ef-bf45-0535d8a70025/saml2
+                    idp_certificate:
+                      type: string
+                      description: The Idp's public X.509 digital certificate in PEM format for verification, which is copied
+                        from your organization's IdP.
+                    idp_issuer:
+                      type: string
+                      description: The unique identifier of the IdP issuing SAML assertions, which is copied from your organization's
+                        IdP.
+                    metadata_url:
+                      type: string
+                      description: "The metadata URL provides information about hte IdP's capabilities, endpoints, keys, and\
+                        \ more. \nFor example: \n- Okta: https://cortex-test.okta.com/app/exkbuuzw77Bh04V6M6b8/sso/saml/metadata\n\
+                        - Microsoft Azure: https://login.microsoftonline.com/6a5a9780-96a4-41ef-bf45-0535d8a70025/saml2/metadata"
+                  required:
+                  - name
+                  - mappings
+              required:
+              - request_data
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: boolean
+        '400':
+          description: Bad Request. Got an invalid JSON.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '401':
+          description: Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, id,
+            or other invalid authentication parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '402':
+          description: Unauthorized access. User does not have the required license type to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '500':
+          description: Internal server error. A unified status for API communication type errors.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

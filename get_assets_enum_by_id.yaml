@@ -1,0 +1,41 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/assets/enum/{field_name}:
+    get:
+      tags:
+      - Asset inventory
+      summary: Get enum values of specified field
+      description: '**Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture Management'
+      operationId: get-public_api-v1-assets-get-enum-by-field-name
+      parameters:
+      - name: field_name
+        in: path
+        description: Field name - must be of type Enum
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EnumValuesResponse'
+        '403':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UnauthorizedErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GenericErrorResponse'

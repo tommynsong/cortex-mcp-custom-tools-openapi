@@ -1,0 +1,79 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/actions/file_retrieval_details:
+    post:
+      tags:
+      - Response Action
+      summary: File Retrieval Details
+      description: "View the API required to call in order to download the file retrieved by the **Retrieve File** API request\
+        \ according to the action ID.\n\nThe response contains a file hash you need to download and then unzip to view:\n\
+        1. Download the file.\n\n<!--\ntitle: \"Request Example\"\n-->\n``` curl\ncurl -XPOST \"https://api-{fqdn}/public_api/v1/download/<api_value>\"\
+        \ \n-H \"x-xdr-auth-id:{API_KEY_ID}\"  \n-H \"Authorization:{API_KEY}\" \n-H 'Content-Type:application/json' \n--output\
+        \ /tmp/file.zip\n```\n2. Unzip the file: `unzip /tmp/file.zip`\n\n**Required license:** Cortex Cloud Runtime Security.\
+        \ In Cortex Cloud Posture Security, you need the Cortex Cloud Runtime Security add-on."
+      operationId: postFileRetrievalDetails
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  type: object
+                  description: A dictionary containing the API request fields.
+                  properties:
+                    group_action_id:
+                      type: string
+                      description: The action ID of the **Retrieve File** API response.
+                  required:
+                  - group_action_id
+              required:
+              - request_data
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          endpoint_ID:
+                            type: string
+                            description: API required to call in order to download the retrieved result.
+        '400':
+          description: Bad Request. Got an invalid JSON.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '401':
+          description: Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, id,
+            or other invalid authentication parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '402':
+          description: Unauthorized access. User does not have the required license type to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '500':
+          description: Internal server error. A unified status for API communication type errors.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

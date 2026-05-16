@@ -1,0 +1,159 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/endpoints/abort_scan:
+    post:
+      tags:
+      - Response Action
+      summary: Cancel Scan Endpoints
+      description: |-
+        Cancel the scan of selected endpoints. A scan can only be aborted if the selected endpoints are in **Pending** or in **Progress** status.
+
+        When filtering by multiple fields:
+        - Response is concatenated using AND condition (OR is not supported).
+        - Offset is the zero-based number of endpoints from the start of the result set.
+
+        **Required license:** Cortex Cloud Runtime Security. In Cortex Cloud Posture Security, you need the Cortex Cloud Runtime Security add-on.
+      operationId: postAbortScan
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  type: object
+                  description: A dictionary containing the API request fields.
+                  properties:
+                    filters:
+                      description: |-
+                        An array of filter fields to filter which endpoints to cancel scanning.
+                        To cancel scan of all endpoints, use the value "all".
+                      oneOf:
+                      - type: array
+                        items:
+                          type: object
+                          properties:
+                            field:
+                              type: string
+                              enum:
+                              - endpoint_id_list
+                              - dist_name
+                              - first_seen
+                              - last_seen
+                              - ip_list
+                              - group_name
+                              - platform
+                              - alias
+                              - isolate
+                              - hostname
+                              - username
+                              description: |-
+                                String that identifies a list the filters match. Filters are based on the following keywords:
+                                - `endpoint_id_list`: List of endpoint IDs.
+                                - `dist_name`: Name of the distribution list.
+                                - `first_seen`: When an endpoint was first seen.
+                                - `last_seen`: When an endpoint was last seen.
+                                - `ip_list`: List of IP addresses.
+                                - `group_name`: Name of endpoint group.
+                                - `platform`: Type of operating system.
+                                - `alias`: Endpoint alias name.
+                                - `isolate`: If an endpoint has been isolated.
+                                - `hostname`: Name of host.
+                                - `username`: Name of user.
+                            operator:
+                              type: string
+                              enum:
+                              - in
+                              - gte
+                              - lte
+                              description: |-
+                                String that identifies the comparison operator you want to use for this filter. Valid keywords and values are:
+                                `in`
+                                - `endpoint_id_list`, `dist_name`, `group_name`, `alias`, `hostname`, `username`: List of strings
+                                - `ip_list`: List of strings, for example 192.168.5.12
+                                - `platform`: Permitted values are `windows`, `linux`, `macos`, `android`
+                                - `isolate`: Permitted values are `isolated` or `unisolated`
+                                - `scan_status`: Permitted values are `none`, `pending`, `in_progress`, `canceled`, `aborted`, `pending_cancellation`, `success`, or `error`
+                                `gte` / `lte`
+                                - `first_seen` and `last_seen`:  Integer in timestamp epoch milliseconds.
+                            value:
+                              description: |-
+                                Value that this filter must match. Valid keywords:
+                                - `first_seen`, `last_seen`: Integer in timestamp epoch milliseconds, UTC timezone
+                                - `endpoint_id_list`, `dist_name`, `hostname`, `alias`, `group_name`: List of strings
+                                - `ip_list`: List of strings, for example 192.168.5.12
+                                - `isolate`: Permitted values are `isolated` or `unisolated`.
+                                - `platform`: Permitted values are `windows`, `linux`, `macos`, or `android`.
+                              oneOf:
+                              - type: array
+                                items:
+                                  type: string
+                              - type: integer
+                              - type: string
+                          required:
+                          - field
+                          - operator
+                          - value
+                      - type: string
+                    incident_id:
+                      type: string
+                      description: |-
+                        Case ID.
+                        When included in the request, the **Cancel Scan Endpoints** action will appear in the **Cortex Cloud Case View Timeline** tab.
+                  required:
+                  - filters
+              required:
+              - request_data
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    description: JSON object containing the query result.
+                    properties:
+                      action_id:
+                        type: string
+                        description: |-
+                          ID of action to cancel scan selected endpoints.
+                          Response only indicates the request was successfully sent to the endpoint. To track if the scan succeeded either:
+                          - In Cortex XDR console, navigate to **Response** > **Action Center** and search for the action ID. Make sure the **Action ID** field is selected in the table Layout settings.
+                          - Send a **Get Action Status** API request.
+                      endpoints_count:
+                        type: string
+                        description: Number of endpoints included in the request.
+        '400':
+          description: Bad Request. Got an invalid JSON.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '401':
+          description: Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, id,
+            or other invalid authentication parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '402':
+          description: Unauthorized access. User does not have the required license type to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '500':
+          description: Internal server error. A unified status for API communication type errors.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

@@ -1,0 +1,94 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/rbac/get_user_group:
+    post:
+      tags:
+      - System management
+      summary: Get User Groups
+      description: |-
+        Retrieve a list of the current user emails associated with one or more user groups in your environment.
+
+        **Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture Management
+      operationId: post-public_api-v1-rbac-get_user_group
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  type: object
+                  description: A dictionary containing the API request fields.
+                  properties:
+                    group_names:
+                      type: array
+                      description: List of one or more user group names for which you want the associated users.
+                      items:
+                        type: string
+              required:
+              - request_data
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: array
+                    description: JSON object containing the query result.
+                    items:
+                      type: object
+                      properties:
+                        group_name:
+                          type: string
+                          description: Name of the User Group.
+                        description:
+                          type: string
+                          nullable: true
+                          description: Description of the User Group, if available.
+                        pretty_name:
+                          type: string
+                          description: Name of the User Group as it appears in the Management Console.
+                        insert_time:
+                          type: integer
+                          description: Timestamp of when the User Group was created.
+                        update_time:
+                          type: integer
+                          description: Timestamp of when the User Group was last updated.
+                        user_email:
+                          type: array
+                          description: List of email addresses belonging to the users associated with the User Group.
+                          items:
+                            type: string
+                        source:
+                          type: string
+                          description: Type of User Group.
+        '400':
+          description: Bad Request. Got an invalid JSON.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '401':
+          description: Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, id,
+            or other invalid authentication parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '402':
+          description: Unauthorized access. User does not have the required license type to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '500':
+          description: Internal server error. A unified status for API communication type errors.

@@ -1,0 +1,213 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/issue/search:
+    post:
+      tags:
+      - Issues
+      summary: Retrieve issues based on filters
+      description: |-
+        This endpoint retrieves a list of issues that match the specified filter criteria. It supports filtering along with sorting and pagination.
+
+        **Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture Management
+      operationId: getIssues
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  type: object
+                  properties:
+                    filters:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          field:
+                            type: string
+                            enum:
+                            - id
+                            - external_id
+                            - detection.method
+                            - issue_domain
+                            - severity
+                            - _insert_time
+                            - last_modified
+                            - status.progress
+                            - assigned_to
+                            - assigned_to_pretty
+                            - observation_time
+                            - category
+                            - detection.rule_id
+                            - asset_ids
+                            - asset_names
+                            - asset_classes
+                            - asset_group_ids
+                            - asset_categories
+                            - asset_regions
+                            - asset_providers
+                            - asset_accounts
+                            - asset_types
+                            - asset_external_provider_ids
+                            - asset_cloud_account_names
+                            description: Specifies the field to filter issues by. See the endpoint description above for allowed
+                              values per field.
+                          operator:
+                            type: string
+                            enum:
+                            - in
+                            - gte
+                            - lte
+                            description: 'Comparison operator to use with the filter. Note: `gte` and `lte` are only valid
+                              for time-based fields (`_insert_time`, `last_modified`, `observation_time`). All other fields
+                              support `in`.'
+                          value:
+                            oneOf:
+                            - type: array
+                              items:
+                                type: integer
+                            - type: array
+                              items:
+                                type: string
+                            - type: integer
+                            - type: string
+                            description: |-
+                              Value(s) for filtering the issues. Allowed values depend on the selected field:
+
+                              - **severity**: `INFO`, `LOW`, `MEDIUM`, `HIGH`, `CRITICAL`
+                              - **status.progress**: `New`, `In Progress`, `Resolved`
+                              - **issue_domain**: `Security`, `Health`, `Hunting`, `IT`, `Posture` (custom domains may also be configured)
+                              - **detection.method**: `XDR Agent`, `XDR Analytics`, `PAN NGFW`, `XDR BIOC`, `XDR IOC`, `Threat Intelligence`, `XDR Managed Threat Hunting`, `XDR Analytics BIOC`, `Correlation`, `Prisma Cloud`, `Prisma Cloud Compute`, `ASM`, `IoT Security`, `Custom Issue`, `Health`, `SaaS Attachments`, `Attack Path`, `Posture Policy`, `CAS Drift Scanner`, `Cloud Network Analyzer`, `IaC Scanner`, `CAS Secret Scanner`, `CI/CD Risks`, `CLI Scanner`, `CIEM Scanner`, `API Traffic Monitor`, `API Posture Scanner`, `Agentless Disk Scanner`, `Kubernetes Scanner`, `Compute Policy`, `CSPM Scanner`, `CAS CVE Scanner`, `CAS License Scanner`, `Secrets Scanner`, `SAST Scanner`, `Data Policy`, `Package Operational Risk`, `Vulnerability Policy`, `AI Security Posture`, `DLP`, `MIRRORING`, `AURL`, `User Reported Phishing`, `Graph Engine`
+                              - **category**: `CONFIGURATION`, `VULNERABILITY`, `MALWARE`, `IDENTITY`, `NETWORK`, `DATA_LOSS`, `COMPLIANCE`, `RUNTIME`, `SECRETS`, `IAC`, `CI_CD_RISKS`, `DRIFT`, `API_SECURITY`, `POSTURE`, `COMPUTE`, `LICENSE`, `OPERATIONAL_RISK`, `AI_SECURITY`
+                              - **asset_classes**: `Compute`, `Data`, `Network`, `Identity`, `Security`, `Management`, `Application`, `Other`
+                              - **asset_categories**: `Storage Bucket`, `Virtual Machine`, `Database Instance`, `Container`, `Serverless Function`, `Load Balancer`, `Firewall`, `VPN Gateway`, `IAM Role`, `IAM User`, `IAM Group`, `IAM Policy`, `Service Account`, `Kubernetes Cluster`, `Kubernetes Pod`, `Kubernetes Node`, `Network Interface`, `Subnet`, `VPC`, `Security Group`, `DNS Zone`, `Certificate`, `Key Vault`, `Disk`, `Snapshot`, `Image`, `Queue`, `Topic`, `API Gateway`, `CDN`, `Other`
+                              - **asset_providers**: `AWS`, `Azure`, `GCP`, `Oracle Cloud`, `IBM Cloud`, `Alibaba Cloud`, `Other`
+                              - **_insert_time, last_modified, observation_time**: Epoch timestamp in milliseconds (integer)
+                              - **id**: Integer issue ID
+                              - **external_id, detection.rule_id, assigned_to, assigned_to_pretty, asset_ids, asset_names, asset_accounts, asset_regions, asset_types, asset_group_ids, asset_external_provider_ids, asset_cloud_account_names**: Free-text string values
+                search_from:
+                  type: integer
+                  default: 0
+                  description: Starting index for pagination.
+                search_to:
+                  type: integer
+                  default: 100
+                  description: Ending index for pagination.
+                sort:
+                  type: object
+                  properties:
+                    field:
+                      type: string
+                      enum:
+                      - id
+                      - severity
+                      - observation_time
+                    keyword:
+                      type: string
+                      enum:
+                      - asc
+                      - desc
+                      description: Sort order (ascending or descending).
+                include_fields:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                    - normalized_fields
+                    - custom_fields
+                  description: |
+                    A list of fields to include in the response.
+                    - `normalized_fields`: Includes normalized fields in the response.
+                    - `custom_fields`: Includes custom user-defined fields in the response.
+                    - By default these fields will not be part of response payload.
+                  default: []
+      responses:
+        '200':
+          description: Successful response with issues
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    properties:
+                      total_count:
+                        type: integer
+                      result_count:
+                        type: integer
+                      issues:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Issue'
+              example:
+                reply:
+                  total_count: 1500
+                  result_count: 2
+                  issues:
+                  - _insert_time: '2024-01-15T10:30:00Z'
+                    owner: CWP
+                    external_id: abc-12345-def
+                    name: Publicly Exposed Storage Bucket
+                    description: S3 bucket my-data-bucket is publicly accessible
+                    observation_time: 1705312200000
+                    domain: Cloud Security
+                    detection_method: CSPM_SCANNER
+                    detection_rule_id: RULE-S3-PUBLIC
+                    category: CONFIGURATION
+                    finding_ids:
+                    - f1a2b3c4d5
+                    asset_ids:
+                    - a8d24e796ef264a33e6e84c707ff2f67
+                    asset_names:
+                    - my-data-bucket
+                    asset_group_ids:
+                    - 5
+                    - 42
+                    asset_classes:
+                    - Data
+                    asset_categories:
+                    - Storage Bucket
+                    asset_regions:
+                    - us-east-1
+                    asset_providers:
+                    - AWS
+                    asset_accounts:
+                    - '883588134481'
+                    asset_types:
+                    - S3 Bucket
+                    asset_external_provider_ids:
+                    - arn:aws:s3:::my-data-bucket
+                    asset_cloud_account_names:
+                    - production-account
+                    mitre_tactics:
+                    - TA0001 - Initial Access
+                    mitre_techniques:
+                    - T1190 - Exploit Public-Facing Application
+                    type: Cloud Security
+                    remediation: Restrict public access on the S3 bucket
+                    extended_description: The bucket allows unauthenticated read access to all objects.
+                    impact: Potential data exposure of sensitive customer records
+                    id: 12345
+                    last_modified: 1705315800000
+                    tags:
+                    - critical
+                    - data-exposure
+                    is_excluded: false
+                    is_starred: true
+                    assigned_to: alice.smith@example.com
+                    assigned_to_pretty: Alice Smith
+                    status: New
+                    severity: HIGH
+                    case_ids:
+                    - 101
+                    is_excepted: false
+                    action_status: pending
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalError'

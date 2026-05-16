@@ -1,0 +1,165 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/dashboards/insert:
+    post:
+      tags:
+      - Dashboards
+      summary: Insert or update dashboards
+      description: |-
+        Add or update the dashboards retrieved by the Get dashboards API.
+
+        You must have **Instance Administrator** permissions to run this endpoint.
+      operationId: post-public_api-v1-dashboards-insert
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  type: object
+                  properties:
+                    dashboards_data:
+                      type: array
+                      description: An array of dashboard details as retrieved by the Get dashboards API.
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                            description: Dashboard name.
+                          description:
+                            type: string
+                            description: Dashboard description.
+                            nullable: true
+                          status:
+                            type: string
+                            description: Dashboard status.
+                          layout:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                id:
+                                  type: string
+                                data:
+                                  type: array
+                                  items:
+                                    type: object
+                                    properties:
+                                      key:
+                                        type: string
+                                      data:
+                                        type: object
+                                        properties:
+                                          type:
+                                            type: string
+                                          width:
+                                            type: integer
+                                          height:
+                                            type: integer
+                                          time_frame:
+                                            type: object
+                                            properties:
+                                              relativeTime:
+                                                type: integer
+                                          alerts_or_incidents:
+                                            type: string
+                          default_dashboard_id:
+                            type: integer
+                          global_id:
+                            type: string
+                            description: '**Note:** If no global ID is added in the request data, there might be errors with
+                              the global ID listed as "None".'
+                          metadata:
+                            type: object
+                            properties:
+                              params:
+                                type: array
+                                items:
+                                  type: object
+                    widgets_data:
+                      type: array
+                      description: An array of relevant XQL widget details as retrieved by the Get dashboards API.
+                      items:
+                        type: object
+                        properties:
+                          widget_key:
+                            type: string
+                          title:
+                            type: string
+                          creation_time:
+                            type: integer
+                          description:
+                            type: string
+                            nullable: true
+                          data:
+                            type: object
+                            properties:
+                              phrase:
+                                type: string
+                              time_frame:
+                                type: object
+                                properties:
+                                  relativeTime:
+                                    type: integer
+                              viewOptions:
+                                type: object
+                                properties:
+                                  type:
+                                    type: string
+                                  commands:
+                                    type: array
+                                    items:
+                                      type: object
+                          support_time_range:
+                            type: boolean
+                          additional_info:
+                            type: object
+                            properties:
+                              query_tables:
+                                type: array
+                                items:
+                                  type: string
+                              query_uses_library:
+                                type: boolean
+                          creator_mail:
+                            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  added_objects:
+                    type: array
+                    description: Array listing the the global ID and internal ID of the objects added.
+                    items:
+                      type: object
+                      properties:
+                        global_id:
+                          type: string
+                        internal_id:
+                          type: integer
+                  updated_objects:
+                    type: array
+                    description: Array listing the the global ID and internal ID of the objects updated.
+                    items:
+                      type: object
+                      properties:
+                        global_id:
+                          type: string
+                        internal_id:
+                          type: integer
+                  errors:
+                    type: array
+                    description: List of errors including the global ID and the error message.
+                    items:
+                      type: object
+                      properties:
+                        global_id:
+                          type: string
+                        error:
+                          type: string

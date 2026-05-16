@@ -1,0 +1,156 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/tags/agents/assign:
+    post:
+      tags:
+      - Endpoint Management
+      summary: Assign Tags
+      description: |-
+        Assign one or more tags to one or more endpoints.
+
+        **Required license:** Cortex Cloud Runtime Security. In Cortex Cloud Posture Security, you need the Cortex Cloud Runtime Security add-on.
+      operationId: postAssign
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  type: object
+                  properties:
+                    filters:
+                      type: array
+                      description: An array of filter fields.
+                      items:
+                        type: object
+                        properties:
+                          field:
+                            type: string
+                            enum:
+                            - endpoint_id
+                            - endpoint_id_list
+                            - last_seen
+                            - first_seen
+                            - dist_name
+                            - ip_list
+                            - platform
+                            - alias
+                            - hostname
+                            - isolate
+                            - username
+                            - scan_status
+                            - group_name
+                            - endpoint_status
+                            - operational_status
+                            - public_ip_list
+                            - cloud_provider
+                            - cloud_region
+                            - cloud_provider_account_id
+                            - cloud_instance_id
+                            - cloud_id
+                            description: |-
+                              String that identifies the field the filter is matching. Filters are based on the following keywords:
+                              - `endpoint_id_list`: List of endpoint IDs.
+                              - `last_seen`: When an endpoint was last seen.
+                              - `first_seen`: When an endpoint was first seen.
+                              - `dist_name`: Distribution / Installation Package name.
+                              - `ip_list`: List of IP addresses.
+                              - `platform`: Platform name.
+                              - `alias`: Alias name.
+                              - `hostname`: Hostname.
+                              - `isolate`: If the endpoint was isolated.
+                              - `username`: Name of user.
+                              - `scan_status`: Status of the scan.
+                              - `group_name`: Group name the agent belongs to.
+                              - `endpoint_status`: Status of the endpoint ID.
+                              - `operational_status`: Operational status.
+                              - `public_ip_list`: List of public IP addresses.
+                              - `cloud_provider`: Cloud provider (for example, AWS, GCP, Azure).
+                              - `cloud_region`: Cloud region where the endpoint is deployed.
+                              - `cloud_provider_account_id`: Cloud provider account ID.
+                              - `cloud_instance_id`: Cloud instance ID of the endpoint.
+                              - `cloud_id`: Cloud ID of the endpoint.
+                          operator:
+                            type: string
+                            enum:
+                            - in
+                            - gte
+                            - lte
+                            description: |-
+                              String that identifies the comparison operator you want to use for this filter. Valid keywords and values are:
+                              `in`
+                              - `endpoint_id_list`, `dist_name`, `group_name`, `alias`, `hostname`, `username`, `operational_status`: List of strings.
+                              - `endpoint_status`: Permitted values are `connected`, `lost`, `disconnected`, `uninstalled`.
+                              - `ip_list`, `public_ip_list`: List of strings, for example "192.168.5.12".
+                              - `platform`: Permitted values are `windows`, `linux`, `macos`, `android`, `ios`.
+                              - `isolate`: Permitted values are `isolated` or `unisolated`.
+                              - `scan_status`: Permitted values are `none`, `pending`, `in_progress`, `canceled`, `aborted`, `pending_cancellation`, `success`, or `error`.
+                              - `operational_status`: Permitted values are `protected`, `partially_protected`, `unprotected`.
+                              `gte` / `lte`
+                              - `first_seen` and `last_seen`: Integer in timestamp epoch milliseconds.
+                              - `cloud_provider`, `cloud_region`, `cloud_provider_account_id`, `cloud_instance_id`, `cloud_id`: List of strings.
+                          value:
+                            description: |-
+                              Value that this filter must match. The contents of this field will differ depending on the endpoint field that you specified for this filter:
+                              - `endpoint_id_list`, `dist_name`, `group_name`, `alias`, `hostname`, `username`, `operational_status`: List of strings.
+                              - `endpoint_status`: Must contain only the following valid values: `connected`, `disconnected`, `lost`, or `uninstalled`.
+                              - `operational_status`: Must contain only the following valid values: `protected`, `partially_protected`, `unprotected`.
+                              - `ip_list`, `public_ip_list`: String list of IP addresses.
+                              - `platform`: Must contain only the following valid values: `windows`, `linux`, `macos`, `android`, or `ios`.
+                              - `isolate`: Must contain only the following valid values: `isolated` or `unisolated`.
+                              - `scan_status`: Must contain only the following valid values: `none`, `pending`, `in_progress`, `canceled`, `aborted`, `pending_cancellation`, `success`, or `error`.
+                              - `first_seen` and `last_seen`: Integer in timestamp epoch milliseconds.
+                              - `cloud_provider`, `cloud_region`, `cloud_provider_account_id`, `cloud_instance_id`, `cloud_id`: List of strings.
+                            oneOf:
+                            - type: array
+                              items:
+                                type: string
+                            - type: string
+                            - type: integer
+                        required:
+                        - field
+                        - operator
+                        - value
+                    tag:
+                      type: string
+                      description: The tag you want to assign.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: boolean
+                description: true=The tag name was assigned successfully.
+        '400':
+          description: Bad Request. Got an invalid JSON.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '401':
+          description: Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, id,
+            or other invalid authentication parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '402':
+          description: Unauthorized access. User does not have the required license type to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '500':
+          description: x  Internal server error. A unified status for API communication type errors.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

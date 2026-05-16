@@ -1,0 +1,205 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/audits/agents_reports:
+    post:
+      tags:
+      - Audit log
+      summary: Get Audit Agent Report
+      description: |+
+        Get agent event reports.
+        - Response is concatenated using AND condition (OR is not supported).
+        - Maximum result set size is 100.
+        - Offset is the zero-based number of cases from the start of the result set.
+
+      operationId: post-public_api-v1-audits-agents_reports
+      requestBody:
+        description: You can send a request to retrieve either all or filtered results.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  type: object
+                  description: |-
+                    A dictionary containing the API request fields.
+                    An empty dictionary returns all results.
+                  properties:
+                    filters:
+                      type: array
+                      description: An array of filter fields.
+                      items:
+                        type: object
+                        properties:
+                          field:
+                            type: string
+                            enum:
+                            - endpoint_id
+                            - endpoint_name
+                            - type
+                            - sub_type
+                            - result
+                            - timestamp
+                            - domain
+                            - xdr_version
+                            - category
+                            - trapsversion
+                            description: |-
+                              Identifies a list. Filters are based on the
+                              following keywords:
+                              - `endpoint_id`: The endpoint ID.
+                              - `endpoint_name`: The endpoint name.
+                              - `type`: Type of report.
+                              - `sub_type`: Subtype of report.
+                              - `result`: Result type.
+                              - `timestamp`: Report timestamp.
+                              - `domain`: Domain of the agent.
+                              - `xdr_version`: XDR version.
+                              - `category`: Type of event category.
+                              - `timestamp`: Integer in timestamp epoch
+                              milliseconds
+                          operator:
+                            type: string
+                            enum:
+                            - in
+                            - gte
+                            - lte
+                            description: |-
+                              identifies the comparison operator you want to use for this filter. Valid keywords and values are:
+                              `in`
+                              - `endpoint_id`, `endpoint_name`, `type`, `sub_type`, `result`, `domain`, `xdr_version`, `category`: List of strings
+                              `gte` / `lte`
+                              - `timestamp`
+                          value:
+                            description: |-
+                              Value that this filter must match:
+                              - `timestamp`: Integer representing the number of milliseconds after the Unix epoch, UTC timezone.
+                              - All other fields require a string value. In the case of `in` operator, the value is a list of possible values enclosed in square brackets.
+                              - `category`: Permitted values are: `status`, `monitoring`, or `audit`.
+                            oneOf:
+                            - type: array
+                              items:
+                                type: string
+                            - type: integer
+                        required:
+                        - field
+                        - operator
+                        - value
+                    search_from:
+                      type: integer
+                      description: |-
+                        An integer representing the starting offset within the query result set from which you want agent reports returned.
+                        Reports are returned as a zero-based list. Any report indexed less than this value is not returned in the final result set and defaults to zero.
+                    search_to:
+                      type: integer
+                      description: |-
+                        An integer representing the end offset within the result set after which you do not want agent reports returned.
+                        Reports in the agent report list that are indexed higher than this value are not returned in the final results set. Defaults to 100, which returns all reports to the end of the list.
+                      default: 100
+                    sort:
+                      type: object
+                      description: Identifies the sort order for the result set.
+                      properties:
+                        field:
+                          type: string
+                          enum:
+                          - type
+                          - category
+                          - trapsversion
+                          - timestamp
+                          - domain
+                          description: The field you want to sort by.
+                        keyword:
+                          type: string
+                          enum:
+                          - asc
+                          - desc
+                          description: Whether to sort in ascending or descending order.
+                          default: desc
+                      required:
+                      - field
+                      - keyword
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    description: JSON object containing the query result.
+                    properties:
+                      total_count:
+                        type: integer
+                        description: Number of total results of this filter without paging.
+                      result_count:
+                        type: integer
+                        description: Number of returned items.
+                      data:
+                        type: array
+                        description: List of audit items.
+                        items:
+                          type: object
+                          properties:
+                            TIMESTAMP:
+                              type: number
+                              description: Epoch time in milliseconds, UTC timezone.
+                              format: float
+                            RECEIVEDTIME:
+                              type: number
+                              description: Epoch time in milliseconds, UTC timezone.
+                            ENDPOINTID:
+                              type: string
+                            ENDPOINTNAME:
+                              type: string
+                            DOMAIN:
+                              type: string
+                            TRAPSVERSION:
+                              type: string
+                            CATEGORY:
+                              type: string
+                            TYPE:
+                              type: string
+                            SUBTYPE:
+                              type: string
+                            RESULT:
+                              type: string
+                            REASON:
+                              type: string
+                            DESCRIPTION:
+                              type: string
+        '400':
+          description: Bad Request. Got an invalid JSON.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '401':
+          description: Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, ID,
+            or other invalid authentication parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '402':
+          description: Unauthorized access. User does not have the required license type to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '403':
+          description: |-
+            Forbidden access. The provided API Key does not
+            have the required RBAC permissions to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '500':
+          description: Internal server error. A unified status for API communication type errors.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

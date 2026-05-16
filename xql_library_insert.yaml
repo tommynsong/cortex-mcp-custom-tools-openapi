@@ -1,0 +1,120 @@
+openapi: 3.0.0
+paths:
+  /public_api/xql_library/insert:
+    post:
+      tags:
+      - Query Library
+      summary: Insert or update XQL queries
+      description: |-
+        Insert new XQL queries or update existing XQL queries.
+
+        **Note:** You should use unique `xql_query_name` for each XQL query on a given tenant.
+
+        You must have **Instance Administrator** permissions to run this endpoint.
+      operationId: post-public_api-xql_library-insert
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - request_data
+              properties:
+                request_data:
+                  type: object
+                  required:
+                  - xql_queries
+                  properties:
+                    xql_queries_override:
+                      type: boolean
+                      description: When the `xql_query_name` already exists on the tenant, this field defines whether or not
+                        to overwrite the existing XQL query with the new content. When `true`, the query will be overwritten.
+                        When `false`, the query will not be updated and an error will be returned.
+                      default: false
+                    xql_queries:
+                      type: array
+                      items:
+                        type: object
+                        required:
+                        - xql_query
+                        - xql_query_name
+                        properties:
+                          xql_query:
+                            type: string
+                          xql_query_name:
+                            type: string
+                            description: XQL query name should be unique.
+                    xql_query_tags:
+                      type: array
+                      description: XQL query tags are optional
+                      items:
+                        type: string
+        required: false
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    properties:
+                      xql_queries_added:
+                        type: array
+                        description: List of XQL queries that were added.
+                        items:
+                          type: string
+                      xql_queries_updated:
+                        type: array
+                        description: List of XQL queries that were updated.
+                        items:
+                          type: string
+                      errors:
+                        type: array
+                        description: List of errors received from additions/updates.
+                        items:
+                          type: string
+            Example 1:
+              example:
+                reply:
+                  xql_queries_added: []
+                  xql_queries_updated:
+                  - test_ql11
+                  - test_ql11
+                  errors:
+                  - |-
+                    - test_ql1
+                    - The given query name=test_ql1 Already exists as private
+        '400':
+          description: Bad Request. Got an invalid JSON.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '401':
+          description: Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, id,
+            or other invalid authentication parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '402':
+          description: Unauthorized access. User does not have the required license type to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '500':
+          description: Internal server error. A unified status for API communication type errors.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

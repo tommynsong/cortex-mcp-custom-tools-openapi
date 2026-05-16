@@ -1,0 +1,169 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/entries/insert:
+    post:
+      tags:
+      - Cases
+      summary: Add War Room entries
+      description: |-
+        Add an entry to the cases or alert War Room, including data.
+        Note: This endpoint only adds entries to existing War Rooms; it does not create them. Ensure that the War Room already exists before making this request.
+
+        **Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture Management
+      operationId: post-public_api-v1-entries-insert
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  description: |-
+                    The unique identifier of the case/issue or alert for which the War Room entry is created.
+
+                    - Case or issue IDs must be prefixed with `INCIDENT-` (for example, `INCIDENT-3`).
+                    - Alert IDs should be provided without any prefix (for example, `3`).
+                data:
+                  type: string
+                  description: The data you want to add or the command you want to run in the War Room.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  version:
+                    type: integer
+                  cacheVersn:
+                    type: integer
+                  modified:
+                    type: string
+                  sizeInBytes:
+                    type: integer
+                  type:
+                    type: integer
+                  created:
+                    type: string
+                  incidentCreationTime:
+                    type: string
+                  investigationCreationTime:
+                    type: string
+                  retryTime:
+                    type: string
+                  user:
+                    type: string
+                  errorSource:
+                    type: string
+                  contents:
+                    type: string
+                  format:
+                    type: string
+                  investigationId:
+                    type: string
+                  file:
+                    type: string
+                  fileID:
+                    type: string
+                  parentId:
+                    type: string
+                  pinned:
+                    type: boolean
+                  fileMetadata:
+                    type: object
+                    nullable: true
+                  parentContent:
+                    type: object
+                    nullable: true
+                  parentEntryTruncated:
+                    type: boolean
+                  system:
+                    type: string
+                  reputations:
+                    type: object
+                    nullable: true
+                  category:
+                    type: string
+                  note:
+                    type: boolean
+                  isTodo:
+                    type: boolean
+                  tags:
+                    type: string
+                    nullable: true
+                  tagsRaw:
+                    type: string
+                    nullable: true
+                  startDate:
+                    type: string
+                  times:
+                    type: integer
+                  recurrent:
+                    type: boolean
+                  endingDate:
+                    type: string
+                  timezoneOffset:
+                    type: integer
+                  cronView:
+                    type: boolean
+                  scheduled:
+                    type: boolean
+                  scheduledEntryGuid:
+                    type: string
+                  entryTask:
+                    type: object
+                    nullable: true
+                  taskId:
+                    type: string
+                  playbookId:
+                    type: string
+                  reputationSize:
+                    type: integer
+                  contentsSize:
+                    type: integer
+                  brand:
+                    type: string
+                  InstanceID:
+                    type: string
+                  IndicatorTimeline:
+                    type: integer
+                    nullable: true
+                  Relationships:
+                    type: string
+                    nullable: true
+                  mirrored:
+                    type: boolean
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '402':
+          description: Payment Required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

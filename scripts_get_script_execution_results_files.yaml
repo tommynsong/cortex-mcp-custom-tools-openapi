@@ -1,0 +1,81 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/scripts/get_script_execution_results_files:
+    post:
+      tags:
+      - Script execution
+      summary: Get Script Execution Result Files
+      description: |-
+        Get the files retrieved from a specific endpoint during a script execution.
+
+        **Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture Management
+      operationId: postGetScriptExecutionResultsFiles
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  type: object
+                  description: A dictionary containing the API request fields.
+                  properties:
+                    action_id:
+                      type: string
+                      description: Identifier of the action, can be found in Cortex XDR console **Response** > **Action Center**
+                        > **Action ID** field.
+                    endpoint_id:
+                      type: string
+                      description: Endpoint ID.
+                  required:
+                  - action_id
+                  - endpoint_id
+              required:
+              - request_data
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    description: JSON object containing the query result.
+                    properties:
+                      data:
+                        type: string
+                        description: A signed public link to a zip file containing the retrieved files. Link expires after
+                          10 minutes.
+        '400':
+          description: Bad Request. Got an invalid JSON.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '401':
+          description: Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, id,
+            or other invalid authentication parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '402':
+          description: Unauthorized access. User does not have the required license type to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '403':
+          description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'
+        '500':
+          description: Internal server error. A unified status for API communication type errors.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/reply'

@@ -1,0 +1,72 @@
+openapi: 3.0.0
+paths:
+  /public_api/v1/distributions/get_distributions:
+    post:
+      tags:
+      - Endpoint Management
+      summary: Get Distributions
+      description: |
+        Retrieves a paginated list of existing agent installations and metadata based on optional filters and sorting criteria.
+
+        This endpoint allows you to:
+
+        - Retrieve existing agent installations or filter by specific criteria
+        - Paginate through large result sets
+        - Sort results by any field in ascending or descending order
+        - Get total count and filtered count of agent installations
+      operationId: get_distributions
+      requestBody:
+        required: true
+        description: Request body containing pagination, sorting, and filtering criteria for agent distributions
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                request_data:
+                  $ref: '#/components/schemas/GetDataRequest'
+      responses:
+        '200':
+          description: Successful response containing the list of distributions matching the criteria
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicGetDataResponse'
+        '400':
+          description: Bad Request - Invalid request parameters or malformed JSON
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    properties:
+                      err_code:
+                        type: integer
+                        description: Numeric error code returned by the API.
+                      err_msg:
+                        type: string
+                        description: Human-readable summary of the error.
+                      err_extra:
+                        type: string
+                        description: Detailed description of the error, including the cause and how to resolve it when applicable.
+        '500':
+          description: Internal Server Error - An unexpected error occurred on the server
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: object
+                    properties:
+                      err_code:
+                        type: integer
+                        description: Numeric error code returned by the API.
+                      err_msg:
+                        type: string
+                        description: Human-readable summary of the error.
+                      err_extra:
+                        type: string
+                        description: Detailed description of the error, including the cause and how to resolve it when applicable.
