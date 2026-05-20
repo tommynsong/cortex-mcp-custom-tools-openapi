@@ -2,8 +2,6 @@ openapi: 3.0.0
 paths:
   /public_api/v1/assets:
     post:
-      tags:
-      - Asset inventory
       summary: Get all or filtered assets
       description: |-
         Retrieve detailed information about all assets within your environment, including enterprise, multi-cloud, code, and external surfaces.

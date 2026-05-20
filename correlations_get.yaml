@@ -5,11 +5,10 @@ paths:
       tags:
       - Correlation Rules
       summary: Get Correlation Rules
-      description: "Return a list of correlation rules. You can return all correlation rules or filter results. You can also\
-        \ return extended results with all details included.\r\n- The response is concatenated using AND condition (OR is\
-        \ not supported).\r\n- The maximum result set size is >100.\r\n- Offset is the zero-based number of incidents from\
-        \ the start of the result set.\r\n\r\nYou must have **Instance Administrator** permissions to run this endpoint.\r\
-        \n"
+      description: "Return a list of correlation rules. You can return all correlation rules or filter results. You can also
+        return extended results with all details included.- The response is concatenated using AND condition (OR is
+        not supported).- The maximum result set size is >100.- Offset is the zero-based number of incidents from
+        the start of the result set.You must have **Instance Administrator** permissions to run this endpoint."
       operationId: post-public_api-v1-correlations-get
       requestBody:
         content:
@@ -63,22 +62,22 @@ paths:
                             - drilldown_query_timeframe
                             - mapping_strategy
                             - alert_domain
-                            description: "Identifies the correlation rule field the filter is matching. Filters are based\
-                              \ on the following keywords:\r\n- `name`: Correlation rule name.\r\n- `severity`: Correlation\
-                              \ rule severity.\r\n- `xql_query`: Correlation rule XQL query.\r\n- `is_enabled`: Whether the\
-                              \ correlation rule is enabled or disabled.\r\n- `description`: Correlation rule description.\r\
-                              \n- `alert_name`: Alert name.\r\n- `alert_category`: Alert category.\r\n- `alert_description`:\
-                              \ Alert description.\r\n- `alert_fields`: Alert fields.\r\n- `execution_mode`: Whether execution\
-                              \ mode is scheduled or real time.\r\n- `search_window`: Amount of time for search window.\r\n\
-                              - `simple_schedule`: Correlation rule schedule.\r\n- `timezone`: Correlation rule timezone.\r\
-                              \n- `crontab`: Linux scheduling for correlation rule.\r\n- `suppression_enabled`: Whether suppression\
-                              \ is enabled for correlation rule.\r\n- `suppression_duration`: Duration of correlation rule\
-                              \ suppression.\r\n- `suppression_fields`: Suppression fields.\r\n- `dataset`: Correlation rule\
-                              \ dataset.\r\n- `user_defined_severity`: User-defined severity.\r\n- `user_defined_category`:\
-                              \ User-defined category.\r\n- `mitre_defs`: MITRE definitions.\r\n- `investigation_query_link`:\
-                              \ Investigation query link.\r\n- `drilldown_query_timeframe`: Whether the drilldown query timeframe\
-                              \ is query or alert.\r\n- `mapping_strategy`: Whether the mapping strategy is auto or custom.\r\
-                              \n- `alert_domain`: Alert domain."
+                            description: "Identifies the correlation rule field the filter is matching. Filters are based
+                               on the following keywords:- `name`: Correlation rule name.- `severity`: Correlation
+                               rule severity.- `xql_query`: Correlation rule XQL query.- `is_enabled`: Whether the
+                               correlation rule is enabled or disabled.- `description`: Correlation rule description.
+                              - `alert_name`: Alert name.- `alert_category`: Alert category.- `alert_description`:
+                               Alert description.- `alert_fields`: Alert fields.- `execution_mode`: Whether execution
+                               mode is scheduled or real time.- `search_window`: Amount of time for search window.
+                              - `simple_schedule`: Correlation rule schedule.- `timezone`: Correlation rule timezone.
+                              - `crontab`: Linux scheduling for correlation rule.- `suppression_enabled`: Whether suppression
+                               is enabled for correlation rule.- `suppression_duration`: Duration of correlation rule
+                               suppression.- `suppression_fields`: Suppression fields.- `dataset`: Correlation rule
+                               dataset.- `user_defined_severity`: User-defined severity.- `user_defined_category`:
+                               User-defined category.- `mitre_defs`: MITRE definitions.- `investigation_query_link`:
+                               Investigation query link.- `drilldown_query_timeframe`: Whether the drilldown query timeframe
+                               is query or alert.- `mapping_strategy`: Whether the mapping strategy is auto or custom.
+                              - `alert_domain`: Alert domain."
                           operator:
                             x-stoplight:
                               id: 30j7q4asbkekx
@@ -88,56 +87,57 @@ paths:
                             - IN
                             - GTE
                             - LTE
-                            description: "Identifies the comparison operator you want to use for this filter. Valid keywords\
-                              \ are:\r\n`EQ` / `NEQ`\r\n- `name`: String\r\n- `severity`: String\r\n- `xql_query`: String\r\
-                              \n- `is_enabled`: Boolean\r\n- `description`: String\r\n- `alert_name`: String\r\n- `alert_category`:\
-                              \ String\r\n- `alert_description`: String\r\n- `alert_fields`: String or dictionary\r\n- `execution_mode`:\
-                              \ String\r\n- `search_window`: String\r\n- `simple_schedule`: String\r\n- `timezone`: String\r\
-                              \n- `crontab`: String\r\n- `suppression_enabled`: Boolean\r\n- `suppression_duration`: String\r\
-                              \n- `dataset`: String\r\n- `user_defined_severity`: String\r\n- `user_defined_category`: String\r\
-                              \n- `investigation_query_link`: String\r\n- `drilldown_query_timeframe`: String\r\n- `mapping_strategy`:\
-                              \ String\r\n- `alert_domain`: String\r\n`IN`\r\n- `suppression_fields`: List of strings\r\n\
+                            description: "Identifies the comparison operator you want to use for this filter. Valid keywords
+                               are:`EQ` / `NEQ`- `name`: String- `severity`: String- `xql_query`: String
+                              - `is_enabled`: Boolean- `description`: String- `alert_name`: String- `alert_category`:
+                               String- `alert_description`: String- `alert_fields`: String or dictionary- `execution_mode`:
+                               String- `search_window`: String- `simple_schedule`: String- `timezone`: String
+                              - `crontab`: String- `suppression_enabled`: Boolean- `suppression_duration`: String
+                              - `dataset`: String- `user_defined_severity`: String- `user_defined_category`: String
+                              - `investigation_query_link`: String- `drilldown_query_timeframe`: String- `mapping_strategy`:
+                               String- `alert_domain`: String`IN`- `suppression_fields`: List of strings
                               - `mitre_defs`: List of strings"
                           value:
                             oneOf:
                             - type: string
                             - type: boolean
                             - type: array
-                              items: {}
+                              items: 
                             x-stoplight:
                               id: b4k8ag5571dau
-                            description: "Value that this filter must match. The contents of this field will differ depending\
-                              \ on the correlation rule field that you specified for this filter:\r\n- `name`, `xql_query`,\
-                              \ `description`, `alert_name`, `alert_description`, `alert_fields`, `suppression_duration`,\
-                              \ `dataset`, `user_defined_severity`, `user_defined_category`, `investigation_query_link`: String.\r\
-                              \n- `severity`: String, can be one of the following: `SEV_010_INFO`, `SEV_020_LOW`, `SEV_030_MEDIUM`,\
-                              \ `SEV_040_HIGH`\r\n- `is_enabled`: String, can be one of the following: `enabled` or `disabled`.\r\
-                              \n- `alert_category`: String, can be one of the following: `other`, `persistence`, `evasion`,\
-                              \ `tampering`, `file_type_obfuscation`, `privilege_escalation`, `credential_access`, `lateral_movement`,\
-                              \ `execution`, `collection`, `exfiltration`, `infiltration`, `dropper`, `file_privilege_manipulation`,\
-                              \ `reconnaissance`, `discovery`.\r\n- `alert_fields`: Dictionary.\r\n- `execution_mode`: String,\
-                              \ can be one of the following: `scheduled` or `real_time`.\r\n- `search_window`: String, for\
-                              \ example: \"2 hours\".\r\n- `simple_schedule`: String, for example: \"5 minutes\".\r\n- `timezone`:\
-                              \ String, for example: \"Asia/Jerusalem\".\r\n- `crontab`: String, for example: \"*/10 * * *\
-                              \ *\".\r\n- `suppression_enabled`: Boolean: `true` or `false`.\r\n- `suppression_fields`: List\
-                              \ of strings.\r\n- `mitre_defs`: List of strings or dictionary.\r\n- `drilldown_query_timeframe`:\
-                              \ String, can be one of the following: `query` or `alert`.\r\n- `mapping_strategy`: String,\
-                              \ can be one of the following: `auto` or `custom`.\r\n- `alert_domain`: String, can be one of\
-                              \ the following: `domain_security`, `domain_it`, `domain_hunting`."
+                            description: |-
+                              "Value that this filter must match. The contents of this field will differ depending
+                               on the correlation rule field that you specified for this filter:- `name`, `xql_query`,
+                               `description`, `alert_name`, `alert_description`, `alert_fields`, `suppression_duration`,
+                               `dataset`, `user_defined_severity`, `user_defined_category`, `investigation_query_link`: String.
+                              - `severity`: String, can be one of the following: `SEV_010_INFO`, `SEV_020_LOW`, `SEV_030_MEDIUM`,
+                               `SEV_040_HIGH`- `is_enabled`: String, can be one of the following: `enabled` or `disabled`.
+                              - `alert_category`: String, can be one of the following: `other`, `persistence`, `evasion`,
+                               `tampering`, `file_type_obfuscation`, `privilege_escalation`, `credential_access`, `lateral_movement`,
+                               `execution`, `collection`, `exfiltration`, `infiltration`, `dropper`, `file_privilege_manipulation`,
+                               `reconnaissance`, `discovery`.- `alert_fields`: Dictionary.- `execution_mode`: String,
+                               can be one of the following: `scheduled` or `real_time`.- `search_window`: String, for
+                               example: "2 hours".- `simple_schedule`: String, for example: "5 minutes".- `timezone`:
+                               String, for example: "Asia/Jerusalem".- `crontab`: String, for example: "*/10 * * *
+                               *".- `suppression_enabled`: Boolean: `true` or `false`.- `suppression_fields`: List
+                               of strings.- `mitre_defs`: List of strings or dictionary.- `drilldown_query_timeframe`:
+                               String, can be one of the following: `query` or `alert`.- `mapping_strategy`: String,
+                               can be one of the following: `auto` or `custom`.- `alert_domain`: String, can be one of
+                               the following: `domain_security`, `domain_it`, `domain_hunting`."
                     search_from:
                       type: integer
                       x-stoplight:
                         id: smo422mguxdbx
-                      description: "Integer representing the starting offset within the query result set from which you want\
-                        \ correlation rules returned.\r\nCorrelation rules are returned as a zero-based list. Any correlation\
-                        \ rule indexed less than this value is not returned in the final result set and defaults to zero."
+                      description: "Integer representing the starting offset within the query result set from which you want
+                         correlation rules returned.Correlation rules are returned as a zero-based list. Any correlation
+                         rule indexed less than this value is not returned in the final result set and defaults to zero."
                     search_to:
                       type: integer
                       x-stoplight:
                         id: 4ry5fitupvcoo
-                      description: "Integer representing the end offset within the result set after which you do not want\
-                        \ BIOCs returned.\r\nBIOCs in the BIOC list that are indexed higher than this value are not returned\
-                        \ in the final results set. Defaults to >100, which returns all BIOCs to the end of the list."
+                      description: "Integer representing the end offset within the result set after which you do not want
+                         BIOCs returned.BIOCs in the BIOC list that are indexed higher than this value are not returned
+                         in the final results set. Defaults to >100, which returns all BIOCs to the end of the list."
         required: false
       responses:
         '200':
@@ -172,7 +172,7 @@ paths:
                           type: string
                         alert_fields:
                           type: object
-                          properties: {}
+                          properties: 
                         execution_mode:
                           type: string
                         search_window:

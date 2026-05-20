@@ -5,9 +5,9 @@ paths:
       tags:
       - Issues
       summary: Retrieve issue exceptions based on filters
-      description: "This endpoint retrieves a list of issue exceptions that match the specified filter criteria. It supports\
-        \ filtering along with sorting and pagination. \n\n**Required permission:** `Exception Management Admin View`, `Exception\
-        \ Approver Admin View`\n\n\n**Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture Management"
+      description: "This endpoint retrieves a list of issue exceptions that match the specified filter criteria. It supports
+         filtering along with sorting and pagination. **Required permission:** `Exception Management Admin View`, `Exception
+         Approver Admin View`**Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture Management"
       operationId: searchIssueExceptions
       requestBody:
         required: false

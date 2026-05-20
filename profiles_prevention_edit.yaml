@@ -5,8 +5,8 @@ paths:
       tags:
       - Endpoint Management
       summary: Edit Prevention Profile
-      description: "Update an existing prevention profile with new configuration. At least one field in update_data (name,\
-        \ description, or modules) must be provided. \n\nNote: Default profiles cannot be edited. "
+      description: "Update an existing prevention profile with new configuration. At least one field in update_data (name,
+         description, or modules) must be provided. Note: Default profiles cannot be edited. "
       operationId: edit_prevention_profile
       requestBody:
         required: true

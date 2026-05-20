@@ -81,7 +81,7 @@ paths:
                                   type: array
                                   items:
                                     type: object
-                                    properties: {}
+                                    properties: 
                                 is_datamodel:
                                   type: boolean
                                 query_tables:
@@ -92,7 +92,7 @@ paths:
                                   type: array
                                   items:
                                     type: object
-                                    properties: {}
+                                    properties: 
                             is_private:
                               type: boolean
                             labels:
@@ -126,11 +126,11 @@ paths:
                     modified_by_pretty: Public API - 6
                     query_metadata:
                       is_valid: true
-                      query_calls: []
+                      query_calls: 
                       is_datamodel: false
                       query_tables:
                       - xdr_data
-                      query_presets: []
+                      query_presets: 
                     is_private: false
                     labels:
                     - tag1
@@ -148,11 +148,11 @@ paths:
                     modified_by_pretty: null
                     query_metadata:
                       is_valid: true
-                      query_calls: []
+                      query_calls: 
                       is_datamodel: false
                       query_tables:
                       - xdr_data
-                      query_presets: []
+                      query_presets: 
                     is_private: false
                     labels:
                     - tag2

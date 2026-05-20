@@ -37,16 +37,17 @@ paths:
                         Note: This is only used when querying tenants managed by Managed Security Services Providers (MSSP).
 
                         List of strings used for running APIs on local and Managed Security tenants. Valid values:
-                        - For single tenant (local tenant) query, enter a single-item list with your tenant_id. Additional valid values are, empty list ([]) or null (default).
+                        - For single tenant (local tenant) query, enter a single-item list with your tenant_id. Additional valid values are, empty list () or null (default).
                         - For multi-tenant investigations (Managed Security parent who investigate children and/or local), enter multi-item list with the required tenant_id. List of IDs can contain the parent, children, or both parent and children.
                       items:
                         type: string
                     timeframe:
                       type: object
-                      description: "Integer in timestamp epoch milliseconds.\r\nValid values include:\r\n- Absolute Unix timestamp\
-                        \ representing a date period: {\"from\" : 1598907600000, \"to\" : 1599080399000} = date period: 31/08/20\
-                        \ 09:00:00 PM UTC - 02/09/20 8:59:59 PM UTC\r\n- Relative Unix timestamp representing the last 24\
-                        \ hours: {\"relativeTime\": 86400000} = (24 * 60 * 60 * 1000 = 86400000)."
+                      description: |-
+                        "Integer in timestamp epoch milliseconds.Valid values include:- Absolute Unix timestamp
+                         representing a date period: {"from" : 1598907600000, "to" : 1599080399000} = date period: 31/08/20
+                         09:00:00 PM UTC - 02/09/20 8:59:59 PM UTC- Relative Unix timestamp representing the last 24
+                         hours: {"relativeTime": 86400000} = (24 * 60 * 60 * 1000 = 86400000)."
                       properties:
                         from:
                           type: integer
@@ -67,7 +68,7 @@ paths:
               example:
                 request_data:
                   query: dataset=xdr_data | fields event_id, event_type, event_sub_type | limit 3
-                  tenants: []
+                  tenants: 
                   timeframe:
                     from: 1598907600000
                     to: 1599080399000

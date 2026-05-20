@@ -28,25 +28,25 @@ paths:
                         type: object
                         properties:
                           field:
-                            description: "Identifies the dashboard field the filter is matching. Filters are based on the\
-                              \ following keywords:\r\n- `title`: Widget title.\r\n- `created_by`: Name of the user who created\
-                              \ the widget."
+                            description: "Identifies the dashboard field the filter is matching. Filters are based on the
+                               following keywords:- `title`: Widget title.- `created_by`: Name of the user who created
+                               the widget."
                             enum:
                             - created_by
                             - title
                           value:
-                            description: "Identifies the comparison operator you want to use for this filter. Valid keywords\
-                              \ are:\r\n`EQ` / `NEQ`\r\n- `created_by`: String\r\n- `title`: String\r\n\r\n`IN`\r\n- `created_by`:\
-                              \ List of strings\r\n- `title`: List of strings"
+                            description: "Identifies the comparison operator you want to use for this filter. Valid keywords
+                               are:`EQ` / `NEQ`- `created_by`: String- `title`: String`IN`- `created_by`:
+                               List of strings- `title`: List of strings"
                             enum:
                             - EQ
                             - NEQ
                             - IN
                           operator:
                             type: string
-                            description: "Value that this filter must match. The contents of this field will differ depending\
-                              \ on the widget field that you specified for this filter:\r\n- `title`, `created_by`: String\
-                              \ or list of strings."
+                            description: "Value that this filter must match. The contents of this field will differ depending
+                               on the widget field that you specified for this filter:- `title`, `created_by`: String
+                               or list of strings."
       responses:
         '200':
           description: OK

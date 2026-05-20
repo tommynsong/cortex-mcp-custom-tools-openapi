@@ -5,9 +5,9 @@ paths:
       tags:
       - Cases
       summary: Update existing case
-      description: "Update an existing case in the system. **Users can only update one case at a time.**  \n- At least one\
-        \ of the following fields is **mandatory**:  \n  - case_id  \n\n**Required license:** Cortex Cloud Runtime Security\
-        \ or Cortex Cloud Posture Management"
+      description: "Update an existing case in the system. **Users can only update one case at a time.**  - At least one
+        of the following fields is **mandatory**:    - case_id  **Required license:** Cortex Cloud Runtime Security
+        or Cortex Cloud Posture Management"
       operationId: updateCase
       parameters:
       - name: case-id

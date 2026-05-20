@@ -1,1 +1,0 @@
-# cortex-mcp-custom-tools

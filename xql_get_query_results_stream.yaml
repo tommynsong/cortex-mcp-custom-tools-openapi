@@ -3,23 +3,24 @@ paths:
   /public_api/v1/xql/get_query_results_stream:
     post:
       tags:
-      - XQL query
+        - XQL query
       summary: Get XQL query results Stream
-      description: "Retrieve XQL query results with more than 1000 results. \n\nNote: This endpoint only works on XQL queries\
-        \ initiated by `/public_api/v1/xql/start_xql_query/`.\n\nResponse is returned as chunked (Transfer-Encoding: chunked).\
-        \ To retrieve a compressed gzipped response (Content-Encoding: gzip), in your header add Accept-Encoding: gzip.\n\n\
-        For more information on how to run XQL queries, see [*Running XQL query APIs*](https://cortex-panw.stoplight.io/docs/cortex-xsiam-1/90ay3tlx6l9dh-running-xql-query-ap-is).\n\
-        \n<!-- theme: info -->\n\n> #### Note\n>\n> To ensure you don't surpass your quota, Cortex Cloud allows you to run\
-        \ up to four API queries in parallel.\n\n**Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture\
-        \ Management"
+      description:
+        "Retrieve XQL query results with more than 1000 results. Note: This endpoint only works on XQL queries
+        initiated by `/public_api/v1/xql/start_xql_query/`.Response is returned as chunked (Transfer-Encoding: chunked).
+        To retrieve a compressed gzipped response (Content-Encoding: gzip), in your header add Accept-Encoding: gzip.
+        For more information on how to run XQL queries, see [*Running XQL query APIs*](https://cortex-panw.stoplight.io/docs/cortex-xsiam-1/90ay3tlx6l9dh-running-xql-query-ap-is).
+        <!-- theme: info -->> #### Note>> To ensure you don't surpass your quota, Cortex Cloud allows you to run
+        up to four API queries in parallel.**Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture
+        Management"
       operationId: postGetQueryResultsStream
       parameters:
-      - name: Accept-Encoding
-        in: header
-        description: For retrieving a compressed gzipped response
-        schema:
-          type: string
-          default: gzip
+        - name: Accept-Encoding
+          in: header
+          description: For retrieving a compressed gzipped response
+          schema:
+            type: string
+            default: gzip
       requestBody:
         content:
           application/json:
@@ -31,52 +32,52 @@ paths:
                   properties:
                     stream_id:
                       type: string
-                      description: String representing the unique ID generate by the response to **Get XQL query results**
+                      description:
+                        String representing the unique ID generate by the response to **Get XQL query results**
                         API.
                     is_gzip_compressed:
                       type: boolean
                       description: A boolean flag.
                   required:
-                  - stream_id
+                    - stream_id
               required:
-              - request_data
+                - request_data
               example:
                 request_data:
                   stream_id: 563c5e24-===-9a1f8139d3c5
                   is_gzip_compressed: true
       responses:
-        '200':
+        "200":
           description: Successful response
-          content:
-            application/json: {}
-        '400':
+        "400":
           description: Bad Request. Got an invalid JSON.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/reply'
-        '401':
-          description: Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, id,
+                $ref: "#/components/schemas/reply"
+        "401":
+          description:
+            Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, id,
             or other invalid authentication parameters.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/reply'
-        '402':
+                $ref: "#/components/schemas/reply"
+        "402":
           description: Unauthorized access. User does not have the required license type to run this API.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/reply'
-        '403':
+                $ref: "#/components/schemas/reply"
+        "403":
           description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/reply'
-        '500':
+                $ref: "#/components/schemas/reply"
+        "500":
           description: Internal server error. A unified status for API communication type errors.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/reply'
+                $ref: "#/components/schemas/reply"

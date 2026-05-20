@@ -5,8 +5,8 @@ paths:
       tags:
       - Dataset Management
       summary: Get all datasets
-      description: "Retrieve a list of all the datasets and their properties.\r\n\r\n**Required license:** Cortex Cloud Runtime\
-        \ Security or Cortex Cloud Posture Management"
+      description: "Retrieve a list of all the datasets and their properties.**Required license:** Cortex Cloud Runtime
+         Security or Cortex Cloud Posture Management"
       operationId: post-public_api-v1-xql-get_datasets
       requestBody:
         content:

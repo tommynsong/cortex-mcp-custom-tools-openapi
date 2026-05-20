@@ -46,29 +46,28 @@ paths:
                             - expiration
                             - roles
                             - id
-                            description: "Identifies the API key field the filter is matching. Filters are based on the following\
-                              \ keywords:\r\n- `expiration`: Time the API key expires in epoch milliseconds.\r\n- `roles`:\
-                              \ The role assigned to the API key at creation.\r\n- `id`: API key ID."
+                            description: "Identifies the API key field the filter is matching. Filters are based on the following
+                               keywords:- `expiration`: Time the API key expires in epoch milliseconds.- `roles`:
+                               The role assigned to the API key at creation.- `id`: API key ID."
                           operator:
                             enum:
                             - gte
                             - lte
                             - contains
                             - in
-                            description: "Identifies the comparison operator you want to use for this filter. Valid keywords\
-                              \ are:\r\n\r\n- `gte` / `lte` operator is used with `expiration` field (Integer in timestamp\
-                              \ epoch milliseconds).\r\n\r\n- `contains` operator is used with `roles` field (Array of strings).\r\
-                              \n\r\n- `in` operator is used with `id` field (Array of integers)."
+                            description: "Identifies the comparison operator you want to use for this filter. Valid keywords
+                               are:- `gte` / `lte` operator is used with `expiration` field (Integer in timestamp
+                               epoch milliseconds).- `contains` operator is used with `roles` field (Array of strings).
+                              - `in` operator is used with `id` field (Array of integers)."
                           value:
                             oneOf:
                             - type: integer
                             - type: array
-                              items: {}
-                            description: "Value that this filter must match. The contents of this field will differ depending\
-                              \ on the API key field that you specified for this filter:\r\n- `expiration`: Integer representing\
-                              \ the number of milliseconds after the Unix epoch, UTC timezone.\r\n- `roles`: Array of strings\
-                              \ representing the roles in the Cortex XSOAR system.\r\n- `id`: Array of integers representing\
-                              \ the API key IDs."
+                            description: "Value that this filter must match. The contents of this field will differ depending
+                               on the API key field that you specified for this filter:- `expiration`: Integer representing
+                               the number of milliseconds after the Unix epoch, UTC timezone.- `roles`: Array of strings
+                               representing the roles in the Cortex XSOAR system.- `id`: Array of integers representing
+                               the API key IDs."
       responses:
         '200':
           description: OK

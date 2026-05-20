@@ -31,8 +31,8 @@ paths:
                           enum:
                           - id
                           - name
-                          description: "Identifies the playbook field the filter is matching. Filters are based on the following\
-                            \ keywords:\r\n- `name`: Playbook name\r\n- `id`: Playbook ID"
+                          description: "Identifies the playbook field the filter is matching. Filters are based on the following
+                             keywords:- `name`: Playbook name- `id`: Playbook ID"
                         value:
                           type: string
                           description: Value that this filter must match.

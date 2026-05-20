@@ -22,8 +22,9 @@ paths:
                   properties:
                     action_id:
                       type: string
-                      description: Action ID. This can be found in the Cortex XDR console **Response** > **Action Center**
-                        > **Action ID** field.
+                      description: |-
+                        Action ID. This can be found in the Cortex XDR console **Response** > **Action Center**
+                          > **Action ID** field.
                   required:
                   - action_id
               required:

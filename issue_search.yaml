@@ -122,7 +122,7 @@ paths:
                     - `normalized_fields`: Includes normalized fields in the response.
                     - `custom_fields`: Includes custom user-defined fields in the response.
                     - By default these fields will not be part of response payload.
-                  default: []
+                  default: 
       responses:
         '200':
           description: Successful response with issues

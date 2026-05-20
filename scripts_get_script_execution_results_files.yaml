@@ -22,7 +22,8 @@ paths:
                   properties:
                     action_id:
                       type: string
-                      description: Identifier of the action, can be found in Cortex XDR console **Response** > **Action Center**
+                      description: |- 
+                        Identifier of the action, can be found in Cortex XDR console **Response** > **Action Center**
                         > **Action ID** field.
                     endpoint_id:
                       type: string

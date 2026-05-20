@@ -55,7 +55,7 @@ paths:
                         type: array
                         items:
                           type: object
-                          properties: {}
+                          properties: 
             Example 1:
               example:
                 reply:
@@ -67,7 +67,7 @@ paths:
                   - test_ql3
                   - test_ql33
                   - test_ql1000
-                  errors: []
+                  errors: 
         '400':
           description: Bad Request. Got an invalid JSON.
           content:

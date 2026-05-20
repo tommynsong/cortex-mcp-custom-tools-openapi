@@ -76,7 +76,7 @@ paths:
                       alert_fields:
                         type: object
                         description: Alert fields.
-                        additionalProperties: {}
+                        additionalProperties: 
                       execution_mode:
                         enum:
                         - SCHEDULED
@@ -118,7 +118,7 @@ paths:
                         nullable: true
                       mitre_defs:
                         type: object
-                        additionalProperties: {}
+                        additionalProperties: 
                       investigation_query_link:
                         type: string
                       drilldown_query_timeframe:

@@ -5,12 +5,12 @@ paths:
       tags:
       - XQL query
       summary: Get XQL query Quota
-      description: "Retrieve the amount of query quota available and used. \n\nNote: This endpoint only works on XQL queries\
-        \ initiated by `/public_api/v1/xql/start_xql_query/`.\n\nFor more information on how to run XQL queries, see [*Running\
-        \ XQL query APIs*](https://cortex-panw.stoplight.io/docs/cortex-xsiam-1/90ay3tlx6l9dh-running-xql-query-ap-is).\n\n\
-        <!-- theme: info -->\n\n> #### Note\n>\n> To ensure you don't surpass your quota, Cortex Cloud allows you to run up\
-        \ to four API queries in parallel.\n\n**Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture\
-        \ Management"
+      description: "Retrieve the amount of query quota available and used. Note: This endpoint only works on XQL queries
+         initiated by `/public_api/v1/xql/start_xql_query/`.For more information on how to run XQL queries, see [*Running
+         XQL query APIs*](https://cortex-panw.stoplight.io/docs/cortex-xsiam-1/90ay3tlx6l9dh-running-xql-query-ap-is).
+        <!-- theme: info -->> #### Note>> To ensure you don't surpass your quota, Cortex Cloud allows you to run up
+         to four API queries in parallel.**Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture
+         Management"
       operationId: postGetQuota
       requestBody:
         content:
@@ -18,7 +18,7 @@ paths:
             schema:
               type: object
               example:
-                request_data: {}
+                request_data: 
       responses:
         '200':
           description: Successful response

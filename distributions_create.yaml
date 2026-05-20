@@ -5,10 +5,10 @@ paths:
       tags:
       - Endpoint Management
       summary: Create distributions
-      description: "Create an installation package. This is an async call that returns the distribution ID; it does not mean\
-        \ that the creation succeeded. To confirm the package has been created, check the status of the distribution by running\
-        \ the **Get Distribution Status** API.\r\n\r\n**Required license:** Cortex Cloud Runtime Security. In Cortex Cloud\
-        \ Posture Security, you need the Cortex Cloud Runtime Security add-on."
+      description: "Create an installation package. This is an async call that returns the distribution ID; it does not mean
+         that the creation succeeded. To confirm the package has been created, check the status of the distribution by running
+         the **Get Distribution Status** API. **Required license:** Cortex Cloud Runtime Security. In Cortex Cloud
+         Posture Security, you need the Cortex Cloud Runtime Security add-on."
       operationId: postCreate
       requestBody:
         content:
@@ -94,7 +94,7 @@ paths:
                       description: |-
                         The node selector in the following format:
                         `"node_selector": {"key": "val"}'
-                      additionalProperties: {}
+                      additionalProperties: 
                     proxy:
                       type: array
                       x-stoplight:

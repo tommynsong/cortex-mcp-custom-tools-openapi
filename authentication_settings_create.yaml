@@ -37,13 +37,13 @@ paths:
                       default: false
                     domain:
                       type: string
-                      description: "When configuring the first SSO, this parameter should be included as empty because it\
-                        \ is the default SSO and has a fixed, read-only value. \nFor additional SSOs, specify this IdP with\
-                        \ an email domain (user@<domain>). When logging in, users are redirected to the IdP associated with\
-                        \ their email domain or to the default IdP if no association exists."
+                      description: "When configuring the first SSO, this parameter should be included as empty because it
+                         is the default SSO and has a fixed, read-only value. For additional SSOs, specify this IdP with
+                         an email domain (user@<domain>). When logging in, users are redirected to the IdP associated with
+                         their email domain or to the default IdP if no association exists."
                     mappings:
                       type: object
-                      description: These IdP attribute mappings are dependent on your organization’s IdP.
+                      description: These IdP attribute mappings are dependent on your organization IdP.
                       properties:
                         email:
                           type: string
@@ -114,8 +114,8 @@ paths:
                         IdP.
                     metadata_url:
                       type: string
-                      description: "The metadata URL provides information about hte IdP's capabilities, endpoints, keys, and\
-                        \ more. \nFor example: \n- Okta: https://cortex-test.okta.com/app/exkbuuzw77Bh04V6M6b8/sso/saml/metadata\n\
+                      description: "The metadata URL provides information about hte IdP's capabilities, endpoints, keys, and
+                         more. For example: - Okta: https://cortex-test.okta.com/app/exkbuuzw77Bh04V6M6b8/sso/saml/metadata
                         - Microsoft Azure: https://login.microsoftonline.com/6a5a9780-96a4-41ef-bf45-0535d8a70025/saml2/metadata"
                   required:
                   - name

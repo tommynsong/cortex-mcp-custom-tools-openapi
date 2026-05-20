@@ -5,10 +5,10 @@ paths:
       tags:
       - BIOCs
       summary: Get BIOCs
-      description: "Return a list of BIOCs. You can return all BIOCs or filter results. You can also return extended results\
-        \ with all details included.- The response is concatenated using AND condition (OR is not supported).\r\n- The maximum\
-        \ result set size is >100.\r\n- Offset is the zero-based number of incidents from the start of the result set.\r\n\
-        \r\nYou must have **Instance Administrator** permissions to run this endpoint.\r\n"
+      description: "Return a list of BIOCs. You can return all BIOCs or filter results. You can also return extended results
+        with all details included.- The response is concatenated using AND condition (OR is not supported).- The maximum
+        result set size is >100.- Offset is the zero-based number of incidents from the start of the result set.
+        You must have **Instance Administrator** permissions to run this endpoint."
       operationId: post-public_api-v1-bioc-get
       requestBody:
         content:
@@ -46,11 +46,11 @@ paths:
                             - indicator
                             - mitre_technique_id_and_name
                             - mitre_tactic_id_and_name
-                            description: "Identifies the BIOC field the filter is matching. Filters are based on the following\
-                              \ keywords:\r\n- `name`: BIOC name.\r\n- `severity`: BIOC severity level.\r\n- `type`: BIOC\
-                              \ type.\r\n- `is_xql`: Whether or not the BIOC is XQL.\r\n- `comment`: Comment.\r\n- `status`:\
-                              \ BIOC status.\r\n- `indicator`: Indicator.\r\n- `mitre_technique_id_and_name`: MITRE technique\
-                              \ ID and name.\r\n- `mitre_tactic_id_and_name`: MITRE tactic ID and name."
+                            description: "Identifies the BIOC field the filter is matching. Filters are based on the following
+                               keywords:- `name`: BIOC name.- `severity`: BIOC severity level.- `type`: BIOC
+                               type.- `is_xql`: Whether or not the BIOC is XQL.- `comment`: Comment.- `status`:
+                               BIOC status.- `indicator`: Indicator.- `mitre_technique_id_and_name`: MITRE technique
+                               ID and name.- `mitre_tactic_id_and_name`: MITRE tactic ID and name."
                           operator:
                             x-stoplight:
                               id: len2v0h2uwk05
@@ -60,11 +60,11 @@ paths:
                             - IN
                             - GTE
                             - LTE
-                            description: "Identifies the comparison operator you want to use for this filter. Valid keywords\
-                              \ are:\r\n`EQ` / `NEQ`\r\n- `name`: String\r\n- `severity`: String\r\n- `type`: String\r\n-\
-                              \ `is_xql`: Boolean\r\n- `comment`: String\r\n- `status`: String\r\n- `indicator`: String\r\n\
-                              `IN`\r\n- `mitre_technique_id_and_name`: List of strings\r\n- `mitre_tactic_id_and_name`: List\
-                              \ of strings"
+                            description: "Identifies the comparison operator you want to use for this filter. Valid keywords
+                               are:`EQ` / `NEQ`- `name`: String- `severity`: String- `type`: String-
+                               `is_xql`: Boolean- `comment`: String- `status`: String- `indicator`: String
+                              `IN`- `mitre_technique_id_and_name`: List of strings- `mitre_tactic_id_and_name`: List
+                               of strings"
                           value:
                             oneOf:
                             - type: string
@@ -74,31 +74,31 @@ paths:
                             - type: boolean
                             x-stoplight:
                               id: zwee25zd7v46e
-                            description: "Value that this filter must match. The contents of this field will differ depending\
-                              \ on the IOC field that you specified for this filter:\r\n- `name`, `comment`: String.\r\n-\
-                              \ `severity`: String, can be one of the following: `SEV_010_INFO`, `SEV_020_LOW`, `SEV_030_MEDIUM`,\
-                              \ `SEV_040_HIGH`\r\n- `type`: String, can be one of the following: `other`, `persistence`, `evasion`,\
-                              \ `tampering`, `file_type_obfuscation`, `privilege_escalation`, `credential_access`, `lateral_movement`,\
-                              \ `execution`, `collection`, `exfiltration`, `infiltration`, `dropper`, `file_privilege_manipulation`,\
-                              \ `reconnaissance`, `discovery`.\r\n- `is_xql`: Boolean: `true` or `false`.\r\n- `status`: String,\
-                              \ can be one of the following: `enabled`, `disabled`.\r\n- `indicator`: String or dictionary\
-                              \ in the format you wrote it.\r\n- `mitre_technique_id_and_name`: List of strings.\r\n- `mitre_tactic_id_and_name`:\
-                              \ List of strings."
-                            items: {}
+                            description: "Value that this filter must match. The contents of this field will differ depending
+                               on the IOC field that you specified for this filter:- `name`, `comment`: String.-
+                               `severity`: String, can be one of the following: `SEV_010_INFO`, `SEV_020_LOW`, `SEV_030_MEDIUM`,
+                               `SEV_040_HIGH`- `type`: String, can be one of the following: `other`, `persistence`, `evasion`,
+                               `tampering`, `file_type_obfuscation`, `privilege_escalation`, `credential_access`, `lateral_movement`,
+                               `execution`, `collection`, `exfiltration`, `infiltration`, `dropper`, `file_privilege_manipulation`,
+                               `reconnaissance`, `discovery`.- `is_xql`: Boolean: `true` or `false`.- `status`: String,
+                               can be one of the following: `enabled`, `disabled`.- `indicator`: String or dictionary
+                               in the format you wrote it.- `mitre_technique_id_and_name`: List of strings.- `mitre_tactic_id_and_name`:
+                               List of strings."
+                            items: 
                     search_from:
                       type: integer
                       x-stoplight:
                         id: fdmmcplkjr91l
-                      description: "Integer representing the starting offset within the query result set from which you want\
-                        \ BIOCs returned.\r\nBIOCs are returned as a zero-based list. Any BIOC indexed less than this value\
-                        \ is not returned in the final result set and defaults to zero."
+                      description: "Integer representing the starting offset within the query result set from which you want
+                         BIOCs returned.BIOCs are returned as a zero-based list. Any BIOC indexed less than this value
+                         is not returned in the final result set and defaults to zero."
                     search_to:
                       type: integer
                       x-stoplight:
                         id: svb4vask7korb
-                      description: "Integer representing the end offset within the result set after which you do not want\
-                        \ BIOCs returned.\r\nBIOCs in the BIOC list that are indexed higher than this value are not returned\
-                        \ in the final results set. Defaults to >100, which returns all BIOCs to the end of the list."
+                      description: "Integer representing the end offset within the result set after which you do not want
+                         BIOCs returned.BIOCs in the BIOC list that are indexed higher than this value are not returned
+                         in the final results set. Defaults to >100, which returns all BIOCs to the end of the list."
         required: false
       responses:
         '200':
@@ -160,7 +160,7 @@ paths:
                                                 type: array
                                                 items:
                                                   type: object
-                                                  properties: {}
+                                                  properties: 
                                               isExtended:
                                                 type: boolean
                         mitre_tactic_id_and_name:

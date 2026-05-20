@@ -111,7 +111,7 @@ paths:
                   - query_def_id: qc_1683459520_6832
                     query_definition_name: QUERY-4845
                     xql: ''
-                    timeframe: {}
+                    timeframe: 
                     schedule:
                       run_date: 1683459540000
                       trigger_type: date
@@ -137,7 +137,7 @@ paths:
                   - query_def_id: qc_1681978513_6803
                     query_definition_name: QUERY-4851
                     xql: ''
-                    timeframe: {}
+                    timeframe: 
                     schedule:
                       run_date: 1681978620000
                       trigger_type: date
@@ -232,7 +232,7 @@ paths:
                     IS_BQL: false
                     IS_XQL: false
                     IS_PUBLIC_API: false
-                    ADDITIONAL_METADATA: {}
+                    ADDITIONAL_METADATA: 
                   - QUERY_DEF_ID: qc_1682934776_6824
                     QUERY_NAME: XQL-QUERY-4850
                     QUERY_TIMESTAMP: 1682934776329
@@ -351,7 +351,7 @@ paths:
                     IS_BQL: false
                     IS_XQL: false
                     IS_PUBLIC_API: false
-                    ADDITIONAL_METADATA: {}
+                    ADDITIONAL_METADATA: 
         '400':
           description: Bad Request. Got an invalid JSON.
           content:

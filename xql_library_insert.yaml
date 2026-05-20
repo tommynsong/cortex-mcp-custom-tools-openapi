@@ -79,7 +79,7 @@ paths:
             Example 1:
               example:
                 reply:
-                  xql_queries_added: []
+                  xql_queries_added: 
                   xql_queries_updated:
                   - test_ql11
                   - test_ql11
