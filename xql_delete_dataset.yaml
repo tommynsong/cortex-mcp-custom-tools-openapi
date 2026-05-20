@@ -5,10 +5,10 @@ paths:
       tags:
       - Dataset Management
       summary: Delete a dataset
-      description: "Delete a dataset with the specified name. The following dataset types can be deleted: Lookup, Raw, User,\
-        \ Snapshot, and Correlation. You can only delete a dataset with dependencies by setting `force` to TRUE.\r\n\r\n**Note:**\
-        \ The System dataset and other protected datasets cannot be deleted.\r\n\r\n**Required license:** Cortex Cloud Runtime\
-        \ Security or Cortex Cloud Posture Management"
+      description: "Delete a dataset with the specified name. The following dataset types can be deleted: Lookup, Raw, User,
+         Snapshot, and Correlation. You can only delete a dataset with dependencies by setting `force` to TRUE.**Note:**
+         The System dataset and other protected datasets cannot be deleted.**Required license:** Cortex Cloud Runtime
+         Security or Cortex Cloud Posture Management"
       operationId: post-public_api-v1-xql-delete_dataset
       requestBody:
         content:

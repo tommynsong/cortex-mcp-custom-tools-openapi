@@ -5,9 +5,9 @@ paths:
       tags:
       - Issues
       summary: Update existing issue
-      description: "Update an existing issue in the system. **Users can only update one issue at a time.**  \n- At least one\
-        \ of the following fields is **mandatory**:  \n  - severity\n  - status\n\n**Required license:** Cortex Cloud Runtime\
-        \ Security or Cortex Cloud Posture Management"
+      description: "Update an existing issue in the system. **Users can only update one issue at a time.**   - At least one
+         of the following fields is **mandatory**:     - severity   - status **Required license:** Cortex Cloud Runtime
+         Security or Cortex Cloud Posture Management"
       operationId: updateIssue
       parameters:
       - name: issue-id

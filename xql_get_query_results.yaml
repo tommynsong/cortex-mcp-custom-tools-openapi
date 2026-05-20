@@ -5,14 +5,14 @@ paths:
       tags:
       - XQL query
       summary: Get XQL query results
-      description: "Retrieve results of an executed XQL query API. \n\nNote: This endpoint only works on XQL queries initiated\
-        \ by `/public_api/v1/xql/start_xql_query/`.\n\nMaximum result set size is 1000. The API does not support pagination,\
-        \ therefore, you can set values to determine the result size limitation and how to wait for the results. To view response\
-        \ with greater than 1000 results you must call **Get XQL query results Stream**.\n\nFor more information on how to\
-        \ run XQL queries, see [*Running XQL query APIs*](https://cortex-panw.stoplight.io/docs/cortex-xsiam-1/90ay3tlx6l9dh-running-xql-query-ap-is).\n\
-        \n<!-- theme: info -->\n\n> #### Note\n>\n> To ensure you don't surpass your quota, Cortex Cloud allows you to run\
-        \ up to four API queries in parallel.\n\n**Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture\
-        \ Management"
+      description: "Retrieve results of an executed XQL query API. Note: This endpoint only works on XQL queries initiated
+         by `/public_api/v1/xql/start_xql_query/`.Maximum result set size is 1000. The API does not support pagination,
+         therefore, you can set values to determine the result size limitation and how to wait for the results. To view response
+         with greater than 1000 results you must call **Get XQL query results Stream**.For more information on how to
+         run XQL queries, see [*Running XQL query APIs*](https://cortex-panw.stoplight.io/docs/cortex-xsiam-1/90ay3tlx6l9dh-running-xql-query-ap-is).
+        <!-- theme: info -->> #### Note>> To ensure you don't surpass your quota, Cortex Cloud allows you to run
+         up to four API queries in parallel.**Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture
+         Management"
       operationId: postGetQueryResults
       requestBody:
         description: ''

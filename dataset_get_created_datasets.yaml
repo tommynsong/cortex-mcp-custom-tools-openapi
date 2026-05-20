@@ -5,9 +5,9 @@ paths:
       tags:
       - XQL user datasets
       summary: Get created XQL user datasets
-      description: "Retrieve a list of all XQL user datasets created using the Cortex SDK.\r\n\r\n**Required license:** Cortex\
-        \ Cloud Runtime Security or Cortex Cloud Posture Management\r\n\r\nThese APIs are only applicable from within the\
-        \ XSIAM Notebook environment."
+      description: "Retrieve a list of all XQL user datasets created using the Cortex SDK. **Required license:** Cortex
+         Cloud Runtime Security or Cortex Cloud Posture Management These APIs are only applicable from within the
+         XSIAM Notebook environment."
       operationId: post-public_api-v1-dataset-get_created_datasets
       requestBody:
         content:

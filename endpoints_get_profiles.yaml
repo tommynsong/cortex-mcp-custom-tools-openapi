@@ -6,10 +6,10 @@ paths:
       - Endpoint Management
       - Profiles
       summary: Get endpoint security profiles
-      description: "Returns a list of endpoint security profiles of the requested type.\nOptionally filters by a list of profile\
-        \ IDs.\n\n**Required permission:** `profiles_view`\n\n\n**Notes**: \n- File-Integrity-Monitoring (FIM) extension profiles\
-        \ are omitted when FIM is disabled for the profile's OS type.\n- `is_in_user_scope` and `at_risk` are removed from\
-        \ every profile object before the response is returned."
+      description: "Returns a list of endpoint security profiles of the requested type. Optionally filters by a list of profile
+         IDs. **Required permission:** `profiles_view` **Notes**:  - File-Integrity-Monitoring (FIM) extension profiles
+         are omitted when FIM is disabled for the profile's OS type. - `is_in_user_scope` and `at_risk` are removed from
+         every profile object before the response is returned."
       operationId: getProfiles
       requestBody:
         content:
@@ -54,7 +54,7 @@ paths:
                         description: Human-readable detail explaining the specific error
                         nullable: true
         '401':
-          description: Unauthorized – missing or invalid API-key headers
+          description: Unauthorized missing or invalid API-key headers
           content:
             application/json:
               schema:

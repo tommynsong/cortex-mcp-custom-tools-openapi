@@ -28,18 +28,18 @@ paths:
                         type: object
                         properties:
                           field:
-                            description: "Identifies the dashboard field the filter is matching. Filters are based on the\
-                              \ following keywords:\r\n- `dashboard_id`: Dashboard ID.\r\n- `name`: Dashboard name.\r\n- `time_generated`:\
-                              \ Time the dashboard was generated in epoch milliseconds.\r\n- `source`: Dashboard source."
+                            description: "Identifies the dashboard field the filter is matching. Filters are based on the
+                               following keywords:- `dashboard_id`: Dashboard ID.- `name`: Dashboard name.- `time_generated`:
+                               Time the dashboard was generated in epoch milliseconds.- `source`: Dashboard source."
                             enum:
                             - dashboard_id
                           operator:
-                            description: "Identifies the comparison operator you want to use for this filter. Valid keywords\
-                              \ are:\r\n`EQ` / `NEQ`\r\n- `dashboard_id`: Integer\r\n- `name`: String\r\n- `source`: String\r\
-                              \n\r\n`IN`\r\n- `dashboard_id`: List of integers\r\n- `name`: List of strings\r\n- `source`:\
-                              \ List of strings\r\n\r\n`gte` / `lte`\r\n- `time_generated`: Integer representing the time\
-                              \ the dashboard was generated in epoch milliseconds.\r\n- `dashboard_id`': Integer representing\
-                              \ the dashboard ID."
+                            description: "Identifies the comparison operator you want to use for this filter. Valid keywords
+                               are:`EQ` / `NEQ`- `dashboard_id`: Integer- `name`: String- `source`: String
+                              `IN`- `dashboard_id`: List of integers- `name`: List of strings- `source`:
+                               List of strings`gte` / `lte`- `time_generated`: Integer representing the time
+                               the dashboard was generated in epoch milliseconds.- `dashboard_id`': Integer representing
+                               the dashboard ID."
                             enum:
                             - EQ
                             - NEQ
@@ -53,10 +53,10 @@ paths:
                             - type: array
                               items:
                                 type: string
-                            description: "Value that this filter must match. The contents of this field will differ depending\
-                              \ on the dashboard field that you specified for this filter:\r\n- `name`, `source`: String or\
-                              \ list of strings.\r\n- `time_generated`: Integer.\r\n- `dashboard_id`: Integer or list of integers."
-                            items: {}
+                            description: "Value that this filter must match. The contents of this field will differ depending
+                               on the dashboard field that you specified for this filter:- `name`, `source`: String or
+                               list of strings.- `time_generated`: Integer.- `dashboard_id`: Integer or list of integers."
+                            items:
       responses:
         '200':
           description: OK

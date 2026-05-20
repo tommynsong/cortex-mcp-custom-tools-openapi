@@ -5,9 +5,9 @@ paths:
       tags:
       - Response Action
       summary: Get triage presets
-      description: "Get all triage preset information including triage name, platform, description, created by, and triage\
-        \ type.\r\n\r\n**Required license:** In Cortex Cloud Runtime Security, requires the Forensics add-on. Not supported\
-        \ in Cortex Cloud Posture Management."
+      description: "Get all triage preset information including triage name, platform, description, created by, and triage
+         type. **Required license:** In Cortex Cloud Runtime Security, requires the Forensics add-on. Not supported
+         in Cortex Cloud Posture Management."
       operationId: post-public_api-v1-get_triage_presets
       requestBody:
         content:

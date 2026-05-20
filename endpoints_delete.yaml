@@ -3,7 +3,7 @@ paths:
   /public_api/v1/endpoints/delete:
     post:
       tags:
-      - Endpoint Management
+        - Endpoint Management
       summary: Delete Endpoints
       description: |-
         Delete selected endpoints in Cortex Cloud. You can delete up to 1000 endpoints.
@@ -40,7 +40,7 @@ paths:
                           operator:
                             type: string
                             enum:
-                            - in
+                              - in
                             description: |-
                               String that identifies the comparison operator you want to use for this filter. Valid keywords and values are:
                               `in`
@@ -53,42 +53,41 @@ paths:
                             items:
                               type: string
                         required:
-                        - field
-                        - operator
-                        - value
+                          - field
+                          - operator
+                          - value
       responses:
-        '200':
+        "200":
           description: Successful response
-          content:
-            application/json: {}
-        '400':
+        "400":
           description: Bad Request. Got an invalid JSON.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/reply'
-        '401':
-          description: Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, id,
+                $ref: "#/components/schemas/reply"
+        "401":
+          description:
+            Unauthorized access. An issue occurred during authentication. This can indicate an incorrect key, id,
             or other invalid authentication parameters.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/reply'
-        '402':
+                $ref: "#/components/schemas/reply"
+        "402":
           description: Unauthorized access. User does not have the required license type to run this API.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/reply'
-        '403':
+                $ref: "#/components/schemas/reply"
+        "403":
           description: Forbidden access. The provided API Key does not have the required RBAC permissions to run this API.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/reply'
-        '500':
+                $ref: "#/components/schemas/reply"
+        "500":
           description: Internal server error. A unified status for API communication type errors.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/reply'
+                $ref: "#/components/schemas/reply"

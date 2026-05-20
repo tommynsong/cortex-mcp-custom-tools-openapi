@@ -5,8 +5,8 @@ paths:
       tags:
       - Scheduled Queries
       summary: Insert or update scheduled queries
-      description: "Insert new scheduled queries or update existing scheduled queries. \n\nYou must have **Instance Administrator**\
-        \ permissions to run this endpoint."
+      description: "Insert new scheduled queries or update existing scheduled queries. You must have **Instance Administrator**
+         permissions to run this endpoint."
       operationId: post-public_api-v1-scheduled_queries-insert
       requestBody:
         content:
@@ -80,9 +80,9 @@ paths:
                         description: The query_id of the scheduled query that was inserted or updated.
                         x-stoplight:
                           id: 6ep5rvk31v53f
-                    description: "Upon successful insert or update, the reply returns each individual query_id with the query\
-                      \ definitions.\r\nIf the insert or update failed, the reply will include the scheduled query name and\
-                      \ the error message."
+                    description: "Upon successful insert or update, the reply returns each individual query_id with the query
+                       definitions.If the insert or update failed, the reply will include the scheduled query name and
+                       the error message."
         '400':
           description: Bad Request. Got an invalid JSON.
           content:

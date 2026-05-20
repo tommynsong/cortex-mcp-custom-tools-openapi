@@ -5,8 +5,8 @@ paths:
       tags:
       - Dataset Management
       summary: Add Dataset
-      description: "Add a dataset of type `lookup` with the specified name and schema.\r\n\r\n**Required license:** Cortex\
-        \ Cloud Runtime Security or Cortex Cloud Posture Management"
+      description: "Add a dataset of type `lookup` with the specified name and schema.**Required license:** Cortex
+         Cloud Runtime Security or Cortex Cloud Posture Management"
       operationId: post-public_api-v1-xql-add_dataset
       requestBody:
         content:

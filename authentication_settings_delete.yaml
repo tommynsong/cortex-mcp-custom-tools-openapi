@@ -5,9 +5,7 @@ paths:
       tags:
       - Authentication settings
       summary: Delete authentication settings by domain
-      description: "Delete all authentication settings for the specified domain. \n\n**Note: ** The first configuration on\
-        \ the tenant is the default configuration and cannot be deleted.\n\nYou must have **Instance Administrator** permissions\
-        \ to run this endpoint.\n\n**Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture Management"
+      description: "Delete all authentication settings for the specified domain. **Note: ** The first configuration on the tenant is the default configuration and cannot be deleted.You must have **Instance Administrator** permissions to run this endpoint.**Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture Management"
       operationId: post-public_api-v1-authentication-settings-delete
       requestBody:
         content:

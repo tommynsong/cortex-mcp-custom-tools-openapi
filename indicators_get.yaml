@@ -5,10 +5,10 @@ paths:
       tags:
       - IOCs
       summary: Get Indicators (IOCs)
-      description: "Get a list of IOCs. You can return all IOCs or filter results. You can also return extended results with\
-        \ all details included.\r\n- The response is concatenated using AND condition (OR is not supported).\r\n- The maximum\
-        \ result set size is >100.\r\n- Offset is the zero-based number of incidents from the start of the result set.\r\n\
-        \r\nYou must have **Instance Administrator** permissions to run this endpoint.\r\n"
+      description: "Get a list of IOCs. You can return all IOCs or filter results. You can also return extended results with
+         all details included.- The response is concatenated using AND condition (OR is not supported).- The maximum
+         result set size is >100.- Offset is the zero-based number of incidents from the start of the result set.
+        You must have **Instance Administrator** permissions to run this endpoint."
       operationId: post-public_api-v1-indicators-get
       requestBody:
         content:
@@ -40,11 +40,11 @@ paths:
                             - comment
                             - reputation
                             - reliability
-                            description: "Identifies the IOC field the filter is matching. Filters are based on the following\
-                              \ keywords:\r\n- `indicator`: Indicator.\r\n- `type`: Indicator type.\r\n- `severity`: Indicator\
-                              \ severity.\r\n- `expiration_date`: Expiration date in epoch milliseconds.\r\n- `default_expiration_enabled`:\
-                              \ Whether the default expiration is enabled.\r\n- `comment`: Comment.\r\n- `reputation`: Reputation\
-                              \ level.\r\n- `reliability`: Reliability level."
+                            description: "Identifies the IOC field the filter is matching. Filters are based on the following
+                               keywords:- `indicator`: Indicator.- `type`: Indicator type.- `severity`: Indicator
+                               severity.- `expiration_date`: Expiration date in epoch milliseconds.- `default_expiration_enabled`:
+                               Whether the default expiration is enabled.- `comment`: Comment.- `reputation`: Reputation
+                               level.- `reliability`: Reliability level."
                           operator:
                             type: string
                             enum:
@@ -53,41 +53,40 @@ paths:
                             - IN
                             - GTE
                             - LTE
-                            description: "Identifies the comparison operator you want to use for this filter. Valid keywords\
-                              \ are:\r\n`gte` / `lte`\r\n- `expiration_date`: Integer in timestamp epoch milliseconds\r\n\
-                              `EQ` / `NEQ`\r\n- `indicator`: String\r\n- `type`: String\r\n- `severity`: String\r\n- `default_expiration_enabled`:\
-                              \ Boolean\r\n- `comment`: String\r\n- `reputation`: String\r\n- `reliability`: String"
+                            description: "Identifies the comparison operator you want to use for this filter. Valid keywords
+                               are:`gte` / `lte`- `expiration_date`: Integer in timestamp epoch milliseconds
+                              `EQ` / `NEQ`- `indicator`: String- `type`: String- `severity`: String- `default_expiration_enabled`:
+                               Boolean- `comment`: String- `reputation`: String- `reliability`: String"
                           value:
                             oneOf:
                             - type: array
-                              items: {}
+                              items: 
                             - type: integer
                             - type: string
                             - type: boolean
-                            description: "Value that this filter must match. The contents of this field will differ depending\
-                              \ on the IOC field that you specified for this filter:\r\n- `indicator`, `comment`: String.\r\
-                              \n- `type`: String, can be one of the following: `hash`, `ip`, `path`, `domain_name`, `filename`,\
-                              \ `mixed`.\r\n- `severity`: String, can be one of the following: `SEV_010_INFO`, `SEV_020_LOW`,\
-                              \ `SEV_030_MEDIUM`, `SEV_040_HIGH`\r\n- `expiration_date`: Integer representing the number of\
-                              \ milliseconds after the Unix epoch, UTC timezone.\r\n- `default_expiration_enabled`: Boolean\
-                              \ value: `true` or `false`.\r\n- `comment`: String.\r\n- `reputation`: String, can be one of\
-                              \ the following: `good`, `bad`, `suspicious`, `unknown`, `no_reputation`.\r\n- `reliability`:\
-                              \ String, can be one of the following: `A`, `B`, `C`, `D`, `E`, `F`, `G`."
+                            description: "Value that this filter must match. The contents of this field will differ depending
+                               on the IOC field that you specified for this filter:- `indicator`, `comment`: String.- `type`: String, can be one of the following: `hash`, `ip`, `path`, `domain_name`, `filename`,
+                               `mixed`.- `severity`: String, can be one of the following: `SEV_010_INFO`, `SEV_020_LOW`,
+                               `SEV_030_MEDIUM`, `SEV_040_HIGH`- `expiration_date`: Integer representing the number of
+                               milliseconds after the Unix epoch, UTC timezone.- `default_expiration_enabled`: Boolean
+                               value: `true` or `false`.- `comment`: String.- `reputation`: String, can be one of
+                               the following: `good`, `bad`, `suspicious`, `unknown`, `no_reputation`.- `reliability`:
+                               String, can be one of the following: `A`, `B`, `C`, `D`, `E`, `F`, `G`."
                     search_from:
                       type: integer
                       x-stoplight:
                         id: bwucpfjankku9
-                      description: "Integer representing the starting offset within the query result set from which you want\
-                        \ indicators returned.\r\nIndicators are returned as a zero-based list. Any indicator indexed less\
-                        \ than this value is not returned in the final result set and defaults to zero."
+                      description: "Integer representing the starting offset within the query result set from which you want
+                         indicators returned.Indicators are returned as a zero-based list. Any indicator indexed less
+                         than this value is not returned in the final result set and defaults to zero."
                     search_to:
                       type: integer
                       x-stoplight:
                         id: hs3rfeqr1suft
-                      description: "Integer representing the end offset within the result set after which you do not want\
-                        \ indicators returned.\r\nIndicators in the indicator list that are indexed higher than this value\
-                        \ are not returned in the final results set. Defaults to >100, which returns all indicators to the\
-                        \ end of the list."
+                      description: "Integer representing the end offset within the result set after which you do not want
+                         indicators returned.Indicators in the indicator list that are indexed higher than this value
+                         are not returned in the final results set. Defaults to >100, which returns all indicators to the
+                         end of the list."
         required: false
       responses:
         '200':

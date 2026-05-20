@@ -5,10 +5,10 @@ paths:
       tags:
       - Lookup Datasets
       summary: Get data from a lookup dataset
-      description: "Get data from a lookup dataset according to the specified filter fields. All lookup entries matching any\
-        \ of the filter blocks are returned. To match a filter block, a lookup entry must match all the specified fields as\
-        \ if there were an `AND` operator between them. If no filters are specified, return all lookup entries. \r\n\r\n**Note:**\
-        \ \r\n\r\n- The maximum number of entries returned is 10,000. \r\n- Requests time out after three minutes.\r\n\r\n\
+      description: "Get data from a lookup dataset according to the specified filter fields. All lookup entries matching any
+         of the filter blocks are returned. To match a filter block, a lookup entry must match all the specified fields as
+         if there were an `AND` operator between them. If no filters are specified, return all lookup entries. **Note:**
+         - The maximum number of entries returned is 10,000. - Requests time out after three minutes.
         **Required license:** Cortex Cloud Runtime Security or Cortex Cloud Posture Management"
       operationId: post-public_api-v1-xql-lookups-get_data
       requestBody:
@@ -25,9 +25,9 @@ paths:
                       description: Name of the dataset to query.
                     filters:
                       type: array
-                      description: "Key-value pairs of fields to query in a dataset. A lookup entry must match all the specified\
-                        \ fields as if there were an `AND` operator between them.\r\nYou can use one or more fields, up to\
-                        \ the number of fields in the schema."
+                      description: "Key-value pairs of fields to query in a dataset. A lookup entry must match all the specified
+                         fields as if there were an `AND` operator between them.You can use one or more fields, up to
+                         the number of fields in the schema."
                       items:
                         type: object
                         additionalProperties:

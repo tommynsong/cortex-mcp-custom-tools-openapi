@@ -5,14 +5,14 @@ paths:
       tags:
       - Lookup Datasets
       summary: Remove data from a lookup dataset
-      description: "Remove data from a dataset based on the specified parameters. If any one of the filter sets are not found,\
-        \ the API does not delete any data.\r\n\r\nThe `/public_api/xql/lookups/remove_data/`  endpoint does not support concurrent\
-        \ edits. Sending concurrent calls to this endpoint can cause data to be unintentionally overwritten or deleted. To\
-        \ allow sufficient time for each API call to complete its operation before initiating another one, assume that 1000\
-        \ entries can be added per API every 10 seconds.\r\n\r\n**Note:** \r\n- All lookup entries matching any of the filter\
-        \ blocks are deleted. To match a filter block, a lookup entry must match all the specified fields as if there were\
-        \ an `AND` operator between them. \r\n- Requests time out after three minutes.\r\n\r\n**Required license:** Cortex\
-        \ Cloud Runtime Security or Cortex Cloud Posture Management"
+      description: "Remove data from a dataset based on the specified parameters. If any one of the filter sets are not found,
+         the API does not delete any data.The `/public_api/xql/lookups/remove_data/`  endpoint does not support concurrent
+         edits. Sending concurrent calls to this endpoint can cause data to be unintentionally overwritten or deleted. To
+         allow sufficient time for each API call to complete its operation before initiating another one, assume that 1000
+         entries can be added per API every 10 seconds.**Note:** - All lookup entries matching any of the filter
+         blocks are deleted. To match a filter block, a lookup entry must match all the specified fields as if there were
+         an `AND` operator between them. - Requests time out after three minutes.**Required license:** Cortex
+         Cloud Runtime Security or Cortex Cloud Posture Management"
       operationId: post-public_api-v1-xql-lookups-remove_data
       requestBody:
         content:
@@ -28,9 +28,9 @@ paths:
                       description: The name of the dataset to delete.
                     filters:
                       type: object
-                      description: "Key-value pairs of fields to query in datasets. A lookup entry must match all the specified\
-                        \ fields as if there were an `AND` operator between them.\r\nYou can use one or more fields, up to\
-                        \ the number of fields in the schema."
+                      description: "Key-value pairs of fields to query in datasets. A lookup entry must match all the specified
+                         fields as if there were an `AND` operator between them.You can use one or more fields, up to
+                         the number of fields in the schema."
                       additionalProperties:
                         type: string
                   required:

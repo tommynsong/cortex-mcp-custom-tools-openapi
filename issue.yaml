@@ -5,10 +5,10 @@ paths:
       tags:
       - Issues
       summary: Create a new issue
-      description: "This endpoint allows users to create a new issue by providing the necessary details. \n**Users can only\
-        \ create one issue at a time.**\n- The request must include the following required fields:\n  - `name`\n  - `description`\n\
-        \  - `observation_time`\n  - `domain`\n  - `category`\n\n**Required license:** Cortex Cloud Runtime Security or Cortex\
-        \ Cloud Posture Management\n"
+      description: "This endpoint allows users to create a new issue by providing the necessary details. **Users can only
+         create one issue at a time.**- The request must include the following required fields:  - `name`  - `description`
+          - `observation_time`  - `domain`  - `category`**Required license:** Cortex Cloud Runtime Security or Cortex
+         Cloud Posture Management"
       operationId: createIssue
       requestBody:
         required: true

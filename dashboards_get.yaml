@@ -5,8 +5,8 @@ paths:
       tags:
       - Dashboards
       summary: Get dashboards
-      description: "Get dashboard details by filtering based on the dashboard name, dashboard ID, time the dashboard was generated,\
-        \ or dashboard source.\r\n\r\nYou must have **Instance Administrator** permissions to run this endpoint.\r\n"
+      description: "Get dashboard details by filtering based on the dashboard name, dashboard ID, time the dashboard was generated,
+        or dashboard source.You must have **Instance Administrator** permissions to run this endpoint."
       operationId: post-public_api-v1-dashboards-get
       requestBody:
         content:
@@ -31,9 +31,9 @@ paths:
                             - name
                             - time_generated
                             - source
-                            description: "Identifies the dashboard field the filter is matching. Filters are based on the\
-                              \ following keywords:\r\n- `dashboard_id`: Dashboard ID.\r\n- `name`: Dashboard name.\r\n- `time_generated`:\
-                              \ Time the dashboard was generated in epoch milliseconds.\r\n- `source`: Dashboard source."
+                            description: "Identifies the dashboard field the filter is matching. Filters are based on the
+                               following keywords:- `dashboard_id`: Dashboard ID.- `name`: Dashboard name.- `time_generated`:
+                               Time the dashboard was generated in epoch milliseconds.- `source`: Dashboard source."
                           operator:
                             enum:
                             - EQ
@@ -41,12 +41,12 @@ paths:
                             - IN
                             - GTE
                             - LTE
-                            description: "Identifies the comparison operator you want to use for this filter. Valid keywords\
-                              \ are:\r\n`EQ` / `NEQ`\r\n- `dashboard_id`: Integer\r\n- `name`: String\r\n- `source`: String\r\
-                              \n\r\n`IN`\r\n- `dashboard_id`: List of integers\r\n- `name`: List of strings\r\n- `source`:\
-                              \ List of strings\r\n\r\n`gte` / `lte`\r\n- `time_generated`: Integer representing the time\
-                              \ the dashboard was generated in epoch milliseconds.\r\n- `dashboard_id`: Integer representing\
-                              \ the dashboard ID"
+                            description: "Identifies the comparison operator you want to use for this filter. Valid keywords
+                               are:`EQ` / `NEQ`- `dashboard_id`: Integer- `name`: String- `source`: Stringr
+                              n`IN`- `dashboard_id`: List of integers- `name`: List of strings- `source`:
+                               List of strings`gte` / `lte`- `time_generated`: Integer representing the time
+                               the dashboard was generated in epoch milliseconds.- `dashboard_id`: Integer representing
+                               the dashboard ID"
                           value:
                             oneOf:
                             - type: string
@@ -56,10 +56,10 @@ paths:
                                 type: string
                             x-stoplight:
                               id: inat0rii5j4iu
-                            description: "Value that this filter must match. The contents of this field will differ depending\
-                              \ on the dashboard field that you specified for this filter:\r\n- `name`, `source`: String or\
-                              \ list of strings.\r\n- `time_generated`: Integer.\r\n- `dashboard_id`: Integer or list of integers."
-                            items: {}
+                            description: "Value that this filter must match. The contents of this field will differ depending
+                               on the dashboard field that you specified for this filter:- `name`, `source`: String or
+                               list of strings.- `time_generated`: Integer.- `dashboard_id`: Integer or list of integers."
+                            items: 
       responses:
         '200':
           description: OK
@@ -158,7 +158,7 @@ paths:
                                     type: array
                                     items:
                                       type: object
-                                      properties: {}
+                                      properties: 
                         widgets_data:
                           type: array
                           items:
